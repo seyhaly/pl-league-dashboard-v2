@@ -3416,10 +3416,23 @@
   }
 
   function updateChart() {
-    if (!state.chartInstance) return;
-    state.chartInstance.data.datasets = buildDatasets();
-    state.chartInstance.options.scales.y.max = state.dataset.managers.length + 0.5;
-    if (state.rankPinnedIndex !== null && state.rankPinnedIndex >= state.chartInstance.data.datasets.length) state.rankPinnedIndex = null;
+    const chart = state.chartInstance;
+    if (!chart) return;
+    const next = buildDatasets();
+    const current = chart.data.datasets;
+    const sameManagers = current.length === next.length && current.every((ds, i) => ds.label === next[i].label);
+    if (sameManagers) {
+      // Same league: change only the ranks, and leave the chart alone when nothing moved
+      // (the live sync re-renders every minute, which used to redraw the lines each time)
+      const changed = next.some((ds, i) => ds.data.join() !== current[i].data.join());
+      if (!changed) return;
+      next.forEach((ds, i) => { current[i].data = ds.data; });
+      chart.update();
+      return;
+    }
+    chart.data.datasets = next;
+    chart.options.scales.y.max = state.dataset.managers.length + 0.5;
+    if (state.rankPinnedIndex !== null && state.rankPinnedIndex >= chart.data.datasets.length) state.rankPinnedIndex = null;
     updateChartTheme();
     renderRankChips();
   }
