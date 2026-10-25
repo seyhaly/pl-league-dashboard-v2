@@ -3945,22 +3945,10 @@
 
   // ===================== SQUAD PANEL GESTURES =====================
   // Click a player for the breakdown; swipe (finger) or drag (mouse) sideways to change manager
-  function updateSummaryJoin() {
-    const modal = document.getElementById('managerDetailModal');
-    const body = document.getElementById('modalContentBody');
-    const summary = body && body.querySelector('.pm-summary');
-    if (!modal || !body) return;
-    const gone = summary ? body.scrollTop > summary.offsetTop + summary.offsetHeight - 8 : false;
-    modal.classList.toggle('mini-on', gone);
-  }
-
   function initSquadPanelGestures() {
     const modal = document.getElementById('managerDetailModal');
     const body = document.getElementById('modalContentBody');
     if (!modal || !body) return;
-
-    // Once the summary card scrolls away, its key numbers show in the header
-    body.addEventListener('scroll', updateSummaryJoin, { passive: true });
 
     body.addEventListener('click', e => {
       if (body.dataset.justSwiped === '1') return;
@@ -4432,46 +4420,6 @@
       // ── Summary strip ──────────────────────────────────────
       const playedPct = maxSquadCount > 0 ? Math.round((playedCount / maxSquadCount) * 100) : 0;
       const ytpPct = maxSquadCount > 0 ? Math.round((Math.min(yetToPlayCount, maxSquadCount - playedCount) / maxSquadCount) * 100) : 0;
-      const chipHtml = activeChip && activeChip !== 'None'
-        ? `<span class="chip-tag ${getChipColorClass(squadData && squadData.active_chip)}">${activeChip}</span>`
-        : '<span class="pm-fact-value">None</span>';
-
-      const summaryHtml = `
-        <div class="pm-summary">
-          <div class="pm-hero">
-            <span class="pm-label">GW${gw} points</span>
-            <span class="pm-hero-value">${netGwPoints}</span>
-            <span class="pm-hero-sub">${grossPoints} gross${transferCost > 0 ? ` · <span class="pm-neg">−${transferCost} hit</span>` : ' · no hit'}</span>
-          </div>
-          <div class="pm-facts">
-            <div class="pm-fact">
-              <span class="pm-label">Played</span>
-              <span class="pm-fact-value">${playedCount}<span class="pm-of"> / ${maxSquadCount}</span></span>
-              <span class="pm-progress" title="Green: played · amber: yet to play"><span style="width:${playedPct}%"></span>${ytpPct > 0 ? `<span class="pm-progress-ytp" style="width:${ytpPct}%"></span>` : ''}</span>
-            </div>
-            <div class="pm-fact${yetToPlayCount > 0 ? ' pm-fact-ytp' : ''}">
-              <span class="pm-label">Yet to play</span>
-              <span class="pm-fact-value">${yetToPlayCount}<span class="pm-of"> player${yetToPlayCount === 1 ? '' : 's'}</span></span>
-            </div>
-            <div class="pm-fact">
-              <span class="pm-label">Transfers</span>
-              <span class="pm-fact-value">${transfersCount}${transferCost > 0 ? ` <span class="pm-of pm-neg">−${transferCost}</span>` : ''}</span>
-            </div>
-            <div class="pm-fact">
-              <span class="pm-label">Bank</span>
-              <span class="pm-fact-value">${bankVal.replace('M', 'm')}</span>
-            </div>
-            <div class="pm-fact">
-              <span class="pm-label">Bench</span>
-              <span class="pm-fact-value">${ptsText(benchPts)}</span>
-            </div>
-            <div class="pm-fact">
-              <span class="pm-label">Chip</span>
-              ${chipHtml}
-            </div>
-          </div>
-        </div>`;
-
       // ── Squad: pitch view ──────────────────────────────────
       state.modalSquadCards = squadCards;
       state.modalGw = gw;
@@ -4558,16 +4506,15 @@
         </div>`;
 
       modalBody.innerHTML = `
-        ${summaryHtml}
         ${squadHtml}
         ${activityHtml}
       `;
       const mini = document.getElementById('modalMiniSummary');
       if (mini) {
-        // The whole summary, squeezed into the header row
+        // The gameweek summary lives in the panel header
         const stat = (label, value, cls = '') => `<span class="mh-stat${cls}"><span class="mh-label">${label}</span><span class="mh-value">${value}</span></span>`;
         mini.innerHTML = `
-          ${stat(`GW${gw}`, `<b class="mh-big">${netGwPoints}</b> pts`, ' mh-pts')}
+          ${stat(`GW${gw} points`, `<b class="mh-big">${netGwPoints}</b>${transferCost > 0 ? `<span class="pm-neg">−${transferCost} hit</span>` : ''}`, ' mh-pts')}
           ${stat('Played', `<b>${playedCount}</b>/${maxSquadCount}<span class="pm-progress"><span style="width:${playedPct}%"></span>${ytpPct > 0 ? `<span class="pm-progress-ytp" style="width:${ytpPct}%"></span>` : ''}</span>`, ' mh-played')}
           ${stat('Yet to play', `<b>${yetToPlayCount}</b>`, yetToPlayCount > 0 ? ' mh-ytp' : '')}
           ${stat('Transfers', `<b>${transfersCount}</b>${transferCost > 0 ? ` <span class="pm-neg">−${transferCost}</span>` : ''}`)}
@@ -4576,7 +4523,6 @@
           ${stat('Chip', activeChip && activeChip !== 'None' ? `<span class="chip-tag ${getChipColorClass(squadData && squadData.active_chip)}">${activeChip}</span>` : '<b>–</b>')}`;
       }
       syncSquadViewButtons();
-      updateSummaryJoin();
     } catch (err) {
       console.error('Error rendering squad modal:', err);
       modalBody.innerHTML = `<div style="padding:24px;text-align:center;color:#ef4444;font-weight:600;">Failed to render squad details: ${err.message}</div>`;
