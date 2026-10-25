@@ -671,7 +671,9 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
   background: var(--surface); border: 1px solid var(--border);
   border-radius: 16px; box-shadow: var(--shadow-lg);
   animation: bd-pop 0.18s ease-out;
+  overscroll-behavior: contain;
 }
+html.md-open { overflow: hidden; scrollbar-gutter: stable; }
 .md-close { position: absolute; top: 12px; right: 12px; }
 .md-head {
   display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 12px;

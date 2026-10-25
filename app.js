@@ -2827,6 +2827,7 @@
   window.closeMatchDetail = function() {
     const el = document.getElementById('matchDetail');
     if (el) el.remove();
+    document.documentElement.classList.remove('md-open');
     matchCentre = null;
   };
 
@@ -2847,6 +2848,8 @@
     overlay.innerHTML = '<div class="md-card" role="dialog"></div>';
     overlay.addEventListener('click', e => { if (e.target === overlay) closeMatchDetail(); });
     document.body.appendChild(overlay);
+    // Keep the page behind still so scrolling only moves the pop-up
+    document.documentElement.classList.add('md-open');
     renderMatchCentre();
 
     const f = currentMatchFixture();
