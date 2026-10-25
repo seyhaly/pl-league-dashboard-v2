@@ -1607,14 +1607,9 @@ html.touch-ui .tabbar {
   #standingsTable { min-width: 0; }
 }
 
-/* Status bar strip: the iPad clock and battery are white, so keep a dark band behind them */
-html.touch-ui body::before {
-  content: ''; position: fixed; top: 0; left: 0; right: 0; z-index: 70;
-  height: env(safe-area-inset-top);
-  background: #37003c;
-  pointer-events: none;
-}
-[data-theme="dark"].touch-ui body::before { background: var(--bg); }
+/* Squad side panel on the iPad: above the tab bar, clear of the status bar and home indicator */
+html.touch-ui .manager-modal-backdrop { z-index: 62; }
+html.touch-ui .manager-detail-modal { z-index: 64; padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
 
 /* Third theme button (Auto) */
 .theme-switch .segmented-btn { padding: 0 10px; }
