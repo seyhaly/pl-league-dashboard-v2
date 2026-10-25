@@ -2483,7 +2483,11 @@
 
     // Columns: first-half set then second-half set, matched to each manager's chip list by label
     const columns = ['WC 1', 'FH 1', 'BB 1', 'TC 1', 'WC 2', 'FH 2', 'BB 2', 'TC 2'];
-    const head = columns.map((c, i) => `<th class="text-center${i === 4 ? ' chip-half' : ''}">${c}</th>`).join('');
+    const fullNames = { WC: 'Wildcard', FH: 'Free Hit', BB: 'Bench Boost', TC: 'Triple Captain' };
+    const head = columns.map((c, i) => {
+      const [code, set] = c.split(' ');
+      return `<th class="text-center${i === 4 ? ' chip-half' : ''}">${fullNames[code]} ${set}</th>`;
+    }).join('');
 
     const rows = managerData.map(m => {
       const byLabel = {};
