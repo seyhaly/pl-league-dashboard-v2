@@ -11,11 +11,11 @@
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=2.0">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Khmer:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script>
     try { document.documentElement.setAttribute('data-theme', localStorage.getItem('fpl_admin_theme') || 'light'); } catch (e) {}
   </script>
-  <link rel="stylesheet" href="styles.css?v=200.0">
+  <link rel="stylesheet" href="styles.css?v=211.0">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
@@ -120,9 +120,16 @@
       <div class="topbar-right">
         <span id="memberCountBadge" class="meta-pill"></span>
         <span id="syncStatusTag" class="sync-status-tag"></span>
+        <span id="syncAgo" class="sync-ago"></span>
         <div class="btn-group">
-          <button id="copyStandingsImgBtn" class="btn btn-secondary" title="Copy standings image to clipboard">📋 Copy Image</button>
-          <button id="downloadStandingsImgBtn" class="btn btn-secondary" title="Download standings as PNG">📥 Download PNG</button>
+          <button id="copyStandingsImgBtn" class="btn btn-secondary" title="Copy a shareable standings image to the clipboard">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy image
+          </button>
+          <button id="downloadStandingsImgBtn" class="btn btn-secondary" title="Download a shareable standings image">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+            Download PNG
+          </button>
         </div>
       </div>
     </header>
@@ -142,7 +149,10 @@
             <h3 id="standingsSectionHeading">Gameweek Standings &amp; Weekly Payouts — <span id="leagueNameDisplay">Clash of Elite 2026-2027</span></h3>
             <p class="card-subtitle">Click a manager to see their squad.</p>
           </div>
-          <span id="standingsGwBadge" class="badge badge-accent">Gameweek 1</span>
+          <div class="card-header-actions">
+            <button id="toggleAbaBtn" class="chip-toggle chip-toggle-sm" aria-pressed="false" title="Show or hide ABA bank account numbers">ABA accounts</button>
+            <span id="standingsGwBadge" class="badge badge-accent">Gameweek 1</span>
+          </div>
         </div>
         <div id="standingsCollapse" class="collapsible-content">
           <div id="motsBannerContainer"></div>
@@ -154,17 +164,20 @@
                 <tr>
                   <th class="text-center">Pos</th>
                   <th>Manager &amp; Team</th>
-                  <th class="text-center">ABA</th>
-                  <th class="text-center">Gross</th>
-                  <th class="text-center">Transfers</th>
                   <th class="text-center">Net Pts</th>
-                  <th class="text-center sortable-header" id="thSeasonPts" title="Click to sort by Season Points">Season Pts <span id="seasonPtsSortIcon" class="sort-icon">⇅</span></th>
+                  <th class="text-center sortable-header" id="thSeasonPts" title="Click to sort by season points">Season <span id="seasonPtsSortIcon" class="sort-icon">⇅</span></th>
                   <th class="text-center">Chip</th>
                   <th class="text-center">Form</th>
-                  <th class="text-center">GW Payout</th>
+                  <th class="text-center">Payout</th>
                 </tr>
               </thead>
-              <tbody id="standingsBody"></tbody>
+              <tbody id="standingsBody">
+                <tr class="skeleton-row"><td colspan="8"><span class="skeleton"></span></td></tr>
+                <tr class="skeleton-row"><td colspan="8"><span class="skeleton"></span></td></tr>
+                <tr class="skeleton-row"><td colspan="8"><span class="skeleton"></span></td></tr>
+                <tr class="skeleton-row"><td colspan="8"><span class="skeleton"></span></td></tr>
+                <tr class="skeleton-row"><td colspan="8"><span class="skeleton"></span></td></tr>
+              </tbody>
             </table>
           </div>
           <div id="mobileCards" class="mobile-cards"></div>
@@ -281,8 +294,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.min.js"></script>
 <script src="demoData.js"></script>
-<script src="squadData.js?v=200.0"></script>
-<script src="app.js?v=200.0"></script>
+<script src="squadData.js?v=210.0"></script>
+<script src="app.js?v=210.0"></script>
 <script>
   // Highlight the sidebar link for the section in view
   (function () {

@@ -10,6 +10,9 @@
     showMotmBadge: false,
     showMotsBadge: false,
     theme: localStorage.getItem('fpl_admin_theme') || 'light',
+    showAba: (() => { try { return localStorage.getItem('fpl_show_aba') === '1'; } catch (e) { return false; } })(),
+    lastSyncedAt: null,
+    renderedLeagueId: null,
     motsPrizePool: 50,
     dataset: JSON.parse(JSON.stringify(window.DEMO_DATA)),
     eventStatuses: {},
@@ -65,6 +68,86 @@
     2026160: '007 043 391', // Piseth Nhim
     145847: ''              // Hokheng Ker (blank)
   };
+
+  // ===================== ICONS =====================
+  const ICON_PATHS = {
+    check: '<path d="M20 6 9 17l-5-5"/>',
+    x: '<path d="M18 6 6 18M6 6l12 12"/>',
+    clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    loader: '<path d="M21 12a9 9 0 1 1-6.22-8.56"/>',
+    trophy: '<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/>',
+    swap: '<path d="M7 16V4M3 8l4-4 4 4M17 8v12M21 16l-4 4-4-4"/>',
+    arrowRight: '<path d="M5 12h14M13 6l6 6-6 6"/>',
+    plus: '<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>',
+    minus: '<circle cx="12" cy="12" r="9"/><path d="M8 12h8"/>',
+    target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>',
+    wallet: '<path d="M20 7H5a2 2 0 0 1 0-4h13v4"/><path d="M3 5v14a2 2 0 0 0 2 2h15V7"/><path d="M16 14h.01"/>',
+    zap: '<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>',
+    shirt: '<path d="M20.4 3.5 16 2a4 4 0 0 1-8 0L3.6 3.5a2 2 0 0 0-1.3 2.2l.6 3.5a1 1 0 0 0 1 .8H6v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V10h2.1a1 1 0 0 0 1-.8l.6-3.5a2 2 0 0 0-1.3-2.2z"/>',
+    bench: '<path d="M4 10h16M6 10V6h12v4M5 10v8M19 10v8M5 14h14"/>',
+    up: '<path d="m6 15 6-6 6 6"/>',
+    down: '<path d="m6 9 6 6 6-6"/>',
+    copy: '<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
+    download: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>'
+  };
+
+  function icon(name, size = 14) {
+    return `<svg class="ico ico-${name}" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON_PATHS[name] || ''}</svg>`;
+  }
+
+  const CHART_FONT = "'Inter', 'Noto Sans Khmer', sans-serif";
+
+  // ===================== MANAGER IDENTITY =====================
+  // Same palette and order as the rank chart, so a manager keeps one colour everywhere
+  const MANAGER_COLORS = ['#4f46e5', '#0ea5e9', '#10b981', '#f59e0b', '#ef4444', '#a855f7', '#ec4899', '#64748b'];
+
+  function getManagerColor(managerId) {
+    const idx = (state.dataset.managers || []).findIndex(m => m.id === managerId);
+    return MANAGER_COLORS[(idx < 0 ? 0 : idx) % MANAGER_COLORS.length];
+  }
+
+  function getManagerInitials(name) {
+    const words = String(name || '?').trim().split(/\s+/).filter(Boolean);
+    return words.slice(0, 2).map(w => Array.from(w)[0]).join('').toUpperCase() || '?';
+  }
+
+  function managerAvatarHtml(managerId, name) {
+    return `<span class="mgr-avatar" style="background:${getManagerColor(managerId)}">${getManagerInitials(name)}</span>`;
+  }
+
+  // Manager cell used across tables: coloured avatar + name + team
+  function managerCellHtml(m, extraNameHtml = '', extraBelowHtml = '') {
+    return `
+      <div class="manager-cell">
+        ${managerAvatarHtml(m.id, m.name)}
+        <div class="manager-info">
+          <span class="manager-name">${m.name}${extraNameHtml}</span>
+          <span class="team-name">${m.teamName}</span>
+          ${extraBelowHtml}
+        </div>
+      </div>`;
+  }
+
+  // ===================== SEASON POSITION MOVEMENT =====================
+  function getSeasonRankMap(gw) {
+    const map = {};
+    if (gw < 1) return map;
+    const standings = getGameweekStandings(gw);
+    standings.forEach(m => {
+      map[m.id] = 1 + standings.filter(o => (o.seasonTotalNet || 0) > (m.seasonTotalNet || 0)).length;
+    });
+    return map;
+  }
+
+  function seasonMoveHtml(managerId, nowMap, prevMap) {
+    const now = nowMap[managerId];
+    const prev = prevMap[managerId];
+    if (!now || !prev) return '';
+    const diff = prev - now;
+    if (diff > 0) return `<span class="rank-move up" title="Up ${diff} in the season table">${icon('up', 11)}${diff}</span>`;
+    if (diff < 0) return `<span class="rank-move down" title="Down ${-diff} in the season table">${icon('down', 11)}${-diff}</span>`;
+    return `<span class="rank-move same" title="No change in the season table">–</span>`;
+  }
 
   // ===================== ANIMATED NUMBER COUNTER =====================
   function animateNumber(element, endVal, duration = 400, prefix = '', suffix = '') {
@@ -183,6 +266,7 @@
   // ===================== INITIALIZE APPLICATION =====================
   function init() {
     applyTheme(state.theme);
+    if (typeof Chart !== 'undefined') Chart.defaults.font.family = CHART_FONT;
 
     // If pre-bundled live static data exists, initialize immediately with real league 389585
     const staticData = window.FPL_LIVE_STATIC || {};
@@ -257,7 +341,7 @@
   function updateMemberCountBadge() {
     const count = state.dataset.managers.length;
     if (elements.memberCountBadge) {
-      elements.memberCountBadge.textContent = `⚽ ${count} Member${count !== 1 ? 's' : ''}`;
+      elements.memberCountBadge.textContent = `${count} Member${count !== 1 ? 's' : ''}`;
     }
   }
 
@@ -369,6 +453,19 @@
       btn.addEventListener('click', () => applyTheme(btn.dataset.themeBtn));
     });
 
+    const abaBtn = document.getElementById('toggleAbaBtn');
+    if (abaBtn) {
+      abaBtn.classList.toggle('active', state.showAba);
+      abaBtn.setAttribute('aria-pressed', String(state.showAba));
+      abaBtn.addEventListener('click', () => {
+        state.showAba = !state.showAba;
+        try { localStorage.setItem('fpl_show_aba', state.showAba ? '1' : '0'); } catch (e) {}
+        abaBtn.classList.toggle('active', state.showAba);
+        abaBtn.setAttribute('aria-pressed', String(state.showAba));
+        renderStandingsTable();
+      });
+    }
+
     // Saved League Pills — quick switch
     document.querySelectorAll('.league-pill').forEach(pill => {
       pill.addEventListener('click', () => {
@@ -383,9 +480,13 @@
           elements.leagueIdInput.value = '';
           if (name && elements.leagueNameHeader) elements.leagueNameHeader.textContent = name;
           if (name && elements.leagueNameDisplay) elements.leagueNameDisplay.textContent = name;
+          state.activeLeagueId = 'demo';
+          state.fetchCounter++; // ignore any live sync still in flight for the previous league
           state.dataset = JSON.parse(JSON.stringify(window.DEMO_DATA));
           state.maxGw = 10;
           state.currentGw = 10;
+          state.lastSyncedAt = null;
+          updateSyncAgo();
           elements.syncStatusTag.className = 'sync-status-tag live';
           elements.syncStatusTag.textContent = 'DEMO MODE';
           populateGwSelect();
@@ -437,43 +538,112 @@
     setTimeout(() => toast.classList.remove('show'), 3000);
   }
 
+  // ===================== SHARE CARD (image export) =====================
+  // A fixed-width, always-light card built just for sharing, so the image looks
+  // the same whatever the screen size or theme.
+  function buildShareCard() {
+    const isMonthlyView = Boolean(state.viewMode && state.viewMode !== 'overall');
+    const standings = isMonthlyView ? getMonthlyStandings(state.viewMode) : getGameweekStandings(state.currentGw);
+    const monthObj = isMonthlyView && state.dataset.months
+      ? state.dataset.months.find(m => m.name.toLowerCase() === state.viewMode.toLowerCase())
+      : null;
+    const leagueName = (elements.leagueNameHeader && elements.leagueNameHeader.textContent) || state.dataset.leagueName || '';
+
+    const title = isMonthlyView
+      ? `${monthObj ? monthObj.name : state.viewMode} standings & payouts`
+      : `Gameweek ${state.currentGw} standings & payouts`;
+
+    const statusObj = state.eventStatuses && state.eventStatuses[state.currentGw];
+    const isFinal = Boolean(statusObj && statusObj.finished && statusObj.data_checked);
+    const statusTag = isMonthlyView ? '' : `<span class="sc-status ${isFinal ? 'final' : 'live'}">${isFinal ? 'Final' : 'Provisional'}</span>`;
+    const dateText = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+
+    const seasonNow = isMonthlyView ? {} : getSeasonRankMap(state.currentGw);
+    const seasonPrev = isMonthlyView ? {} : getSeasonRankMap(state.currentGw - 1);
+
+    const rows = standings.map(m => {
+      const aba = ABA_ACCOUNTS[m.id] || '–';
+      const hit = m.hitCost > 0 ? ` <span class="sc-hit">−${m.hitCost}</span>` : '';
+      const ptsCell = isMonthlyView
+        ? `<td class="sc-num"><strong>${m.netScore}</strong></td>`
+        : `<td class="sc-num"><strong>${m.netScore}</strong><span class="sc-sub">${m.grossScore} gross${hit}</span></td>
+           <td class="sc-num"><span class="sc-season">${m.seasonTotalNet}${seasonMoveHtml(m.id, seasonNow, seasonPrev)}</span></td>`;
+      return `
+        <tr class="${m.statusClass}">
+          <td class="sc-pos"><span class="rank-num ${getRankClass(m.rank, m.payout)}">${m.rank}</span></td>
+          <td>${managerCellHtml(m)}</td>
+          <td class="sc-aba">${aba}</td>
+          ${ptsCell}
+          <td class="sc-pay">${payoutBadgeHtml(m.payout)}<span class="sc-sub">${m.payoutNote || ''}</span></td>
+        </tr>`;
+    }).join('');
+
+    const banners = ['motsBannerContainer', 'motmBannerContainer']
+      .map(id => (document.getElementById(id) || {}).innerHTML || '')
+      .join('');
+
+    const card = document.createElement('div');
+    card.className = 'share-card';
+    card.setAttribute('data-theme', 'light');
+    card.innerHTML = `
+      <div class="sc-header">
+        <div class="sc-brand">
+          <span class="sc-mark">${icon('trophy', 18)}</span>
+          <div>
+            <div class="sc-league">${leagueName}</div>
+            <div class="sc-title">${title}</div>
+          </div>
+        </div>
+        <div class="sc-meta">${statusTag}<span>${dateText}</span></div>
+      </div>
+      ${banners ? `<div class="sc-banners">${banners}</div>` : ''}
+      <table class="sc-table">
+        <thead>
+          <tr>
+            <th class="sc-pos">#</th>
+            <th>Manager</th>
+            <th class="sc-aba">ABA</th>
+            ${isMonthlyView ? '<th class="sc-num">Month pts</th>' : '<th class="sc-num">Net pts</th><th class="sc-num">Season</th>'}
+            <th class="sc-pay">Payout</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    `;
+    return card;
+  }
+
   function initExportImageHandlers() {
     const copyBtn = document.getElementById('copyStandingsImgBtn');
     const downloadBtn = document.getElementById('downloadStandingsImgBtn');
-    const targetElement = document.getElementById('section-standings');
-
-    if (!targetElement) return;
 
     const capturePngUrl = async () => {
-      const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--surface').trim() || '#ffffff';
-      const rect = targetElement.getBoundingClientRect();
+      if (typeof htmlToImage === 'undefined') return null;
+      const stage = document.createElement('div');
+      stage.className = 'share-card-stage';
+      const card = buildShareCard();
+      stage.appendChild(card);
+      document.body.appendChild(stage);
 
       try {
         await document.fonts.ready;
-        if (typeof htmlToImage !== 'undefined') {
-          targetElement.classList.add('is-exporting');
-          return await htmlToImage.toPng(targetElement, {
-            quality: 1.0,
-            pixelRatio: 2,
-            backgroundColor: bgColor,
-            width: Math.round(rect.width),
-            height: Math.round(rect.height),
-            style: { transform: 'none', margin: '0' }
-          });
-        }
+        return await htmlToImage.toPng(card, { pixelRatio: 2, backgroundColor: '#ffffff' });
       } catch (err) {
         console.warn('htmlToImage capture failed:', err);
       } finally {
-        targetElement.classList.remove('is-exporting');
+        stage.remove();
       }
       return null;
     };
 
     if (downloadBtn) {
       downloadBtn.addEventListener('click', async () => {
-        downloadBtn.textContent = '⏳ Generating...';
+        const originalHtml = downloadBtn.innerHTML;
+        downloadBtn.innerHTML = `${icon('loader')} Generating…`;
+        downloadBtn.disabled = true;
         const dataUrl = await capturePngUrl();
-        downloadBtn.textContent = '📥 Download PNG';
+        downloadBtn.innerHTML = originalHtml;
+        downloadBtn.disabled = false;
         if (dataUrl) {
           const isMonthly = state.viewMode && state.viewMode !== 'overall';
           const link = document.createElement('a');
@@ -489,9 +659,12 @@
 
     if (copyBtn) {
       copyBtn.addEventListener('click', async () => {
-        copyBtn.textContent = '⏳ Generating...';
+        const originalHtml = copyBtn.innerHTML;
+        copyBtn.innerHTML = `${icon('loader')} Generating…`;
+        copyBtn.disabled = true;
         const dataUrl = await capturePngUrl();
-        copyBtn.textContent = '📋 Copy Image';
+        copyBtn.innerHTML = originalHtml;
+        copyBtn.disabled = false;
         if (dataUrl) {
           try {
             const res = await fetch(dataUrl);
@@ -499,7 +672,7 @@
             await navigator.clipboard.write([
               new ClipboardItem({ 'image/png': blob })
             ]);
-            showToast('📋 Copied image to clipboard! Ready to paste into WhatsApp / Telegram.');
+            showToast('Copied image to clipboard. Ready to paste into WhatsApp or Telegram.');
           } catch (err) {
             console.warn('Clipboard write error:', err);
             showToast('Clipboard direct write restricted. Use "Download PNG" instead!');
@@ -605,9 +778,13 @@
     if (!inputCode) return;
 
     if (inputCode.toLowerCase() === 'demo') {
-      loadDemoData();
+      const demoPill = document.querySelector('.league-pill[data-league-code="demo"]');
+      if (demoPill) demoPill.click();
       return;
     }
+
+    // Switching to a different league: show placeholders instead of the previous league's table
+    if (state.renderedLeagueId !== String(inputCode)) showStandingsSkeleton();
 
     state.activeLeagueId = String(inputCode);
     const fetchId = ++state.fetchCounter;
@@ -651,7 +828,7 @@
           renderAll();
           dataLoadedSuccessfully = true;
           elements.syncStatusTag.className = 'sync-status-tag live';
-          elements.syncStatusTag.textContent = `SYNCED (${state.dataset.managers.length} Members)`;
+          elements.syncStatusTag.textContent = `SYNCED (${state.dataset.managers.length} Members)`; markSynced();
         }
       }
 
@@ -691,7 +868,7 @@
           renderAll();
           dataLoadedSuccessfully = true;
           elements.syncStatusTag.className = 'sync-status-tag live';
-          elements.syncStatusTag.textContent = `SYNCED (${state.dataset.managers.length} Members)`;
+          elements.syncStatusTag.textContent = `SYNCED (${state.dataset.managers.length} Members)`; markSynced();
         }
       }
     } catch (e) {
@@ -779,7 +956,7 @@
       if (fetchedResults.length > 0) {
         const count = fetchedResults.length;
         elements.syncStatusTag.className = 'sync-status-tag live';
-        elements.syncStatusTag.textContent = `LIVE (${count} Members)`;
+        elements.syncStatusTag.textContent = `LIVE (${count} Members)`; markSynced();
 
         const realManagerMap = {
           145847: { name: "Hokheng Ker", teamName: "Undefeated" },
@@ -1078,7 +1255,7 @@
       console.warn('Live API direct proxy fetch not reachable, maintaining verified synced dataset:', err);
       if (state.dataset.managers && state.dataset.managers.length > 0) {
         elements.syncStatusTag.className = 'sync-status-tag live';
-        elements.syncStatusTag.textContent = `SYNCED (${state.dataset.managers.length} Members)`;
+        elements.syncStatusTag.textContent = `SYNCED (${state.dataset.managers.length} Members)`; markSynced();
         populateGwSelect();
         changeGw(state.currentGw || 1);
         updateMemberCountBadge();
@@ -1789,6 +1966,29 @@
     return form.length > 0 ? form : ['-'];
   }
 
+  // ===================== LOADING & SYNC FRESHNESS =====================
+  function showStandingsSkeleton() {
+    const row = '<tr class="skeleton-row"><td colspan="8"><span class="skeleton"></span></td></tr>';
+    if (elements.standingsBody) elements.standingsBody.innerHTML = row.repeat(6);
+    if (elements.mobileCards) elements.mobileCards.innerHTML = '<div class="skeleton skeleton-card"></div>'.repeat(4);
+  }
+
+  function updateSyncAgo() {
+    const el = document.getElementById('syncAgo');
+    if (!el) return;
+    if (!state.lastSyncedAt) { el.textContent = ''; return; }
+    const mins = Math.floor((Date.now() - state.lastSyncedAt) / 60000);
+    el.textContent = mins < 1 ? 'Updated just now' : `Updated ${mins} min ago`;
+    el.title = `Last refreshed ${new Date(state.lastSyncedAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}`;
+  }
+
+  function markSynced() {
+    state.lastSyncedAt = Date.now();
+    updateSyncAgo();
+  }
+
+  setInterval(updateSyncAgo, 30000);
+
   // ===================== RENDER ALL =====================
   function renderAll() {
     const hasData = state.dataset.managers && state.dataset.managers.length > 0;
@@ -1812,6 +2012,7 @@
 
     if (!hasData) return;
 
+    state.renderedLeagueId = state.activeLeagueId;
     renderStandingsTable();
     renderGwStatus();
     renderSeasonMatrixTable();
@@ -1862,10 +2063,14 @@
       }
     }
 
-    // Update Table Header (thead) and Colgroup
+    // Update Table Header (thead); column widths are left to the browser
     const standingsTable = document.getElementById('standingsTable');
     const theadEl = standingsTable ? standingsTable.querySelector('thead') : null;
     const colgroupEl = standingsTable ? standingsTable.querySelector('colgroup') : null;
+    if (colgroupEl) colgroupEl.innerHTML = '';
+    if (standingsTable) standingsTable.classList.toggle('show-aba', state.showAba);
+
+    const abaTh = state.showAba ? '<th class="text-center">ABA</th>' : '';
 
     if (isMonthlyView) {
       if (theadEl) {
@@ -1873,31 +2078,15 @@
         theadEl.innerHTML = `
           <tr>
             <th class="text-center">Pos</th>
-            <th>Manager &amp; Team</th>
-            <th class="text-center">ABA</th>
+            <th>Manager</th>
+            ${abaTh}
             ${gwThs}
             <th class="text-center">Transfers</th>
             <th class="text-center">${activeMonthName} Pts</th>
             <th class="text-center">Chip</th>
             <th class="text-center">Form</th>
-            <th class="text-center">Monthly Payout</th>
+            <th class="text-center">Payout</th>
           </tr>
-        `;
-      }
-      if (colgroupEl) {
-        const numGws = monthGws.length;
-        const gwWidth = Math.max(5, Math.min(8, Math.floor(20 / Math.max(1, numGws))));
-        const gwCols = monthGws.map(() => `<col style="width: ${gwWidth}%;">`).join('');
-        colgroupEl.innerHTML = `
-          <col style="width: 4%;">
-          <col style="width: 15%;">
-          <col style="width: 8%;">
-          ${gwCols}
-          <col style="width: 8%;">
-          <col style="width: 11%;">
-          <col style="width: 9%;">
-          <col style="width: 10%;">
-          <col style="width: 13%;">
         `;
       }
     } else {
@@ -1910,15 +2099,13 @@
         theadEl.innerHTML = `
           <tr>
             <th class="text-center">Pos</th>
-            <th>Manager &amp; Team</th>
-            <th class="text-center">ABA</th>
-            <th class="text-center">Gross</th>
-            <th class="text-center">Transfers</th>
-            <th class="text-center">Net Pts</th>
-            <th class="text-center sortable-header${activeSortClass}" id="thSeasonPts" title="Click to sort by Season Points">Season Pts <span id="seasonPtsSortIcon" class="sort-icon">${sortIconText}</span></th>
+            <th>Manager</th>
+            ${abaTh}
+            <th class="text-center" title="Net points = gross points minus transfer hits">Net Pts</th>
+            <th class="text-center sortable-header${activeSortClass}" id="thSeasonPts" title="Click to sort by season points. Arrows show movement in the season table since last gameweek.">Season <span id="seasonPtsSortIcon" class="sort-icon">${sortIconText}</span></th>
             <th class="text-center">Chip</th>
             <th class="text-center">Form</th>
-            <th class="text-center">GW Payout</th>
+            <th class="text-center">Payout</th>
           </tr>
         `;
         const thSeasonPts = document.getElementById('thSeasonPts');
@@ -1937,20 +2124,6 @@
           };
         }
       }
-      if (colgroupEl) {
-        colgroupEl.innerHTML = `
-          <col style="width: 4%;">
-          <col style="width: 13%;">
-          <col style="width: 9%;">
-          <col style="width: 8%;">
-          <col style="width: 9%;">
-          <col style="width: 9%;">
-          <col style="width: 12%;">
-          <col style="width: 11%;">
-          <col style="width: 11%;">
-          <col style="width: 14%;">
-        `;
-      }
     }
 
     elements.standingsBody.innerHTML = '';
@@ -1966,20 +2139,20 @@
     const motmBannerContainer = document.getElementById('motmBannerContainer');
     if (motmBannerContainer) {
       if (state.showMotmBadge && motmInfo) {
-        const icon = motmInfo.isFinalized ? '🏆' : '⏳';
+        const bannerIcon = motmInfo.isFinalized ? icon('trophy', 18) : icon('clock', 18);
         let winnerContent = '';
         if (motmInfo.leaders && motmInfo.leaders.length > 0) {
           const names = motmInfo.leaders.map(l => l.name).join(' & ');
           const splitHtml = motmInfo.isTied ? ' <span class="motm-split-tag">(split the prize)</span>' : '';
           winnerContent = `<span class="motm-winner-name">${names}</span>${splitHtml}`;
         } else {
-          winnerContent = `<span style="font-style:italic;opacity:0.85;margin-left:4px;">Upcoming (Starts GW${motmInfo.startGw})</span>`;
+          winnerContent = `<span class="motm-split-tag">Upcoming (starts GW${motmInfo.startGw})</span>`;
         }
 
         motmBannerContainer.innerHTML = `
           <div class="motm-banner">
             <div class="motm-banner-content">
-              <span class="motm-icon">${icon}</span>
+              <span class="motm-icon">${bannerIcon}</span>
               <span class="motm-title">${activeMotmMonthName} Manager of the Month:</span>
               ${winnerContent}
             </div>
@@ -2007,7 +2180,7 @@
         motsBannerContainer.innerHTML = `
           <div class="mots-banner">
             <div class="mots-banner-content">
-              <span class="mots-icon">🏆</span>
+              <span class="mots-icon">${icon('trophy', 20)}</span>
               <div class="mots-text-wrapper">
                 <span class="mots-title">MANAGER OF THE SEASON${tiedText}</span>
                 <span class="mots-winner-names">${names}</span>
@@ -2020,52 +2193,50 @@
       }
     }
 
-    // Find highest points for the glow highlight
+    // Find highest points for the highlight
     const maxSeasonPts = isMonthlyView ? 0 : Math.max(...standings.map(m => m.seasonTotalNet || 0));
     const maxMonthPts = isMonthlyView ? Math.max(...standings.map(m => m.netScore || 0)) : 0;
 
+    // Season-table movement since the previous gameweek
+    const seasonRankNow = isMonthlyView ? {} : getSeasonRankMap(state.currentGw);
+    const seasonRankPrev = isMonthlyView ? {} : getSeasonRankMap(state.currentGw - 1);
+
     standings.forEach(m => {
       // --- Shared data ---
-      let rankClass = 'rank-neutral';
-      if (m.rank === 1) rankClass = 'rank-1';
-      else if (m.rank === 2) rankClass = 'rank-2';
-      else if (m.rank === 3) rankClass = 'rank-3';
-      else if (m.payout < 0) rankClass = 'rank-bottom';
-
-      let payoutBadge = '';
-      if (m.payout > 0)       payoutBadge = `<span class="payout-badge payout-win">+$${m.payout}.00</span>`;
-      else if (m.payout < 0)  payoutBadge = `<span class="payout-badge payout-loss">-$${Math.abs(m.payout)}.00</span>`;
-      else                    payoutBadge = `<span class="payout-badge payout-neutral">$0.00</span>`;
+      const rankClass = getRankClass(m.rank, m.payout);
+      const payoutBadge = payoutBadgeHtml(m.payout);
 
       const chipColorCls = getChipColorClass(m.chip);
       const chipColumnContent = m.chip
         ? `<span class="chip-tag ${chipColorCls}">${getChipLabel(m.chip)}</span>`
-        : `<span style="color:var(--text-muted);font-size:13px;">-</span>`;
+        : `<span class="cell-empty">–</span>`;
 
       const transferDisplay = m.hitCost > 0
-        ? `<span style="font-weight:700;color:var(--text-secondary);">${m.transfers}</span> <span class="hit-tag has-hit">(-${m.hitCost})</span>`
-        : `<span style="font-weight:700;color:var(--text-secondary);">${m.transfers}</span>`;
+        ? `<span class="cell-strong">${m.transfers}</span> <span class="hit-tag has-hit">(-${m.hitCost})</span>`
+        : `<span class="cell-strong">${m.transfers}</span>`;
 
       const formGuide = isMonthlyView ? getMonthlyFormGuide(m.id, monthGws) : getFormGuide(m.id);
       const formHtml = formGuide.map(code => {
-        if (code === '-') return `<span style="color:var(--text-muted);font-weight:700;margin:0 2px;">-</span>`;
+        if (code === '-') return `<span class="cell-empty">–</span>`;
         const cls = code === 'W' ? 'form-w' : code === 'L' ? 'form-l' : 'form-n';
         return `<span class="form-pill ${cls}">${code}</span>`;
       }).join('');
 
-      // Tied managers indicator
-      const tiedPill = m.isTied
-        ? `<span class="tied-pill">TIED</span>` : '';
-
-      // Tiebreaker detail line — only shown on tied rows
+      const tiedPill = m.isTied ? `<span class="tied-pill">TIED</span>` : '';
       const tiebreakerDetail = m.isTied && m.tiebreakerText
         ? `<span class="tiebreaker-detail">${m.tiebreakerText}</span>`
         : '';
 
       const abaAccount = ABA_ACCOUNTS[m.id] || '';
-      const abaDisplay = abaAccount
-        ? `<span class="aba-account-pill">${abaAccount}</span>`
-        : `<span style="color:var(--text-muted);font-size:12px;">-</span>`;
+      const abaTd = state.showAba
+        ? `<td class="text-center">${abaAccount ? `<span class="aba-account-pill">${abaAccount}</span>` : '<span class="cell-empty">–</span>'}</td>`
+        : '';
+
+      const moveHtml = isMonthlyView ? '' : seasonMoveHtml(m.id, seasonRankNow, seasonRankPrev);
+
+      // Net points with its gross / transfers breakdown underneath
+      const hitText = m.hitCost > 0 ? ` <span class="hit-tag has-hit">−${m.hitCost}</span>` : '';
+      const netBreakdown = `${m.grossScore} gross · ${m.transfers} tr${hitText}`;
 
       // =========== DESKTOP TABLE ROW ===========
       const tr = document.createElement('tr');
@@ -2073,80 +2244,56 @@
       tr.setAttribute('title', `Click to view ${m.name}'s squad details & stats`);
       tr.addEventListener('click', () => openManagerModal(m.id));
 
+      const payoutTd = `
+          <td class="text-center">
+            <div class="payout-container">
+              ${payoutBadge}
+              <span class="payout-note">${m.payoutNote}</span>
+            </div>
+          </td>`;
+
       if (isMonthlyView) {
         const gwTds = monthGws.map(gw => {
           const scoreVal = (m.gwBreakdown && m.gwBreakdown[gw] !== undefined) ? m.gwBreakdown[gw] : '-';
           const scoreDisplay = scoreVal !== '-'
-            ? `<span style="font-weight:700;color:var(--text-secondary);">${scoreVal}</span>`
-            : `<span style="color:var(--text-muted);">-</span>`;
+            ? `<span class="cell-strong">${scoreVal}</span>`
+            : `<span class="cell-empty">–</span>`;
           return `<td class="text-center">${scoreDisplay}</td>`;
         }).join('');
 
         tr.innerHTML = `
-          <td class="text-center">
-            <div class="rank-num ${rankClass}">${m.rank}</div>
-          </td>
-          <td>
-            <div class="manager-info">
-              <span class="manager-name">${m.name}${tiedPill}</span>
-              <span class="team-name">${m.teamName}</span>
-              ${tiebreakerDetail}
-            </div>
-          </td>
-          <td class="text-center">
-            ${abaDisplay}
-          </td>
+          <td class="text-center"><div class="rank-num ${rankClass}">${m.rank}</div></td>
+          <td>${managerCellHtml(m, tiedPill, tiebreakerDetail)}</td>
+          ${abaTd}
           ${gwTds}
           <td class="text-center">${transferDisplay}</td>
           <td class="text-center">
             <span class="gw-score month-total-pts${m.netScore === maxMonthPts ? ' season-pts-top' : ''}" data-cur-val="${m.netScore}">${m.netScore}</span>
           </td>
           <td class="text-center">${chipColumnContent}</td>
-          <td class="text-center">
-            <div class="form-pill-container">${formHtml}</div>
-          </td>
-          <td class="text-center">
-            <div class="payout-container">
-              ${payoutBadge}
-              <span class="payout-note">${m.payoutNote}</span>
-            </div>
-          </td>
+          <td class="text-center"><div class="form-pill-container">${formHtml}</div></td>
+          ${payoutTd}
         `;
       } else {
         tr.innerHTML = `
+          <td class="text-center"><div class="rank-num ${rankClass}">${m.rank}</div></td>
+          <td>${managerCellHtml(m, tiedPill, tiebreakerDetail)}</td>
+          ${abaTd}
           <td class="text-center">
-            <div class="rank-num ${rankClass}">${m.rank}</div>
-          </td>
-          <td>
-            <div class="manager-info">
-              <span class="manager-name">${m.name}${tiedPill}</span>
-              <span class="team-name">${m.teamName}</span>
-              ${tiebreakerDetail}
+            <div class="net-cell">
+              <span class="gw-score" data-cur-val="${m.netScore}">${m.netScore}</span>
+              <span class="net-breakdown">${netBreakdown}</span>
             </div>
           </td>
           <td class="text-center">
-            ${abaDisplay}
-          </td>
-          <td class="text-center">
-            <span style="font-weight:700;color:var(--text-secondary);">${m.grossScore}</span>
-          </td>
-          <td class="text-center">${transferDisplay}</td>
-          <td class="text-center">
-            <span class="gw-score" data-cur-val="${m.netScore}">${m.netScore}</span>
-          </td>
-          <td class="text-center">
-            <span class="season-pts${m.seasonTotalNet === maxSeasonPts ? ' season-pts-top' : ''}" data-cur-val="${m.seasonTotalNet}">${m.seasonTotalNet}</span>
+            <div class="season-cell">
+              <span class="season-pts${m.seasonTotalNet === maxSeasonPts ? ' season-pts-top' : ''}" data-cur-val="${m.seasonTotalNet}">${m.seasonTotalNet}</span>
+              ${moveHtml}
+            </div>
           </td>
           <td class="text-center">${chipColumnContent}</td>
-          <td class="text-center">
-            <div class="form-pill-container">${formHtml}</div>
-          </td>
-          <td class="text-center">
-            <div class="payout-container">
-              ${payoutBadge}
-              <span class="payout-note">${m.payoutNote}</span>
-            </div>
-          </td>
+          <td class="text-center"><div class="form-pill-container">${formHtml}</div></td>
+          ${payoutTd}
         `;
       }
       elements.standingsBody.appendChild(tr);
@@ -2162,103 +2309,63 @@
         card.className = `mobile-manager-card ${m.statusClass}${m.isTied ? ' tr-tied' : ''}`;
         card.addEventListener('click', () => openManagerModal(m.id));
 
+        const statItem = (label, value) => `
+          <div class="mobile-stat-item">
+            <span class="mobile-stat-label">${label}</span>
+            <span class="mobile-stat-value">${value}</span>
+          </div>`;
+
+        const abaStat = state.showAba && abaAccount ? statItem('ABA', `<span class="mobile-aba">${abaAccount}</span>`) : '';
+        const transfersStat = statItem('Transfers', `${m.transfers}${m.hitCost > 0 ? ` <span class="hit-tag has-hit">(-${m.hitCost})</span>` : ''}`);
+        const chipStat = statItem('Chip', m.chip ? getChipLabel(m.chip) : '–');
+
+        let statsHtml;
         if (isMonthlyView) {
           const gwBreakdownHtml = monthGws.map(gw => {
-            const scoreVal = (m.gwBreakdown && m.gwBreakdown[gw] !== undefined) ? m.gwBreakdown[gw] : '-';
-            return `
-              <div class="mobile-stat-item">
-                <span class="mobile-stat-label">GW${gw}</span>
-                <span class="mobile-stat-value" style="font-weight:700;">${scoreVal}</span>
-              </div>
-            `;
+            const scoreVal = (m.gwBreakdown && m.gwBreakdown[gw] !== undefined) ? m.gwBreakdown[gw] : '–';
+            return statItem(`GW${gw}`, scoreVal);
           }).join('');
-
-          card.innerHTML = `
-            <div class="mobile-card-top">
-              <div class="mobile-card-rank-name">
-                <div class="rank-num ${rankClass}">${m.rank}</div>
-                <div class="manager-info">
-                  <span class="manager-name" style="font-size:14px;">${m.name}${tiedPill}</span>
-                  <span class="team-name">${m.teamName}</span>
-                  ${tiebreakerDetail}
-                </div>
-              </div>
-              ${payoutBadge}
-            </div>
-            <div class="mobile-card-stats">
-              ${abaAccount ? `
-              <div class="mobile-stat-item">
-                <span class="mobile-stat-label">ABA</span>
-                <span class="mobile-stat-value" style="font-size:11px;font-weight:700;letter-spacing:0.3px;">${abaAccount}</span>
-              </div>` : ''}
-              <div class="mobile-stat-item">
-                <span class="mobile-stat-label">${activeMonthName} Pts</span>
-                <span class="mobile-stat-value" style="color:var(--pl-green);font-weight:800;">${m.netScore}</span>
-              </div>
-              <div class="mobile-stat-item">
-                <span class="mobile-stat-label">Transfers</span>
-                <span class="mobile-stat-value">${m.transfers}${m.hitCost > 0 ? ` <span class="hit-tag has-hit">(-${m.hitCost})</span>` : ''}</span>
-              </div>
-              ${gwBreakdownHtml}
-              <div class="mobile-stat-item">
-                <span class="mobile-stat-label">Chip</span>
-                <span class="mobile-stat-value" style="font-size:11px;">${m.chip ? m.chip : '—'}</span>
-              </div>
-            </div>
-            <div class="mobile-card-bottom">
-              <div class="form-pill-container">${formHtml}</div>
-              <span class="payout-note">${m.payoutNote}</span>
-            </div>
-          `;
+          statsHtml = abaStat + statItem(`${activeMonthName} Pts`, `<span class="text-accent">${m.netScore}</span>`) + transfersStat + gwBreakdownHtml + chipStat;
         } else {
-          card.innerHTML = `
-            <div class="mobile-card-top">
-              <div class="mobile-card-rank-name">
-                <div class="rank-num ${rankClass}">${m.rank}</div>
-                <div class="manager-info">
-                  <span class="manager-name" style="font-size:14px;">${m.name}${tiedPill}</span>
-                  <span class="team-name">${m.teamName}</span>
-                  ${tiebreakerDetail}
-                </div>
-              </div>
-              ${payoutBadge}
-            </div>
-            <div class="mobile-card-stats">
-              ${abaAccount ? `
-              <div class="mobile-stat-item">
-                <span class="mobile-stat-label">ABA</span>
-                <span class="mobile-stat-value" style="font-size:11px;font-weight:700;letter-spacing:0.3px;">${abaAccount}</span>
-              </div>` : ''}
-              <div class="mobile-stat-item">
-                <span class="mobile-stat-label">Net Pts</span>
-                <span class="mobile-stat-value" style="color:var(--pl-green);">${m.netScore}</span>
-              </div>
-              <div class="mobile-stat-item">
-                <span class="mobile-stat-label">Transfers</span>
-                <span class="mobile-stat-value">${m.transfers}${m.hitCost > 0 ? ` <span class="hit-tag has-hit">(-${m.hitCost})</span>` : ''}</span>
-              </div>
-              <div class="mobile-stat-item">
-                <span class="mobile-stat-label">Season</span>
-                <span class="mobile-stat-value" style="color:var(--pl-cyan);">${m.seasonTotalNet}</span>
-              </div>
-              <div class="mobile-stat-item">
-                <span class="mobile-stat-label">Gross</span>
-                <span class="mobile-stat-value">${m.grossScore}</span>
-              </div>
-              <div class="mobile-stat-item">
-                <span class="mobile-stat-label">Chip</span>
-                <span class="mobile-stat-value" style="font-size:11px;">${m.chip ? getChipLabel(m.chip) : '—'}</span>
-              </div>
-            </div>
-            <div class="mobile-card-bottom">
-              <div class="form-pill-container">${formHtml}</div>
-              <span class="payout-note">${m.payoutNote}</span>
-            </div>
-          `;
+          statsHtml = abaStat
+            + statItem('Net Pts', `<span class="text-accent">${m.netScore}</span>`)
+            + statItem('Season', `${m.seasonTotalNet} ${moveHtml}`)
+            + statItem('Gross', m.grossScore)
+            + transfersStat
+            + chipStat;
         }
+
+        card.innerHTML = `
+          <div class="mobile-card-top">
+            <div class="mobile-card-rank-name">
+              <div class="rank-num ${rankClass}">${m.rank}</div>
+              ${managerCellHtml(m, tiedPill, tiebreakerDetail)}
+            </div>
+            ${payoutBadge}
+          </div>
+          <div class="mobile-card-stats">${statsHtml}</div>
+          <div class="mobile-card-bottom">
+            <div class="form-pill-container">${formHtml}</div>
+            <span class="payout-note">${m.payoutNote}</span>
+          </div>
+        `;
         elements.mobileCards.appendChild(card);
       }
     });
+  }
+
+  function getRankClass(rank, payout) {
+    if (rank === 1) return 'rank-1';
+    if (rank === 2) return 'rank-2';
+    if (rank === 3) return 'rank-3';
+    if (payout < 0) return 'rank-bottom';
+    return 'rank-neutral';
+  }
+
+  function payoutBadgeHtml(payout) {
+    if (payout > 0) return `<span class="payout-badge payout-win">+$${payout}.00</span>`;
+    if (payout < 0) return `<span class="payout-badge payout-loss">-$${Math.abs(payout)}.00</span>`;
+    return `<span class="payout-badge payout-neutral">$0.00</span>`;
   }
 
   // ===================== WIN/LOSS TABLE =====================
@@ -2407,12 +2514,7 @@
       tbodyRows += `
         <tr class="matrix-row" onclick="openManagerModal(${m.id})">
           <td class="sticky-col-pos text-center"><div class="rank-num ${rankClass}">${pos}</div></td>
-          <td class="sticky-col-manager">
-            <div class="manager-info">
-              <span class="manager-name">${m.name}</span>
-              <span class="team-name">${m.teamName}</span>
-            </div>
-          </td>
+          <td class="sticky-col-manager">${managerCellHtml(m)}</td>
           ${gwCells}
         </tr>
       `;
@@ -2474,12 +2576,7 @@
       html += `
         <tr>
           <td class="text-center"><div class="rank-num ${rankClass}">${pos}</div></td>
-          <td>
-            <div class="manager-info">
-              <span class="manager-name">${m.name}</span>
-              <span class="team-name">${m.teamName}</span>
-            </div>
-          </td>
+          <td>${managerCellHtml(m)}</td>
           <td class="text-center"><span class="stat-pill win">${m.wins} W</span></td>
           <td class="text-center"><span class="stat-pill loss">${m.losses} L</span></td>
           <td class="text-center"><span class="stat-pill neu">${m.neutrals} N</span></td>
@@ -2520,12 +2617,7 @@
       }).join('');
 
       card.innerHTML = `
-        <div class="chip-card-header">
-          <div>
-            <div class="manager-name">${m.name}</div>
-            <div class="team-name">${m.teamName}</div>
-          </div>
-        </div>
+        <div class="chip-card-header">${managerCellHtml(m)}</div>
         <div class="chip-pills-row">${chipListHtml}</div>
       `;
 
@@ -2817,7 +2909,7 @@
   }
 
   // ===================== CHART =====================
-  const CHART_COLORS = ['#4f46e5', '#0ea5e9', '#10b981', '#f59e0b', '#ef4444', '#a855f7', '#ec4899', '#64748b'];
+  const CHART_COLORS = MANAGER_COLORS;
 
   function buildDatasets() {
     return state.dataset.managers.map((m, idx) => {
@@ -2873,7 +2965,7 @@
         },
         plugins: {
           legend: {
-            labels: { color: getChartTextColor(), font: { family: 'Inter', weight: '600' }, usePointStyle: true, boxWidth: 8, boxHeight: 8 }
+            labels: { color: getChartTextColor(), font: { family: CHART_FONT, weight: '600' }, usePointStyle: true, boxWidth: 8, boxHeight: 8 }
           }
         }
       }
@@ -2956,7 +3048,7 @@
         plugins: {
           legend: { 
             display: true,
-            labels: { color: getChartTextColor(), font: { family: 'Inter', weight: '600' }, usePointStyle: true, boxWidth: 8, boxHeight: 8 }
+            labels: { color: getChartTextColor(), font: { family: CHART_FONT, weight: '600' }, usePointStyle: true, boxWidth: 8, boxHeight: 8 }
           }
         }
       }
@@ -3043,7 +3135,10 @@
     if (!manager) return;
 
     // Header info
-    if (modalAvatar) modalAvatar.textContent = manager.avatar || manager.name.substring(0, 2).toUpperCase();
+    if (modalAvatar) {
+      modalAvatar.textContent = getManagerInitials(manager.name);
+      modalAvatar.style.background = getManagerColor(manager.id);
+    }
     if (modalName) modalName.textContent = manager.name;
     if (modalTeam) modalTeam.textContent = `— ${manager.teamName}`;
     if (modalFplId) modalFplId.textContent = `(#${manager.id})`;
@@ -3169,25 +3264,25 @@
           const isYetToPlay = pl.match_status === 'yet_to_play';
 
           if (p.is_captain) {
-            captainName = `${pl.web_name} (${pts} pts)${isYetToPlay ? ' ⏳' : ''}`;
+            captainName = `${pl.web_name} (${pts} pts)${isYetToPlay ? ' · yet to play' : ''}`;
           }
 
           let roleTag = '';
           if (p.is_captain) {
-            roleTag = `<span class="captain-role-badge">👑 CAPTAIN (${multiplier}x)</span>`;
+            roleTag = `<span class="captain-role-badge">Captain ×${multiplier}</span>`;
           } else if (p.is_vice_captain) {
-            roleTag = `<span class="vice-role-badge">🛡️ VICE</span>`;
+            roleTag = `<span class="vice-role-badge">Vice</span>`;
           }
 
           let statusPill = '';
           if (pl.match_status === 'yet_to_play') {
-            statusPill = `<span class="status-pill-yet-to-play">⏳ Yet to Play</span>`;
+            statusPill = `<span class="status-pill-yet-to-play">${icon('clock', 12)} Yet to play</span>`;
           } else if (pl.match_status === 'live') {
-            statusPill = `<span class="status-pill-live">🟢 Live (${pl.minutes || 0}')</span>`;
+            statusPill = `<span class="status-pill-live"><span class="live-dot"></span>Live (${pl.minutes || 0}')</span>`;
           } else if (pl.match_status === 'dnp') {
-            statusPill = `<span class="status-pill-dnp">✕ DNP</span>`;
+            statusPill = `<span class="status-pill-dnp">${icon('x', 12)} Did not play</span>`;
           } else {
-            statusPill = `<span class="status-pill-played">✓ Played</span>`;
+            statusPill = `<span class="status-pill-played">${icon('check', 12)} Played</span>`;
           }
 
           let oppBadge = `<span style="color:var(--text-muted);font-size:11px;">-</span>`;
@@ -3213,7 +3308,7 @@
             if (p.was_subbed_in) {
               const subOutPl = playersMap[p.subbed_for_id];
               const outName = subOutPl ? subOutPl.web_name : 'Starter';
-              subInBadge = `<span class="auto-sub-badge sub-in" title="Auto-subbed into Starting XI for ${outName}">🔄 Subbed In ➔ ${outName}</span>`;
+              subInBadge = `<span class="auto-sub-badge sub-in" title="Auto-subbed into Starting XI for ${outName}">${icon('swap', 11)} In for ${outName}</span>`;
               rowClass = 'tr-subbed-in';
             }
 
@@ -3243,13 +3338,13 @@
             }
 
             const subOrder = p.original_bench_role || (p.position === 12 ? 'GK' : `Sub ${p.position - 12}`);
-            let benchOrderTag = `<span class="bench-order-badge">🪑 ${subOrder}</span>`;
+            let benchOrderTag = `<span class="bench-order-badge">${subOrder}</span>`;
             let rowClass = '';
 
             if (p.was_subbed_out) {
               const subInPl = playersMap[p.subbed_by_id];
               const inName = subInPl ? subInPl.web_name : 'Bench';
-              benchOrderTag += ` <span class="auto-sub-badge sub-out" title="Auto-subbed out to Bench for ${inName}">🔄 Subbed Out ➔ ${inName}</span>`;
+              benchOrderTag += ` <span class="auto-sub-badge sub-out" title="Auto-subbed out to Bench for ${inName}">${icon('swap', 11)} Out for ${inName}</span>`;
               rowClass = 'tr-subbed-out';
             }
 
@@ -3276,7 +3371,7 @@
       }
 
       const maxSquadCount = isBenchBoostActive ? 15 : 11;
-      const squadScopeLabel = isBenchBoostActive ? '15 Players (BB Active ⚡)' : '11 Players';
+      const squadScopeLabel = isBenchBoostActive ? '15 players (Bench Boost)' : '11 players';
 
       // ── Build Transfers This GW Section ─────────────────────
       const allTransfers = transfersHistoryMap[String(manager.id)] || [];
@@ -3292,9 +3387,9 @@
 
           return `
             <div class="transfer-item-row" style="padding:6px 0;border-bottom:1px dashed var(--border-subtle);">
-              <span class="transfer-pill-in">🟢 IN: <strong>${pIn.web_name}</strong> ${costIn ? `(${costIn})` : ''} <span class="player-team-pill">${pIn.team}</span></span>
-              <span style="color:var(--text-muted);font-weight:700;margin:0 8px;">⇄</span>
-              <span class="transfer-pill-out">🔴 OUT: <strong>${pOut.web_name}</strong> ${costOut ? `(${costOut})` : ''} <span class="player-team-pill">${pOut.team}</span></span>
+              <span class="transfer-pill-in">${icon('plus', 13)} In: <strong>${pIn.web_name}</strong> ${costIn ? `(${costIn})` : ''} <span class="player-team-pill">${pIn.team}</span></span>
+              <span class="transfer-arrow">${icon('swap', 13)}</span>
+              <span class="transfer-pill-out">${icon('minus', 13)} Out: <strong>${pOut.web_name}</strong> ${costOut ? `(${costOut})` : ''} <span class="player-team-pill">${pOut.team}</span></span>
             </div>
           `;
         }).join('');
@@ -3302,7 +3397,7 @@
         transfersHtml = `
           <div>
             <div class="modal-section-header">
-              <span>🔄 Transfers This GW (${gwTransfers.length} transfer${gwTransfers.length > 1 ? 's' : ''}${transferHits !== '(0 hits)' ? ` · ${transferHits}` : ''})</span>
+              <span class="modal-section-title">${icon('swap', 15)} Transfers this GW (${gwTransfers.length} transfer${gwTransfers.length > 1 ? 's' : ''}${transferHits !== '(0 hits)' ? ` · ${transferHits}` : ''})</span>
             </div>
             <div class="modal-transfers-box">
               ${transferItems}
@@ -3313,7 +3408,7 @@
         transfersHtml = `
           <div>
             <div class="modal-section-header">
-              <span>🔄 Transfers This GW</span>
+              <span class="modal-section-title">${icon('swap', 15)} Transfers this GW</span>
             </div>
             <div class="modal-transfers-box" style="color:var(--text-muted);font-style:italic;">
               None (0 transfers made in Gameweek ${gw})
@@ -3347,9 +3442,9 @@
           const inPts = pIn.event_points || 0;
           return `
             <div class="auto-sub-item">
-              <span class="auto-sub-pill-out">🔴 OUT: <strong>${pOut.web_name}</strong> (0 pts)</span>
-              <span style="color:var(--text-muted);font-weight:800;margin:0 4px;">➔</span>
-              <span class="auto-sub-pill-in">🟢 IN: <strong>${pIn.web_name}</strong> (+${inPts} pts)</span>
+              <span class="auto-sub-pill-out">${icon('minus', 13)} Out: <strong>${pOut.web_name}</strong> (0 pts)</span>
+              <span class="transfer-arrow">${icon('arrowRight', 13)}</span>
+              <span class="auto-sub-pill-in">${icon('plus', 13)} In: <strong>${pIn.web_name}</strong> (+${inPts} pts)</span>
             </div>
           `;
         }).join('');
@@ -3357,7 +3452,7 @@
         autoSubBannerHtml = `
           <div class="modal-auto-sub-box">
             <div class="auto-sub-box-header">
-              <span style="font-size:14px;">🔄</span>
+              ${icon('swap', 15)}
               <span>Automatic Substitution${squadAutoSubs.length > 1 ? 's' : ''}</span>
               <span class="${isOfficial ? 'auto-sub-confirmed-tag' : 'auto-sub-live-tag'}">${isOfficial ? 'CONFIRMED' : 'LIVE PREVIEW'}</span>
             </div>
@@ -3372,27 +3467,27 @@
         <!-- Vital Stats Ribbon -->
         <div class="modal-stats-grid">
           <div class="modal-stat-card">
-            <span class="stat-label">🎯 GW${gw} Net Points</span>
+            <span class="stat-label">${icon('target', 13)} GW${gw} net points</span>
             <span class="stat-val" style="color:var(--pl-cyan);">${netGwPoints} pts ${transferCost > 0 ? `<span style="font-size:10.5px;color:#f87171;font-weight:700;">(-${transferCost})</span>` : ''}</span>
           </div>
           <div class="modal-stat-card">
-            <span class="stat-label">⚽ Played</span>
+            <span class="stat-label">${icon('check', 13)} Played</span>
             <span class="stat-val" style="color:#10b981;">${playedCount} <span style="font-size:11px;color:var(--text-muted);font-weight:600;">/ ${maxSquadCount}</span></span>
           </div>
           <div class="modal-stat-card">
-            <span class="stat-label">⏳ Yet to Play</span>
+            <span class="stat-label">${icon('clock', 13)} Yet to play</span>
             <span class="stat-val" style="color:#f59e0b;">${yetToPlayCount} <span style="font-size:11px;color:var(--text-muted);font-weight:600;">/ ${maxSquadCount}</span></span>
           </div>
           <div class="modal-stat-card">
-            <span class="stat-label">🏦 In the Bank</span>
+            <span class="stat-label">${icon('wallet', 13)} In the bank</span>
             <span class="stat-val" style="color:var(--text-primary);">${bankVal}</span>
           </div>
           <div class="modal-stat-card">
-            <span class="stat-label">⚡ Active Chip</span>
+            <span class="stat-label">${icon('zap', 13)} Active chip</span>
             <span class="stat-val" style="color:${activeChip !== 'None' ? '#a855f7' : 'var(--text-primary)'};">${activeChip}</span>
           </div>
           <div class="modal-stat-card">
-            <span class="stat-label">🔄 Transfers</span>
+            <span class="stat-label">${icon('swap', 13)} Transfers</span>
             <span class="stat-val">${transfersCount} <span style="font-size:11px;font-weight:700;${transferCost > 0 ? 'color:#f87171;' : 'color:var(--text-muted);'}">(${transferCost > 0 ? `-${transferCost} pts` : '0 pts'})</span></span>
           </div>
         </div>
@@ -3402,7 +3497,7 @@
         <!-- Starting XI Table -->
         <div>
           <div class="modal-section-header">
-            <span>⚽ Starting XI (${startingPtsTotal} pts)</span>
+            <span class="modal-section-title">${icon('shirt', 15)} Starting XI (${startingPtsTotal} pts)</span>
             <span style="font-size:11px;font-weight:600;color:var(--text-muted);">${squadScopeLabel} (${playedCount} Played · ${yetToPlayCount} Remaining)</span>
           </div>
           <table class="modal-squad-table">
@@ -3433,7 +3528,7 @@
         <!-- Bench Table -->
         <div>
           <div class="modal-section-header">
-            <span>🪑 Substitutes Bench (${benchPts} pts)${isBenchBoostActive ? ' <span style="font-size:10px;color:#a855f7;font-weight:800;background:rgba(168,85,247,0.12);padding:2px 6px;border-radius:4px;margin-left:6px;">⚡ ACTIVE IN BENCH BOOST</span>' : ''}</span>
+            <span class="modal-section-title">${icon('bench', 15)} Bench (${benchPts} pts)${isBenchBoostActive ? ' <span class="chip-tag chip-bench-boost">Bench Boost active</span>' : ''}</span>
             <span style="font-size:11px;font-weight:600;color:var(--text-muted);">4 Players</span>
           </div>
           <table class="modal-squad-table">
