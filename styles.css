@@ -694,7 +694,9 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 .md-event { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; }
 .md-home .md-event { flex-direction: row-reverse; text-align: right; }
 .md-icons { display: inline-flex; gap: 2px; flex: none; }
-.md-ico { width: 18px; height: 18px; display: block; }
+.md-ico { width: 20px; height: 20px; display: block; --md-ball-ink: #1d1022; --md-boot: #37003c; }
+[data-theme="dark"] .md-ico { --md-ball-ink: #1d1022; --md-boot: #e2bff6; }
+.md-icons { gap: 3px; }
 .md-name { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .md-events-grid > .md-none:first-child { text-align: right; }
 .md-none { color: var(--faint); font-weight: 500; font-size: 13px; }
