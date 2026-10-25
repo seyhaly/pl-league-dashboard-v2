@@ -34,7 +34,6 @@
     nextGwBtn:              document.getElementById('nextGwBtn'),
     goToCurrentGwBtn:       document.getElementById('goToCurrentGwBtn'),
     standingsBody:          document.getElementById('standingsBody'),
-    mobileCards:            document.getElementById('mobileCards'),
     winLossTableContainer:  document.getElementById('winLossTableContainer'),
     seasonMatrixContainer:  document.getElementById('seasonMatrixContainer'),
     matrixLegendCurrent:    document.getElementById('matrixLegendCurrent'),
@@ -2020,7 +2019,6 @@
   function showStandingsSkeleton() {
     const row = '<tr class="skeleton-row"><td colspan="8"><span class="skeleton"></span></td></tr>';
     if (elements.standingsBody) elements.standingsBody.innerHTML = row.repeat(6);
-    if (elements.mobileCards) elements.mobileCards.innerHTML = '<div class="skeleton skeleton-card"></div>'.repeat(4);
   }
 
   function updateSyncAgo() {
@@ -2179,7 +2177,6 @@
     }
 
     elements.standingsBody.innerHTML = '';
-    if (elements.mobileCards) elements.mobileCards.innerHTML = '';
 
     const motmTargetMonth = state.motmSelectedMonth || (isMonthlyView ? state.viewMode : (getCurrentGwMonth(state.currentGw)?.name || 'September'));
     const motmInfo = getMonthlyMotmLeader(motmTargetMonth);
@@ -2364,55 +2361,6 @@
       if (gwScoreEl) animateNumber(gwScoreEl, m.netScore, 400);
       if (seasonPtsEl && !isMonthlyView) animateNumber(seasonPtsEl, m.seasonTotalNet, 400);
 
-      // =========== MOBILE CARD ===========
-      if (elements.mobileCards) {
-        const card = document.createElement('div');
-        card.className = `mobile-manager-card ${m.statusClass}${m.isTied ? ' tr-tied' : ''}${changed ? ' row-flash' : ''}`;
-        card.dataset.managerId = m.id;
-        card.addEventListener('click', () => openManagerModal(m.id));
-
-        const statItem = (label, value) => `
-          <div class="mobile-stat-item">
-            <span class="mobile-stat-label">${label}</span>
-            <span class="mobile-stat-value">${value}</span>
-          </div>`;
-
-        const abaStat = state.showAba && abaAccount ? statItem('ABA', `<span class="mobile-aba">${abaAccount}</span>`) : '';
-        const transfersStat = statItem('Transfers', `${m.transfers}${m.hitCost > 0 ? ` <span class="hit-tag has-hit">(-${m.hitCost})</span>` : ''}`);
-        const chipStat = statItem('Chip', m.chip ? getChipLabel(m.chip) : '–');
-
-        let statsHtml;
-        if (isMonthlyView) {
-          const gwBreakdownHtml = monthGws.map(gw => {
-            const scoreVal = (m.gwBreakdown && m.gwBreakdown[gw] !== undefined) ? m.gwBreakdown[gw] : '–';
-            return statItem(`GW${gw}`, scoreVal);
-          }).join('');
-          statsHtml = abaStat + statItem(`${activeMonthName} Pts`, `<span class="text-accent">${m.netScore}</span>`) + transfersStat + gwBreakdownHtml + chipStat;
-        } else {
-          statsHtml = abaStat
-            + statItem('Net Pts', `<span class="text-accent">${m.netScore}</span>`)
-            + statItem('Season', `${m.seasonTotalNet} ${moveHtml}`)
-            + statItem('Gross', m.grossScore)
-            + transfersStat
-            + chipStat;
-        }
-
-        card.innerHTML = `
-          <div class="mobile-card-top">
-            <div class="mobile-card-rank-name">
-              <div class="rank-num ${rankClass}">${m.rank}</div>
-              ${managerCellHtml(m, tiedPill, tiebreakerDetail)}
-            </div>
-            ${payoutBadge}
-          </div>
-          <div class="mobile-card-stats">${statsHtml}</div>
-          <div class="mobile-card-bottom">
-            <div class="form-pill-container">${formHtml}</div>
-            <span class="payout-note">${m.payoutNote}</span>
-          </div>
-        `;
-        elements.mobileCards.appendChild(card);
-      }
     });
 
     state.standingsSnapshot = { key: snapshotKey, rows: nextSnapshot };

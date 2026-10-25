@@ -2,7 +2,8 @@
 <html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Desktop layout on every device: phones show the full page zoomed to fit -->
+  <meta name="viewport" content="width=1280">
   <title>Clash of Elite — League Admin</title>
   <meta name="description" content="Gameweek standings, transfer deductions and chip usage tracker for Fantasy Premier League private leagues.">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon.png?v=2.0">
@@ -24,7 +25,7 @@
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     if (location.hash) history.replaceState(null, '', location.pathname + location.search);
   </script>
-  <link rel="stylesheet" href="styles.css?v=331.0">
+  <link rel="stylesheet" href="styles.css?v=340.0">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
@@ -199,7 +200,6 @@
               </tbody>
             </table>
           </div>
-          <div id="mobileCards" class="mobile-cards"></div>
         </div>
       </section>
 
@@ -324,7 +324,7 @@
 <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.min.js"></script>
 <script src="demoData.js"></script>
 <script src="squadData.js?v=300.0"></script>
-<script src="app.js?v=330.0"></script>
+<script src="app.js?v=340.0"></script>
 <script>
   // Installable app: offline support via the service worker
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {

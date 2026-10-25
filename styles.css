@@ -563,25 +563,6 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 .mots-title { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; color: var(--gold); }
 .mots-winner-names { font-size: 15px; font-weight: 700; color: var(--text); }
 
-/* Mobile standings cards (shown on small screens) */
-.mobile-cards { display: none; flex-direction: column; gap: 10px; }
-.mobile-manager-card {
-  padding: 14px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-  cursor: pointer;
-}
-.mobile-manager-card.tr-top-3 { box-shadow: inset 3px 0 0 var(--pos); }
-.mobile-manager-card.tr-bottom-3 { box-shadow: inset 3px 0 0 var(--neg); }
-.mobile-card-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.mobile-card-rank-name { display: flex; align-items: center; gap: 10px; min-width: 0; }
-.mobile-card-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
-.mobile-stat-item { display: flex; flex-direction: column; padding: 8px 10px; border-radius: var(--radius-md); background: var(--surface-2); }
-.mobile-stat-label { font-size: 10.5px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
-.mobile-stat-value { font-size: 14px; font-weight: 700; color: var(--text); }
-.mobile-card-bottom { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 10px; }
-
 /* Export snapshot: keep the captured card tidy */
 #section-standings.is-exporting { box-shadow: none; }
 
@@ -906,8 +887,6 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 /* Brief highlight on rows a live sync just changed */
 @keyframes row-flash { 0% { background: color-mix(in srgb, var(--accent) 22%, transparent); } 100% { background: transparent; } }
 #standingsTable tbody tr.row-flash td,
-.mobile-manager-card.row-flash { animation: row-flash 2.4s ease-out; }
-.mobile-manager-card.is-viewing { border-color: var(--accent); }
 
 .modal-stats-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
 .modal-stat-card { display: flex; flex-direction: column; gap: 4px; padding: 12px; border-radius: var(--radius-lg); background: var(--surface-2); border: 1px solid var(--border); }
@@ -1072,7 +1051,6 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 
 .card-header-actions { display: flex; align-items: center; gap: 8px; flex: none; }
 .chip-toggle-sm { flex: none; height: 26px; padding: 0 10px; font-size: 12px; border-radius: 999px; }
-.mobile-aba { font-size: 12px; letter-spacing: 0.02em; white-space: nowrap; }
 
 /* ---------- Sync freshness & loading ---------- */
 .sync-ago { font-size: 12px; color: var(--muted); white-space: nowrap; }
@@ -1089,7 +1067,6 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 .skeleton-row td { padding: 18px 16px; }
 .skeleton-row:nth-child(2n) .skeleton { width: 82%; }
 .skeleton-row:nth-child(3n) .skeleton { width: 68%; }
-.skeleton-card { height: 120px; border-radius: var(--radius-lg); }
 #standingsTable tbody tr.skeleton-row { cursor: default; }
 #standingsTable tbody tr.skeleton-row:hover td { background: transparent; }
 @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
@@ -1362,38 +1339,6 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 .act-arrow { display: grid; place-items: center; color: var(--faint); }
 .act-none { padding: 12px 16px; font-size: 13px; color: var(--faint); }
 
-@media (max-width: 760px) {
-  .panel-edge-nav { width: 34px; height: 34px; opacity: 0.85; }
-  .panel-edge-nav.prev { left: 4px; }
-  .panel-edge-nav.next { right: 4px; }
-  #modalFplId, #modalFplId + .pm-dot { display: none; }
-  .manager-modal-header { padding: 14px 16px; gap: 10px; }
-  .manager-modal-body { padding: 14px 12px 20px; }
-  .pm-summary { grid-template-columns: 1fr; gap: 14px; }
-  .pm-hero { padding-right: 0; padding-bottom: 12px; border-right: 0; border-bottom: 1px solid var(--border); }
-  .pm-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .pitch { min-height: 360px; padding: 18px 4px 14px; }
-  .pitch-row { gap: 4px; flex-wrap: nowrap; }
-  .pc { width: 62px; flex: 0 1 62px; min-width: 0; border-radius: 10px; }
-  .bench-slot .pc { flex: none; }
-  .pc-kit { width: 50px; height: 50px; margin-top: 5px; }
-  .pc-name { font-size: 10px; }
-  .pc-info { font-size: 11px; padding: 2px; }
-  .pc-fixture { font-size: 9.5px; }
-  .act-row { grid-template-columns: 1fr; gap: 6px; }
-  .act-arrow { transform: rotate(90deg); }
-  .bench-row { flex-direction: column; align-items: stretch; margin: 0 6px 6px; }
-  .bench-cards { gap: 5px; }
-  .sl-head, .sl-row { grid-template-columns: 52px minmax(0, 1fr) 54px 40px; gap: 8px; padding: 0 10px; }
-  .sl-head span:nth-child(4), .sl-status { display: none; }
-  .pm-section-head { flex-wrap: wrap; }
-  .pm-section-head .modal-section-title .pm-muted { display: none; }
-  .ytp-pill { white-space: nowrap; }
-  .pc-role, .pc-sub { top: 3px; width: 15px; height: 15px; font-size: 9px; }
-  .pc-role { right: 3px; }
-  .pc-sub { left: 3px; }
-}
-
 /* ---------- Season awards (rendered only if a container exists) ---------- */
 .award-card { padding: 14px; border: 1px solid var(--border); border-radius: var(--radius-lg); }
 .award-title { font-size: 12px; color: var(--muted); }
@@ -1405,39 +1350,3 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
   .modal-stats-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
-@media (max-width: 1024px) {
-  .app-shell { grid-template-columns: 1fr; }
-  .sidebar {
-    position: static; height: auto;
-    flex-direction: row; flex-wrap: wrap; align-items: flex-start;
-    gap: 16px 24px;
-    border-right: 0; border-bottom: 1px solid var(--border);
-  }
-  .sidebar-brand { width: 100%; }
-  .sidebar-nav { display: none; }
-  .sidebar-group { flex: 1 1 220px; }
-  .sidebar-footer { margin-top: 0; flex: 1 1 160px; }
-  .topbar { padding: 12px 16px; }
-  .content { padding: 16px 16px 40px; }
-}
-
-@media (max-width: 760px) {
-  .topbar { position: relative; }
-  .topbar-league { border-right: 0; max-width: none; }
-  .topbar-left, .topbar-right { width: 100%; }
-  .topbar-left #viewModeSelect { flex: 1; min-width: 0; }
-  .gw-display h2 { font-size: 16px; }
-  .league-list { flex-direction: row; flex-wrap: wrap; gap: 6px; }
-  .league-pill { width: auto; border: 1px solid var(--border); }
-  .btn-group { width: 100%; }
-  .btn-group .btn { flex: 1; }
-  .card { padding: 16px; border-radius: var(--radius-lg); }
-  .card-header { margin-bottom: 14px; flex-wrap: wrap; }
-  .card-header > div:first-child { flex: 1 1 100%; }
-  .standings-table-wrapper { display: none; }
-  .mobile-cards { display: flex; }
-  .modal-stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .modal-squad-table { table-layout: auto; }
-  .modal-squad-table .col-opp, .modal-squad-table .col-status { display: none; }
-  .chip-grid { grid-template-columns: 1fr; }
-}
