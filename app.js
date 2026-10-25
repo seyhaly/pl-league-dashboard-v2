@@ -3964,7 +3964,6 @@
     const reset = () => {
       body.style.transform = '';
       body.classList.remove('is-dragging');
-      if (!sliding) modal.classList.remove('is-sliding');
       tracking = false; horizontal = null; pointerId = null; dx = 0;
     };
 
@@ -3984,7 +3983,6 @@
         horizontal = Math.abs(dx) > Math.abs(dy) * 1.2;
         if (horizontal) {
           body.classList.add('is-dragging');
-          modal.classList.add('is-sliding');
           try { body.setPointerCapture(pointerId); } catch (err) {}
         } else {
           tracking = false;
@@ -4010,62 +4008,30 @@
         body.classList.remove('is-dragging');
         body.style.transition = 'transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1)';
         body.style.transform = '';
-        setTimeout(() => { if (!sliding) { body.style.transition = ''; modal.classList.remove('is-sliding'); } }, 240);
+        setTimeout(() => { if (!sliding) body.style.transition = ''; }, 240);
       }
     };
 
-    // Carousel: the current squad and the next one move together, side by side, so the
-    // panel behind never shows. The old page is moved (not copied) into a temporary
-    // layer, so its images don't reload; the new page waits off-screen for its images.
+    // Slide the current squad out, swap in the next manager off-screen, slide it in.
+    // Pure movement, no fading, so the white panel never shows through.
     let sliding = false;
     const slideManager = direction => {
       if (sliding) return;
       sliding = true;
-      state.panelSliding = true;
       closePointsBreakdown();
       const width = body.offsetWidth || 600;
-      const fromX = new DOMMatrix(getComputedStyle(body).transform).m41 || 0;
-      const scrollTop = body.scrollTop;
-
-      const ghost = document.createElement('div');
-      ghost.className = 'manager-modal-body panel-ghost';
-      ghost.setAttribute('aria-hidden', 'true');
-      Object.assign(ghost.style, {
-        position: 'absolute', top: `${body.offsetTop}px`, left: `${body.offsetLeft}px`,
-        width: `${body.offsetWidth}px`, height: `${body.clientHeight}px`, overflow: 'hidden',
-        transform: `translateX(${fromX}px)`, pointerEvents: 'none'
-      });
-      while (body.firstChild) ghost.appendChild(body.firstChild);
-      modal.appendChild(ghost);
-      ghost.scrollTop = scrollTop;
-      modal.classList.add('is-sliding');
-
       body.classList.remove('is-dragging');
-      body.style.transition = 'none';
-      stepManagerModal(direction);
-      body.scrollTop = scrollTop;
-      body.style.transform = `translateX(${fromX + direction * width}px)`;
-
-      // Off-screen images marked lazy would never load, so load them now
-      const images = [...body.querySelectorAll('img')].map(img => {
-        if (img.loading === 'lazy') img.loading = 'eager';
-        return img.decode ? img.decode().catch(() => {}) : null;
-      });
-      const ready = Promise.race([Promise.all(images), new Promise(r => setTimeout(r, 150))]);
-      ready.then(() => requestAnimationFrame(() => {
-        const ease = 'transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)';
-        ghost.style.transition = ease;
-        body.style.transition = ease;
-        ghost.style.transform = `translateX(${-direction * width}px)`;
+      body.style.transition = 'transform 0.16s cubic-bezier(0.4, 0, 1, 1)';
+      body.style.transform = `translateX(${-direction * width}px)`;
+      setTimeout(() => {
+        body.style.transition = 'none';
+        stepManagerModal(direction);
+        body.style.transform = `translateX(${direction * width}px)`;
+        void body.offsetWidth;
+        body.style.transition = 'transform 0.26s cubic-bezier(0.2, 0.8, 0.2, 1)';
         body.style.transform = '';
-        setTimeout(() => {
-          ghost.remove();
-          body.style.transition = '';
-          modal.classList.remove('is-sliding');
-          sliding = false;
-          state.panelSliding = false;
-        }, 320);
-      }));
+        setTimeout(() => { body.style.transition = ''; sliding = false; }, 280);
+      }, 160);
     };
     window.navigateManagerModal = slideManager;
     body.addEventListener('pointerup', finish);
@@ -4099,7 +4065,6 @@
     const modal = document.getElementById('managerDetailModal');
     if (!state.activeModalManagerId || !modal || !modal.classList.contains('open')) return;
     if (document.getElementById('pointsPopover')) return;
-    if (state.panelSliding) return;
     const body = document.getElementById('modalContentBody');
     const scrollTop = body ? body.scrollTop : 0;
     openManagerModal(state.activeModalManagerId);

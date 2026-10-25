@@ -1673,10 +1673,3 @@ html.touch-ui .manager-detail-modal { z-index: 64; padding-top: env(safe-area-in
   .md-card { width: 100%; }
   .manager-detail-modal { width: 100vw; }
 }
-
-/* Squad panel swipe: drop the glass blur while the pages move (recomputing 15 blurs
-   per frame made it stutter on iPad; over the plain pitch it looks the same) */
-.manager-detail-modal.is-sliding .pc,
-.manager-detail-modal.is-sliding .bench-row { backdrop-filter: none; -webkit-backdrop-filter: none; }
-.manager-detail-modal.is-sliding .manager-modal-body { will-change: transform; }
-.manager-modal-body.is-dragging { transition: none !important; }
