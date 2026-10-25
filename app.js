@@ -298,6 +298,7 @@
         gameweeks: lData.gameweeks || [],
         players: staticData.players || {},
         playerGwPoints: staticData.playerGwPoints || {},
+        playerGwExplain: staticData.playerGwExplain || {},
         squadPicks: staticData.squadPicks || {},
         transfersHistory: staticData.transfersHistory || {},
         teams: staticData.teams || {}
@@ -325,6 +326,7 @@
     initChart();
     initPerformanceChart();
     initCollapsibles();
+    initSquadPanelGestures();
     updateMemberCountBadge();
 
     // Swap initials for team badges once the badge index has loaded
@@ -826,6 +828,7 @@
         state.dataset.players = window.FPL_LIVE_STATIC.players || {};
         state.dataset.squadPicks = window.FPL_LIVE_STATIC.squadPicks || {};
         state.dataset.transfersHistory = window.FPL_LIVE_STATIC.transfersHistory || {};
+        state.dataset.playerGwExplain = window.FPL_LIVE_STATIC.playerGwExplain || {};
         state.dataset.teams = window.FPL_LIVE_STATIC.teams || {};
         if (window.FPL_LIVE_STATIC.eventStatuses) {
           state.eventStatuses = window.FPL_LIVE_STATIC.eventStatuses;
@@ -872,6 +875,7 @@
           }
           if (liveJson.players) state.dataset.players = liveJson.players;
           if (liveJson.playerGwPoints) state.dataset.playerGwPoints = liveJson.playerGwPoints;
+          if (liveJson.playerGwExplain) state.dataset.playerGwExplain = liveJson.playerGwExplain;
           if (liveJson.squadPicks) state.dataset.squadPicks = liveJson.squadPicks;
           if (liveJson.transfersHistory) state.dataset.transfersHistory = liveJson.transfersHistory;
           if (liveJson.teams) state.dataset.teams = liveJson.teams;
@@ -1082,11 +1086,14 @@
 
           const elStatsMap = {};
           if (liveEventData && liveEventData.elements && Array.isArray(liveEventData.elements)) {
+            const liveExplain = {};
             liveEventData.elements.forEach(el => {
               if (el && el.id && el.stats) {
                 elStatsMap[el.id] = el.stats;
               }
+              if (el && el.id && el.explain) liveExplain[String(el.id)] = compactExplain(el.explain);
             });
+            state.dataset.playerGwExplain = Object.assign({}, state.dataset.playerGwExplain, { [String(detectedGw)]: liveExplain });
           }
 
           if (fixData && Array.isArray(fixData)) {
@@ -3171,7 +3178,7 @@
     const opp = c.opp ? `<span class="opp-pill fdr-${c.difficulty}">${c.opp}</span>` : '<span class="cell-empty">–</span>';
     const ptsCls = c.status === 'yet_to_play' ? ' is-pending' : '';
     return `
-      <div class="sl-row${c.subbedOut ? ' is-out' : ''}${c.subbedIn ? ' is-in' : ''}">
+      <div class="sl-row${c.subbedOut ? ' is-out' : ''}${c.subbedIn ? ' is-in' : ''}" role="button" tabindex="0" data-element="${c.element}" title="See ${c.name}'s points breakdown">
         <span class="sl-lead">${c.benchRole ? `<span class="sl-order">${c.benchRole}</span>` : ''}${kitHtml(c.team, c.type === 1, 'sl-shirt')}</span>
         <div class="sl-player">
           <span class="sl-name">${c.name}${role}${sub}</span>
@@ -3238,7 +3245,7 @@
       ? `<span class="pc-info pc-fixture">${fixture}</span>`
       : `<span class="pc-info pc-points">${c.pts}${c.status === 'live' ? `<span class="pc-live">${c.minutes || 0}'</span>` : ''}</span>`;
     return `
-      <div class="pc ${statusCls}${c.subbedOut ? ' is-out' : ''}${c.subbedIn ? ' is-in' : ''}" title="${c.name} · ${c.team}${c.opp ? ` vs ${fixture}` : ''}">
+      <div class="pc ${statusCls}${c.subbedOut ? ' is-out' : ''}${c.subbedIn ? ' is-in' : ''}" role="button" tabindex="0" data-element="${c.element}" title="See ${c.name}'s points breakdown">
         ${subTag}${role}
         ${kitHtml(c.team, c.type === 1, 'pc-kit')}
         <span class="pc-strip">
@@ -3270,6 +3277,162 @@
     try { localStorage.setItem('fpl_squad_view', view); } catch (e) {}
     syncSquadViewButtons();
   };
+
+  // ===================== POINTS BREAKDOWN POP-UP =====================
+  const STAT_LABELS = {
+    minutes: 'Minutes played', goals_scored: 'Goals scored', assists: 'Assists',
+    clean_sheets: 'Clean sheet', goals_conceded: 'Goals conceded', own_goals: 'Own goals',
+    penalties_saved: 'Penalties saved', penalties_missed: 'Penalties missed',
+    yellow_cards: 'Yellow card', red_cards: 'Red card', saves: 'Saves', bonus: 'Bonus',
+    defensive_contribution: 'Defensive contribution', bps: 'Bonus points system'
+  };
+
+  // FPL's live "explain" (per fixture) merged into [identifier, value, points] rows
+  function compactExplain(explain) {
+    const merged = {};
+    (explain || []).forEach(fx => (fx.stats || []).forEach(st => {
+      if (!st.identifier) return;
+      const row = merged[st.identifier] || (merged[st.identifier] = [st.identifier, 0, 0]);
+      row[1] += st.value || 0;
+      row[2] += st.points || 0;
+    }));
+    return Object.values(merged).filter(r => r[1] || r[2]);
+  }
+
+  window.closePointsBreakdown = function() {
+    const pop = document.getElementById('pointsPopover');
+    if (pop) pop.remove();
+  };
+
+  window.showPointsBreakdown = function(elementId) {
+    closePointsBreakdown();
+    const c = (state.modalSquadCards || []).find(x => Number(x.element) === Number(elementId));
+    if (!c) return;
+    const gw = state.modalGw || state.currentGw;
+    const byGw = (state.dataset.playerGwExplain || {})[String(gw)] || {};
+    const rows = byGw[String(elementId)];
+    const fixture = c.opp ? `vs ${c.opp}${c.venue ? ` (${c.venue})` : ''}` : '';
+    const base = rows ? rows.reduce((sum, r) => sum + r[2], 0) : null;
+
+    let body;
+    if (c.status === 'yet_to_play') {
+      body = `<div class="bd-empty">${icon('clock', 16)} Yet to play${fixture ? ` · ${fixture}` : ''}</div>`;
+    } else if (!rows || !rows.length) {
+      body = `<div class="bd-empty">Breakdown not available yet for GW${gw}.</div>`;
+    } else {
+      const lines = rows.map(([key, value, pts]) => `
+        <div class="bd-row">
+          <span class="bd-stat">${STAT_LABELS[key] || key.replace(/_/g, ' ')}</span>
+          <span class="bd-value">${value}</span>
+          <span class="bd-pts${pts < 0 ? ' neg' : ''}">${pts > 0 ? '+' : ''}${pts}</span>
+        </div>`).join('');
+      const multiplierLine = c.starter && c.multiplier > 1
+        ? `<div class="bd-row bd-mult"><span class="bd-stat">${c.isCaptain ? 'Captain' : 'Multiplier'}</span><span class="bd-value">×${c.multiplier}</span><span class="bd-pts">${base * c.multiplier}</span></div>`
+        : '';
+      body = `
+        <div class="bd-table">
+          <div class="bd-row bd-head"><span>Statistic</span><span>Value</span><span>Pts</span></div>
+          ${lines}
+          ${multiplierLine}
+        </div>`;
+    }
+
+    const counted = c.starter ? '' : '<div class="bd-note">On the bench — these points don\'t count' + (c.subbedOut ? ' (auto-subbed out)' : '') + '.</div>';
+    const pop = document.createElement('div');
+    pop.id = 'pointsPopover';
+    pop.className = 'bd-overlay';
+    pop.innerHTML = `
+      <div class="bd-card" role="dialog" aria-label="${c.name} points breakdown">
+        <div class="bd-header">
+          ${kitHtml(c.team, c.type === 1, 'bd-kit')}
+          <div class="bd-title">
+            <strong>${c.name}</strong>
+            <span>${c.team} · ${POSITION_SHORT[c.type] || ''}${fixture ? ` · ${fixture}` : ''}</span>
+          </div>
+          <div class="bd-total">
+            <span class="bd-total-value">${c.status === 'yet_to_play' ? '–' : c.pts}</span>
+            <span class="bd-total-label">GW${gw} pts</span>
+          </div>
+          <button class="icon-btn bd-close" aria-label="Close breakdown" onclick="closePointsBreakdown()">${icon('x', 14)}</button>
+        </div>
+        ${body}
+        ${counted}
+      </div>`;
+    pop.addEventListener('click', e => { if (e.target === pop) closePointsBreakdown(); });
+    document.getElementById('managerDetailModal').appendChild(pop);
+  };
+
+  // ===================== SQUAD PANEL GESTURES =====================
+  // Click a player for the breakdown; swipe (finger) or drag (mouse) sideways to change manager
+  function initSquadPanelGestures() {
+    const modal = document.getElementById('managerDetailModal');
+    const body = document.getElementById('modalContentBody');
+    if (!modal || !body) return;
+
+    body.addEventListener('click', e => {
+      if (body.dataset.justSwiped === '1') return;
+      const el = e.target.closest('[data-element]');
+      if (el) showPointsBreakdown(el.dataset.element);
+    });
+    body.addEventListener('keydown', e => {
+      const el = e.target.closest('[data-element]');
+      if (el && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showPointsBreakdown(el.dataset.element); }
+    });
+
+    let startX = 0, startY = 0, dx = 0, tracking = false, horizontal = null, pointerId = null;
+    const reset = () => {
+      body.style.transform = '';
+      body.style.opacity = '';
+      body.classList.remove('is-dragging');
+      tracking = false; horizontal = null; pointerId = null; dx = 0;
+    };
+
+    body.addEventListener('pointerdown', e => {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      if (e.target.closest('button, a, input, select, .segmented')) return;
+      tracking = true; horizontal = null; pointerId = e.pointerId;
+      startX = e.clientX; startY = e.clientY; dx = 0;
+    });
+
+    body.addEventListener('pointermove', e => {
+      if (!tracking || e.pointerId !== pointerId) return;
+      dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      if (horizontal === null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
+        horizontal = Math.abs(dx) > Math.abs(dy) * 1.2;
+        if (horizontal) {
+          body.classList.add('is-dragging');
+          try { body.setPointerCapture(pointerId); } catch (err) {}
+        } else {
+          tracking = false;
+          return;
+        }
+      }
+      if (horizontal) {
+        body.style.transform = `translateX(${dx * 0.6}px)`;
+        body.style.opacity = String(Math.max(0.4, 1 - Math.abs(dx) / 600));
+      }
+    });
+
+    const finish = e => {
+      if (!tracking || (e && e.pointerId !== pointerId)) return;
+      const wasHorizontal = horizontal;
+      const distance = dx;
+      reset();
+      if (wasHorizontal) {
+        body.dataset.justSwiped = '1';
+        setTimeout(() => { body.dataset.justSwiped = ''; }, 50);
+        if (Math.abs(distance) > 70) {
+          closePointsBreakdown();
+          navigateManagerModal(distance < 0 ? 1 : -1);
+          body.classList.add(distance < 0 ? 'swipe-in-right' : 'swipe-in-left');
+          setTimeout(() => body.classList.remove('swipe-in-right', 'swipe-in-left'), 260);
+        }
+      }
+    };
+    body.addEventListener('pointerup', finish);
+    body.addEventListener('pointercancel', () => reset());
+  }
 
   // ===================== MANAGER SQUAD DETAIL MODAL =====================
   window.closeManagerModal = function() {
@@ -3327,6 +3490,7 @@
 
     state.activeModalManagerId = Number(managerId);
     markViewingManager(managerId);
+    closePointsBreakdown();
 
     const gw = state.currentGw || 1;
     const activeSeasonGw = state.seasonGw || state.maxGw || (state.dataset && state.dataset.currentGw) || 1;
@@ -3501,6 +3665,7 @@
           }
 
           squadCards.push({
+            element: p.element,
             starter: p.position <= 11,
             benchRole: p.position > 11 ? (p.original_bench_role || (p.position === 12 ? 'GK' : String(p.position - 12))) : '',
             name: pl.web_name,
@@ -3652,6 +3817,8 @@
         </div>`;
 
       // ── Squad: pitch view ──────────────────────────────────
+      state.modalSquadCards = squadCards;
+      state.modalGw = gw;
       const starters = squadCards.filter(c => c.starter);
       const bench = squadCards.filter(c => !c.starter);
       const pitchRows = [1, 2, 3, 4]
@@ -3750,7 +3917,9 @@
     const modal = document.getElementById('managerDetailModal');
     const isModalOpen = modal && modal.classList.contains('open');
 
-    if (e.key === 'Escape') {
+    if (e.key === 'Escape' && document.getElementById('pointsPopover')) {
+      closePointsBreakdown();
+    } else if (e.key === 'Escape') {
       closeManagerModal();
     } else if (isModalOpen && e.key === 'ArrowLeft') {
       e.preventDefault();

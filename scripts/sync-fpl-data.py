@@ -71,6 +71,20 @@ def fetch_json(url, timeout=10):
         print(f"⚠️ Fetch failed for {url}: {e}", file=sys.stderr)
     return None
 
+def compact_explain(explain):
+    """Merge FPL's per-fixture 'explain' into [identifier, value, points] rows."""
+    merged = {}
+    for fixture in explain or []:
+        for st in fixture.get('stats') or []:
+            key = st.get('identifier')
+            if not key:
+                continue
+            row = merged.setdefault(key, [key, 0, 0])
+            row[1] += st.get('value') or 0
+            row[2] += st.get('points') or 0
+    return [row for row in merged.values() if row[1] or row[2]]
+
+
 def main():
     print("🔄 Starting automated FPL Direct Python Sync...")
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -218,12 +232,17 @@ def main():
     # 2.5 Fetch historical and live event player points for all gameweeks
     print(f"📥 Fetching Player points for GW1 to GW{detected_gw}...")
     player_gw_points = {}
+    player_gw_explain_all = {}
     for g in range(1, detected_gw + 1):
         live_g_data = fetch_json(f'https://fantasy.premierleague.com/api/event/{g}/live/')
         if live_g_data and 'elements' in live_g_data and isinstance(live_g_data['elements'], list):
             player_gw_points[str(g)] = {
                 str(el['id']): el.get('stats', {}).get('total_points', 0)
                 for el in live_g_data['elements'] if el and 'id' in el and 'stats' in el
+            }
+            player_gw_explain_all[str(g)] = {
+                str(el['id']): compact_explain(el.get('explain'))
+                for el in live_g_data['elements'] if el and 'id' in el and el.get('explain')
             }
 
     output_data = {
@@ -384,6 +403,17 @@ def main():
             'months': calculated_months,
             'currentGw': detected_gw
         }
+
+    # Points breakdown, kept only for players who appear in a tracked squad
+    squad_elements = set()
+    for mgr_picks in output_data['squadPicks'].values():
+        for gw_squad in (mgr_picks or {}).values():
+            for pick in (gw_squad or {}).get('picks') or []:
+                squad_elements.add(str(pick.get('element')))
+    output_data['playerGwExplain'] = {
+        g: {el: rows for el, rows in by_el.items() if el in squad_elements}
+        for g, by_el in player_gw_explain_all.items()
+    }
 
     with open(live_data_path, 'w', encoding='utf-8') as f:
         json.dump(output_data, f, indent=2, ensure_ascii=False)
