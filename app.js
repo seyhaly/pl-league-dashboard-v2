@@ -722,6 +722,14 @@
   }
 
   // ===================== LIVE FPL SYNC =====================
+  // Our own Cloudflare Worker relay (cloudflare/fpl-proxy-worker.js), tried first.
+  // Leave empty to use only the public proxies.
+  const FPL_PROXY_BASE = '';
+
+  function fplProxyBase() {
+    try { return (localStorage.getItem('fpl_proxy_base') || FPL_PROXY_BASE).replace(/\/+$/, ''); } catch (e) { return FPL_PROXY_BASE; }
+  }
+
   async function fetchFplWithTimeout(targetUrl, timeoutMs = 8000) {
     const proxies = [
       `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`,
@@ -773,8 +781,18 @@
       throw new Error('Proxy failed or returned invalid data');
     };
 
+    // 1. Our own relay: same path, different host
+    const relay = fplProxyBase();
+    if (relay) {
+      try {
+        return await fetchSingleProxy(targetUrl.replace('https://fantasy.premierleague.com', relay));
+      } catch (e) {
+        console.warn('FPL relay failed, trying public proxies:', targetUrl);
+      }
+    }
+
     try {
-      // Race all proxies simultaneously — fastest valid proxy wins!
+      // 2. Fallback: race the public proxies — fastest valid one wins
       return await Promise.any(proxies.map(p => fetchSingleProxy(p)));
     } catch (allErr) {
       return null;
