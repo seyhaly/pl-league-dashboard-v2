@@ -2650,7 +2650,7 @@
           : st === 'final' ? '<span class="gs-mstate is-done">FT</span>'
           : '<span class="gs-mstate is-wait">Kick-off</span>';
         return `
-          <li class="gs-match is-${st}">
+          <li class="gs-match is-${st}" data-fixture-id="${f.id}" role="button" tabindex="0" title="See match details">
             <span class="gs-team gs-home">${h.short_name}${crestHtml(h)}</span>
             ${score}
             <span class="gs-team gs-away">${crestHtml(a)}${a.short_name}</span>
@@ -2679,7 +2679,118 @@
         <ol class="gs-steps">${stepsHtml}</ol>
         <div class="gs-days">${daysHtml}</div>
       </div>`;
+
+    container.onclick = e => {
+      const row = e.target.closest('[data-fixture-id]');
+      if (row) showMatchDetail(Number(row.dataset.fixtureId));
+    };
+    container.onkeydown = e => {
+      const row = e.target.closest('[data-fixture-id]');
+      if (row && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showMatchDetail(Number(row.dataset.fixtureId)); }
+    };
   }
+
+  // ===================== MATCH DETAIL POP-UP =====================
+  // Uses the stats FPL attaches to each fixture (goals, assists, cards, saves,
+  // bonus, BPS …); player names come from the bootstrap player list.
+  const MATCH_STAT_ROWS = [
+    ['goals_scored', 'Goals'],
+    ['assists', 'Assists'],
+    ['own_goals', 'Own goals'],
+    ['penalties_saved', 'Penalties saved'],
+    ['penalties_missed', 'Penalties missed'],
+    ['yellow_cards', 'Yellow cards'],
+    ['red_cards', 'Red cards'],
+    ['saves', 'Saves']
+  ];
+
+  function playerName(id) {
+    const p = (state.dataset.players || {})[id] || (state.dataset.players || {})[String(id)];
+    return p ? p.web_name : `Player #${id}`;
+  }
+
+  function statList(entries, showValue) {
+    if (!entries || !entries.length) return '<span class="md-none">–</span>';
+    return entries.map(x => `<span class="md-player">${playerName(x.element)}${showValue && x.value > 1 ? ` <b>×${x.value}</b>` : ''}</span>`).join('');
+  }
+
+  window.closeMatchDetail = function() {
+    const el = document.getElementById('matchDetail');
+    if (el) el.remove();
+  };
+
+  window.showMatchDetail = function(fixtureId) {
+    closeMatchDetail();
+    const f = (fixturesForGw(state.currentGw) || []).find(x => x.id === fixtureId);
+    if (!f) return;
+    const h = teamById(f.team_h), a = teamById(f.team_a);
+    const st = fixtureState(f);
+    const stat = key => (f.stats || []).find(x => x.identifier === key) || { h: [], a: [] };
+    const kickoff = new Date(f.kickoff_time);
+    const when = kickoff.toLocaleString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+
+    const statusText = st === 'live' ? `<span class="gs-mstate is-live"><span class="live-dot"></span>Live ${f.minutes || 0}'</span>`
+      : st === 'ft' ? '<span class="gs-mstate is-active">Full time · bonus pending</span>'
+      : st === 'final' ? '<span class="gs-mstate is-done">Full time</span>'
+      : '<span class="gs-mstate is-wait">Not started</span>';
+
+    let body;
+    if (st === 'upcoming') {
+      body = `<div class="md-empty">${icon('clock', 16)} Kick-off ${when}. Match stats appear once it starts.</div>`;
+    } else {
+      const rows = MATCH_STAT_ROWS.map(([key, label]) => {
+        const sd = stat(key);
+        if (!sd.h.length && !sd.a.length && key !== 'goals_scored') return '';
+        return `
+          <div class="md-row">
+            <div class="md-side md-home">${statList(sd.h, true)}</div>
+            <div class="md-label">${label}</div>
+            <div class="md-side md-away">${statList(sd.a, true)}</div>
+          </div>`;
+      }).join('');
+
+      const tag = (list, team) => list.map(x => ({ ...x, team }));
+      const bonus = [...tag(stat('bonus').h, h), ...tag(stat('bonus').a, a)].sort((x, y) => y.value - x.value);
+      const bps = [...tag(stat('bps').h, h), ...tag(stat('bps').a, a)].sort((x, y) => y.value - x.value).slice(0, 6);
+      const ranked = (title, list, unit) => `
+        <div class="md-ranked">
+          <div class="md-ranked-title">${title}</div>
+          ${list.length ? list.map(x => `
+            <div class="md-ranked-row">
+              ${crestHtml(x.team)}<span class="md-ranked-name">${playerName(x.element)}</span><b>${x.value}${unit}</b>
+            </div>`).join('') : '<div class="md-none">Not available yet</div>'}
+        </div>`;
+
+      body = `
+        <div class="md-stats">${rows}</div>
+        <div class="md-ranked-grid">
+          ${ranked(st === 'final' ? 'Bonus points' : 'Bonus points (provisional)', bonus, '')}
+          ${ranked('Top BPS', bps, '')}
+        </div>`;
+    }
+
+    const overlay = document.createElement('div');
+    overlay.id = 'matchDetail';
+    overlay.className = 'md-overlay';
+    overlay.innerHTML = `
+      <div class="md-card" role="dialog" aria-label="${h.name || h.short_name} v ${a.name || a.short_name}">
+        <button class="icon-btn md-close" aria-label="Close match details" onclick="closeMatchDetail()">${icon('x', 14)}</button>
+        <div class="md-head">
+          <div class="md-team">${crestHtml(h)}<strong>${h.name || h.short_name}</strong></div>
+          <div class="md-centre">
+            ${st === 'upcoming'
+              ? `<div class="md-kickoff">${kickoff.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</div>`
+              : `<div class="md-score">${f.team_h_score ?? 0}<i>–</i>${f.team_a_score ?? 0}</div>`}
+            ${statusText}
+            <div class="md-when">Gameweek ${f.event} · ${when}</div>
+          </div>
+          <div class="md-team">${crestHtml(a)}<strong>${a.name || a.short_name}</strong></div>
+        </div>
+        ${body}
+      </div>`;
+    overlay.addEventListener('click', e => { if (e.target === overlay) closeMatchDetail(); });
+    document.body.appendChild(overlay);
+  };
 
   // ===================== CHART =====================
   const CHART_COLORS = MANAGER_COLORS;
@@ -3804,7 +3915,9 @@
     const modal = document.getElementById('managerDetailModal');
     const isModalOpen = modal && modal.classList.contains('open');
 
-    if (e.key === 'Escape' && document.getElementById('pointsPopover')) {
+    if (e.key === 'Escape' && document.getElementById('matchDetail')) {
+      closeMatchDetail();
+    } else if (e.key === 'Escape' && document.getElementById('pointsPopover')) {
       closePointsBreakdown();
     } else if (e.key === 'Escape') {
       closeManagerModal();
