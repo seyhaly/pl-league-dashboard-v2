@@ -2855,6 +2855,39 @@
     chart.update('focus');
   }
 
+  // Shaded rank zones behind the lines: top three win, bottom three lose, the
+  // rest are neutral (same split as the weekly payouts; needs at least 7 managers)
+  const rankZonesPlugin = {
+    id: 'rankZones',
+    beforeDatasetsDraw(chart) {
+      const n = state.dataset.managers ? state.dataset.managers.length : 0;
+      if (n < 7) return;
+      const { ctx, chartArea: area, scales: { y } } = chart;
+      const dark = state.theme === 'dark';
+      const zones = [
+        { from: 1, to: 3, fill: dark ? 'rgba(62, 224, 139, 0.10)' : 'rgba(16, 185, 129, 0.08)', label: 'Win', color: dark ? '#3ee08b' : '#0a7a3e' },
+        { from: 4, to: n - 3, fill: dark ? 'rgba(189, 178, 200, 0.07)' : 'rgba(100, 116, 139, 0.06)', label: 'Neutral', color: dark ? '#998da6' : '#6b6178' },
+        { from: n - 2, to: n, fill: dark ? 'rgba(255, 92, 138, 0.10)' : 'rgba(233, 0, 82, 0.06)', label: 'Loss', color: dark ? '#ff5c8a' : '#c4003f' }
+      ];
+      ctx.save();
+      zones.forEach(z => {
+        if (z.to < z.from) return;
+        const top = Math.max(area.top, y.getPixelForValue(z.from - 0.5));
+        const bottom = Math.min(area.bottom, y.getPixelForValue(z.to + 0.5));
+        ctx.fillStyle = z.fill;
+        ctx.fillRect(area.left, top, area.right - area.left, bottom - top);
+        ctx.fillStyle = z.color;
+        ctx.font = `600 11px ${CHART_FONT}`;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.globalAlpha = 0.85;
+        ctx.fillText(z.label, area.right + 10, (top + bottom) / 2);
+        ctx.globalAlpha = 1;
+      });
+      ctx.restore();
+    }
+  };
+
   function initChart() {
     const ctx = document.getElementById('rankChart');
     if (!ctx) return;
@@ -2862,17 +2895,19 @@
     state.chartInstance = new Chart(ctx, {
       type: 'line',
       data: { labels, datasets: buildDatasets() },
+      plugins: [rankZonesPlugin],
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        layout: { padding: { top: 6, bottom: 6, right: 6 } },
+        layout: { padding: { top: 6, bottom: 6, right: 62 } },
         // Quick fade when highlighting a manager (a 'none' update leaves the dots unfaded)
         transitions: { focus: { animation: { duration: 150 } } },
         scales: {
           y: {
             reverse: true,
-            min: 1,
-            max: state.dataset.managers.length,
+            min: 0.5,
+            max: state.dataset.managers.length + 0.5,
+            afterBuildTicks: axis => { axis.ticks = Array.from({ length: state.dataset.managers.length }, (_, i) => ({ value: i + 1 })); },
             ticks: { stepSize: 1, color: getChartTextColor(), font: { weight: '600' } },
             grid: { color: getChartGridColor() }
           },
@@ -2883,6 +2918,8 @@
         },
         // Hovering near a point on a line focuses that manager
         onHover: (e, els, chart) => {
+          // While a manager is pinned, hovering the chart must not steal the highlight
+          if (state.rankPinnedIndex !== null && state.rankPinnedIndex !== undefined) return;
           let idx = null;
           if (e.type !== 'mouseout') {
             const near = chart.getElementsAtEventForMode(e, 'nearest', { intersect: false }, false)[0];
@@ -2954,7 +2991,7 @@
   function updateChart() {
     if (!state.chartInstance) return;
     state.chartInstance.data.datasets = buildDatasets();
-    state.chartInstance.options.scales.y.max = state.dataset.managers.length;
+    state.chartInstance.options.scales.y.max = state.dataset.managers.length + 0.5;
     if (state.rankPinnedIndex !== null && state.rankPinnedIndex >= state.chartInstance.data.datasets.length) state.rankPinnedIndex = null;
     updateChartTheme();
     renderRankChips();
