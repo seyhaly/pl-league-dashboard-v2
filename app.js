@@ -3717,6 +3717,19 @@
     const fixture = c.opp ? `vs ${c.opp}${c.venue ? ` (${c.venue})` : ''}` : '';
     const base = rows ? rows.reduce((sum, r) => sum + r[2], 0) : null;
 
+    // The player's match with crests: live/final score, or kick-off time if not started
+    const gwFixtures = fixturesForGw(gw);
+    if (!gwFixtures) loadFixturesForGw(gw);
+    const club = Object.values(getTeamsMap()).find(t => String(t.id) === String(c.team) || t.short_name === c.team || t.name === c.team || t.name === c.clubName);
+    const matchLine = (club && gwFixtures || []).filter(f => f.team_h === club.id || f.team_a === club.id).map(f => {
+      const h = teamById(f.team_h), a = teamById(f.team_a), st = fixtureState(f);
+      const mid = st === 'upcoming' ? '<span class="bd-m-v">v</span>' : `<b>${f.team_h_score ?? 0}–${f.team_a_score ?? 0}</b>`;
+      const tag = st === 'live' ? `<span class="bd-m-live"><span class="live-dot"></span>${f.minutes || 0}'</span>`
+        : st === 'upcoming' ? `<span class="bd-m-tag">${f.kickoff_time ? new Date(f.kickoff_time).toLocaleString([], { weekday: 'short', hour: '2-digit', minute: '2-digit' }) : ''}</span>`
+        : '<span class="bd-m-tag">FT</span>';
+      return `<span class="bd-match">${crestHtml(h)}${h.short_name}${mid}${a.short_name}${crestHtml(a)}${tag}</span>`;
+    }).join('');
+
     let body;
     if (c.status === 'yet_to_play') {
       body = `<div class="bd-empty">${icon('clock', 16)} Yet to play${fixture ? ` · ${fixture}` : ''}</div>`;
@@ -3757,7 +3770,7 @@
             <span class="bd-position">${POSITION_FULL[c.type] || ''}</span>
             ${c.firstName ? `<span class="bd-first">${c.firstName}</span>` : ''}
             <strong class="bd-last">${c.lastName || c.name}</strong>
-            <span class="bd-club">${c.clubName}${fixture ? ` · ${fixture}` : ''}</span>
+            ${matchLine ? `<span class="bd-club">${c.clubName}</span>${matchLine}` : `<span class="bd-club">${c.clubName}${fixture ? ` · ${fixture}` : ''}</span>`}
           </div>
           <div class="bd-total">
             <span class="bd-total-value">${c.status === 'yet_to_play' ? '–' : c.pts}</span>
