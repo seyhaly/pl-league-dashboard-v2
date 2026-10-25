@@ -793,7 +793,7 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 }
 @keyframes bd-fade { from { opacity: 0; } to { opacity: 1; } }
 .bd-card {
-  width: min(380px, 100%);
+  width: min(420px, 100%);
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 16px;
@@ -802,18 +802,34 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
   animation: bd-pop 0.18s ease-out;
 }
 @keyframes bd-pop { from { transform: translateY(8px) scale(0.98); } to { transform: none; } }
-.bd-header {
-  display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 12px;
-  padding: 14px 14px 14px 16px;
-  background: linear-gradient(135deg, #37003c, #5a1462);
-  color: #fff;
+.bd-hero {
+  position: relative;
+  display: grid; grid-template-columns: 116px minmax(0, 1fr) auto; align-items: end; gap: 12px;
+  padding: 12px 14px 0 8px;
+  min-height: 150px;
+  background:
+    radial-gradient(90% 120% at 0% 100%, rgba(0, 255, 133, 0.55), transparent 55%),
+    radial-gradient(80% 90% at 100% 0%, rgba(255, 255, 255, 0.35), transparent 60%),
+    linear-gradient(120deg, #05f0ff 0%, #3cc6ff 55%, #5d7bff 100%);
+  color: #37003c;
+  overflow: hidden;
 }
+.bd-photo { position: relative; align-self: end; width: 116px; height: 140px; }
+.bd-player-img { position: absolute; left: 0; bottom: 0; width: 110px; height: 140px; object-fit: contain; object-position: bottom; }
+.bd-photo .bd-kit { position: absolute; left: 22px; bottom: 30px; width: 64px; height: 72px; }
+.bd-photo:has(.bd-player-img) .bd-kit { visibility: hidden; }
+.bd-hero-text { display: flex; flex-direction: column; align-self: center; min-width: 0; padding-bottom: 6px; }
+.bd-position { font-size: 12px; font-weight: 700; margin-bottom: 4px; }
+.bd-first { font-family: var(--font-display); font-size: 16px; font-weight: 400; line-height: 1.1; }
+.bd-last { font-family: var(--font-display); font-size: 21px; font-weight: 700; line-height: 1.1; overflow-wrap: anywhere; }
+.bd-club { margin-top: 6px; font-size: 12.5px; font-weight: 500; }
+.bd-hero .bd-total { align-self: center; margin-right: 34px; background: rgba(55, 0, 60, 0.85); }
+.bd-hero .bd-total-label { color: #fff; }
+.bd-hero .bd-close { position: absolute; top: 10px; right: 10px; background: rgba(55, 0, 60, 0.15); color: #37003c; }
+.bd-hero .bd-close:hover { background: rgba(55, 0, 60, 0.25) !important; color: #37003c !important; }
 .bd-kit { position: relative; display: inline-block; width: 40px; height: 44px; }
 .bd-kit img, .bd-kit .kit-fallback { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
 .bd-kit:has(img) .kit-fallback { visibility: hidden; }
-.bd-title { display: flex; flex-direction: column; min-width: 0; }
-.bd-title strong { font-family: var(--font-display); font-size: 17px; font-weight: 600; }
-.bd-title span { font-size: 12px; opacity: 0.8; }
 .bd-total { display: flex; flex-direction: column; align-items: center; padding: 4px 10px; border-radius: 10px; background: rgba(255,255,255,0.12); }
 .bd-total-value { font-family: var(--font-display); font-size: 22px; font-weight: 600; line-height: 1.1; color: #00ff85; }
 .bd-total-label { font-size: 10px; opacity: 0.8; }
@@ -1206,7 +1222,7 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
   transition: transform 0.15s ease;
 }
 .pc:hover { transform: translateY(-2px); }
-.pc-kit { position: relative; display: block; width: 44px; height: 46px; margin: 6px auto 3px; }
+.pc-kit { position: relative; display: block; width: 52px; height: 56px; margin: 5px auto 2px; }
 .pc-kit img, .pc-kit .kit-fallback { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 3px 4px rgba(0,0,0,0.3)); }
 .pc-kit img + .kit-fallback, .pc-kit img ~ .kit-fallback { display: none; }
 .pc-kit:has(img) .kit-fallback { visibility: hidden; }
@@ -1338,7 +1354,7 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
   .pitch-row { gap: 4px; flex-wrap: nowrap; }
   .pc { width: 62px; flex: 0 1 62px; min-width: 0; border-radius: 10px; }
   .bench-slot .pc { flex: none; }
-  .pc-kit { width: 34px; height: 36px; margin-top: 7px; }
+  .pc-kit { width: 40px; height: 44px; margin-top: 6px; }
   .pc-name { font-size: 10px; }
   .pc-info { font-size: 11px; padding: 2px; }
   .pc-fixture { font-size: 9.5px; }

@@ -126,7 +126,8 @@ def main():
                 'team_name': team_obj.get('name', ''),
                 'team_id': p.get('team'),
                 'event_points': p.get('event_points', 0),
-                'now_cost': f"{p.get('now_cost', 0) / 10:.1f}"
+                'now_cost': f"{p.get('now_cost', 0) / 10:.1f}",
+                'code': p.get('code')
             }
 
     if 'events' in bs_data:

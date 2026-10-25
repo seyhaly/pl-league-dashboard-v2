@@ -1052,10 +1052,12 @@
                     id: el.id,
                     web_name: el.web_name,
                     element_type: el.element_type,
-                    event_points: el.event_points || 0
+                    event_points: el.event_points || 0,
+                    code: el.code
                   };
                 } else {
                   state.dataset.players[el.id].event_points = el.event_points || 0;
+                  if (el.code) state.dataset.players[el.id].code = el.code;
                 }
               });
             }
@@ -3258,6 +3260,7 @@
 
   // Bench card with FPL-style label (GKP, 1 DEF, 2 MID …) above it
   const POSITION_SHORT = { 1: 'GKP', 2: 'DEF', 3: 'MID', 4: 'FWD' };
+  const POSITION_FULL = { 1: 'Goalkeeper', 2: 'Defender', 3: 'Midfielder', 4: 'Forward' };
   function benchCardHtml(c, i) {
     const label = i === 0 ? 'GKP' : `${i}. ${POSITION_SHORT[c.type] || ''}`;
     return `<div class="bench-slot"><span class="bench-slot-label">${label}</span>${pitchCardHtml(c)}</div>`;
@@ -3343,11 +3346,16 @@
     pop.className = 'bd-overlay';
     pop.innerHTML = `
       <div class="bd-card" role="dialog" aria-label="${c.name} points breakdown">
-        <div class="bd-header">
-          ${kitHtml(c.team, c.type === 1, 'bd-kit')}
-          <div class="bd-title">
-            <strong>${c.name}</strong>
-            <span>${c.team} · ${POSITION_SHORT[c.type] || ''}${fixture ? ` · ${fixture}` : ''}</span>
+        <div class="bd-hero">
+          <div class="bd-photo">
+            ${kitHtml(c.team, c.type === 1, 'bd-kit')}
+            ${c.code ? `<img class="bd-player-img" src="https://resources.premierleague.com/premierleague25/photos/players/110x140/${c.code}.png" alt="" onerror="if(!this.dataset.retry){this.dataset.retry=1;this.src='https://resources.premierleague.com/premierleague/photos/players/110x140/p${c.code}.png';}else{this.remove();}">` : ''}
+          </div>
+          <div class="bd-hero-text">
+            <span class="bd-position">${POSITION_FULL[c.type] || ''}</span>
+            ${c.firstName ? `<span class="bd-first">${c.firstName}</span>` : ''}
+            <strong class="bd-last">${c.lastName || c.name}</strong>
+            <span class="bd-club">${c.clubName}${fixture ? ` · ${fixture}` : ''}</span>
           </div>
           <div class="bd-total">
             <span class="bd-total-value">${c.status === 'yet_to_play' ? '–' : c.pts}</span>
@@ -3432,6 +3440,31 @@
     };
     body.addEventListener('pointerup', finish);
     body.addEventListener('pointercancel', () => reset());
+
+    // Two-finger horizontal swipe on a trackpad (wheel events with deltaX).
+    // One manager per gesture: wait for the scroll momentum to stop before the next.
+    let wheelAcc = 0, wheelLocked = false, wheelIdle = null;
+    body.addEventListener('wheel', e => {
+      if (e.ctrlKey || Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+      e.preventDefault();
+      clearTimeout(wheelIdle);
+      wheelIdle = setTimeout(() => {
+        wheelAcc = 0; wheelLocked = false;
+        body.style.transform = ''; body.style.opacity = '';
+      }, 180);
+      if (wheelLocked) return;
+      wheelAcc += e.deltaX;
+      body.style.transform = `translateX(${Math.max(-60, Math.min(60, -wheelAcc * 0.4))}px)`;
+      if (Math.abs(wheelAcc) > 120) {
+        const dir = wheelAcc > 0 ? 1 : -1;
+        wheelLocked = true; wheelAcc = 0;
+        body.style.transform = ''; body.style.opacity = '';
+        closePointsBreakdown();
+        navigateManagerModal(dir);
+        body.classList.add(dir > 0 ? 'swipe-in-right' : 'swipe-in-left');
+        setTimeout(() => body.classList.remove('swipe-in-right', 'swipe-in-left'), 260);
+      }
+    }, { passive: false });
   }
 
   // ===================== MANAGER SQUAD DETAIL MODAL =====================
@@ -3666,6 +3699,10 @@
 
           squadCards.push({
             element: p.element,
+            code: plRaw.code || null,
+            firstName: plRaw.first_name || '',
+            lastName: plRaw.second_name || pl.web_name,
+            clubName: plRaw.team_name || pl.team,
             starter: p.position <= 11,
             benchRole: p.position > 11 ? (p.original_bench_role || (p.position === 12 ? 'GK' : String(p.position - 12))) : '',
             name: pl.web_name,
