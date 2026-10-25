@@ -1681,3 +1681,13 @@ html.touch-ui .manager-detail-modal { z-index: 64; padding-top: env(safe-area-in
   .md-card { width: 100%; }
   .manager-detail-modal { width: 100vw; }
 }
+
+/* Squad panel scrolled: the summary runs edge to edge under the header, as one bar */
+.manager-modal-header { transition: border-color 0.15s; }
+.pm-summary { transition: margin 0.15s, border-radius 0.15s, padding 0.15s; }
+.manager-detail-modal.summary-joined .manager-modal-header { border-bottom-color: transparent; }
+.manager-detail-modal.summary-joined .pm-summary {
+  margin: 0 -22px; padding-left: 22px; padding-right: 22px;
+  border-radius: 0; border-left: 0; border-right: 0; border-top: 0;
+  box-shadow: 0 8px 16px -12px rgba(29, 16, 34, 0.45);
+}

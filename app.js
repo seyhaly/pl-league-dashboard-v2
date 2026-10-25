@@ -3945,10 +3945,19 @@
 
   // ===================== SQUAD PANEL GESTURES =====================
   // Click a player for the breakdown; swipe (finger) or drag (mouse) sideways to change manager
+  function updateSummaryJoin() {
+    const modal = document.getElementById('managerDetailModal');
+    const body = document.getElementById('modalContentBody');
+    if (modal && body) modal.classList.toggle('summary-joined', body.scrollTop > 2);
+  }
+
   function initSquadPanelGestures() {
     const modal = document.getElementById('managerDetailModal');
     const body = document.getElementById('modalContentBody');
     if (!modal || !body) return;
+
+    // Once the squad scrolls, the summary joins the header as one bar
+    body.addEventListener('scroll', updateSummaryJoin, { passive: true });
 
     body.addEventListener('click', e => {
       if (body.dataset.justSwiped === '1') return;
@@ -4551,6 +4560,7 @@
         ${activityHtml}
       `;
       syncSquadViewButtons();
+      updateSummaryJoin();
     } catch (err) {
       console.error('Error rendering squad modal:', err);
       modalBody.innerHTML = `<div style="padding:24px;text-align:center;color:#ef4444;font-weight:600;">Failed to render squad details: ${err.message}</div>`;
