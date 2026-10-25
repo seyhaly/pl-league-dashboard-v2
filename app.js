@@ -2224,6 +2224,14 @@
     const seasonRankNow = isMonthlyView ? {} : getSeasonRankMap(state.currentGw);
     const seasonRankPrev = isMonthlyView ? {} : getSeasonRankMap(state.currentGw - 1);
 
+    // Rows whose rank or points changed since the last render of this same view
+    // (i.e. a live sync updated them) get a brief highlight
+    const snapshotKey = `${state.activeLeagueId}|${state.currentGw}|${state.viewMode}`;
+    const previousSnapshot = state.standingsSnapshot && state.standingsSnapshot.key === snapshotKey
+      ? state.standingsSnapshot.rows
+      : null;
+    const nextSnapshot = {};
+
     standings.forEach(m => {
       // --- Shared data ---
       const rankClass = getRankClass(m.rank, m.payout);
@@ -2259,7 +2267,13 @@
 
       // =========== DESKTOP TABLE ROW ===========
       const tr = document.createElement('tr');
-      tr.className = m.statusClass + (m.isTied ? ' tr-tied' : '');
+      const rowSig = `${m.rank}|${m.netScore}|${m.seasonTotalNet}|${m.payout}`;
+      nextSnapshot[m.id] = rowSig;
+      const changed = previousSnapshot && previousSnapshot[m.id] !== undefined && previousSnapshot[m.id] !== rowSig;
+
+      tr.className = m.statusClass + (m.isTied ? ' tr-tied' : '') + (changed ? ' row-flash' : '')
+        + (state.activeModalManagerId === m.id ? ' is-viewing' : '');
+      tr.dataset.managerId = m.id;
       tr.setAttribute('title', `Click to view ${m.name}'s squad details & stats`);
       tr.addEventListener('click', () => openManagerModal(m.id));
 
@@ -2324,7 +2338,8 @@
       // =========== MOBILE CARD ===========
       if (elements.mobileCards) {
         const card = document.createElement('div');
-        card.className = `mobile-manager-card ${m.statusClass}${m.isTied ? ' tr-tied' : ''}`;
+        card.className = `mobile-manager-card ${m.statusClass}${m.isTied ? ' tr-tied' : ''}${changed ? ' row-flash' : ''}`;
+        card.dataset.managerId = m.id;
         card.addEventListener('click', () => openManagerModal(m.id));
 
         const statItem = (label, value) => `
@@ -2369,6 +2384,14 @@
         `;
         elements.mobileCards.appendChild(card);
       }
+    });
+
+    state.standingsSnapshot = { key: snapshotKey, rows: nextSnapshot };
+  }
+
+  function markViewingManager(managerId) {
+    document.querySelectorAll('[data-manager-id]').forEach(el => {
+      el.classList.toggle('is-viewing', managerId != null && Number(el.dataset.managerId) === Number(managerId));
     });
   }
 
@@ -2957,6 +2980,21 @@
   function getChartTextColor() { return state.theme === 'light' ? '#6b6178' : '#a99db8'; }
   function getChartGridColor() { return state.theme === 'light' ? 'rgba(55,0,60,0.07)' : 'rgba(255,255,255,0.07)'; }
 
+  // Highlight one manager's line and fade the rest (hovering their legend entry)
+  function focusRankLine(chart, focusIndex) {
+    chart.data.datasets.forEach((ds, i) => {
+      const base = ds.baseColor || ds.borderColor;
+      ds.baseColor = base;
+      const dim = focusIndex !== null && i !== focusIndex;
+      ds.borderColor = dim ? `${base}26` : base;
+      ds.backgroundColor = dim ? `${base}26` : base;
+      ds.pointBackgroundColor = dim ? `${base}26` : base;
+      ds.borderWidth = focusIndex !== null && i === focusIndex ? 3.5 : 2;
+      ds.order = focusIndex !== null && i === focusIndex ? -1 : 0;
+    });
+    chart.update('none');
+  }
+
   function initChart() {
     const ctx = document.getElementById('rankChart');
     if (!ctx) return;
@@ -2983,6 +3021,8 @@
         },
         plugins: {
           legend: {
+            onHover: (e, item, legend) => focusRankLine(legend.chart, item.datasetIndex),
+            onLeave: (e, item, legend) => focusRankLine(legend.chart, null),
             labels: { color: getChartTextColor(), font: { family: CHART_FONT, weight: '600' }, usePointStyle: true, boxWidth: 8, boxHeight: 8 }
           }
         }
@@ -3111,11 +3151,17 @@
     if (btnPrev) btnPrev.classList.remove('open');
     if (btnNext) btnNext.classList.remove('open');
     state.activeModalManagerId = null;
+    markViewingManager(null);
     document.body.style.overflow = '';
   };
 
   window.navigateManagerModal = function(direction) {
-    const managers = state.dataset.managers || [];
+    // Step through managers in the order the standings show them
+    const shownIds = [...document.querySelectorAll('#standingsBody tr[data-manager-id]')].map(el => Number(el.dataset.managerId));
+    const allManagers = state.dataset.managers || [];
+    const managers = shownIds.length
+      ? shownIds.map(id => allManagers.find(m => m.id === id)).filter(Boolean)
+      : allManagers;
     if (!managers || managers.length <= 1) return;
 
     const currentId = state.activeModalManagerId;
@@ -3145,6 +3191,7 @@
     if (!modal || !modalBody) return;
 
     state.activeModalManagerId = Number(managerId);
+    markViewingManager(managerId);
 
     const gw = state.currentGw || 1;
     const activeSeasonGw = state.seasonGw || state.maxGw || (state.dataset && state.dataset.currentGw) || 1;
