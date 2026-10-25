@@ -24,7 +24,8 @@
   <meta name="theme-color" content="#f6f4f8">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- The app starts below the status bar (drawing under it made iPadOS blur the top of the page) -->
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="FPL Admin">
   <!-- iPad launch screens (no white flash when opening from the home screen) -->
   <link rel="apple-touch-startup-image" href="icons/splash/splash-744x1133-p.png" media="(device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
@@ -376,7 +377,7 @@
 
 <script src="demoData.js"></script>
 <script src="squadData.js?v=300.0"></script>
-<script src="app.js?v=532.0"></script>
+<script src="app.js?v=533.0"></script>
 <script>
   // Installable app: offline support via the service worker
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {

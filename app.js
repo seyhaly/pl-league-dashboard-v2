@@ -3960,10 +3960,9 @@
       if (el && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showPointsBreakdown(el.dataset.element); }
     });
 
-    let startX = 0, startY = 0, dx = 0, tracking = false, horizontal = null, pointerId = null;
+    let startX = 0, startY = 0, startT = 0, dx = 0, tracking = false, horizontal = null, pointerId = null;
     const reset = () => {
       body.style.transform = '';
-      body.style.opacity = '';
       body.classList.remove('is-dragging');
       tracking = false; horizontal = null; pointerId = null; dx = 0;
     };
@@ -3971,8 +3970,9 @@
     body.addEventListener('pointerdown', e => {
       if (e.pointerType === 'mouse' && e.button !== 0) return;
       if (e.target.closest('button, a, input, select, .segmented')) return;
+      if (sliding) return;
       tracking = true; horizontal = null; pointerId = e.pointerId;
-      startX = e.clientX; startY = e.clientY; dx = 0;
+      startX = e.clientX; startY = e.clientY; startT = performance.now(); dx = 0;
     });
 
     body.addEventListener('pointermove', e => {
@@ -3989,28 +3989,51 @@
           return;
         }
       }
-      if (horizontal) {
-        body.style.transform = `translateX(${dx * 0.6}px)`;
-        body.style.opacity = String(Math.max(0.4, 1 - Math.abs(dx) / 600));
-      }
+      if (horizontal) body.style.transform = `translateX(${dx}px)`;
     });
 
     const finish = e => {
       if (!tracking || (e && e.pointerId !== pointerId)) return;
       const wasHorizontal = horizontal;
       const distance = dx;
-      reset();
-      if (wasHorizontal) {
-        body.dataset.justSwiped = '1';
-        setTimeout(() => { body.dataset.justSwiped = ''; }, 50);
-        if (Math.abs(distance) > 70) {
-          closePointsBreakdown();
-          navigateManagerModal(distance < 0 ? 1 : -1);
-          body.classList.add(distance < 0 ? 'swipe-in-right' : 'swipe-in-left');
-          setTimeout(() => body.classList.remove('swipe-in-right', 'swipe-in-left'), 260);
-        }
+      const speed = Math.abs(distance) / Math.max(1, performance.now() - startT);
+      tracking = false; horizontal = null; pointerId = null; dx = 0;
+      if (!wasHorizontal) { reset(); return; }
+      body.dataset.justSwiped = '1';
+      setTimeout(() => { body.dataset.justSwiped = ''; }, 50);
+      // A long drag or a quick flick moves to the next manager; otherwise spring back
+      if (Math.abs(distance) > 70 || (Math.abs(distance) > 25 && speed > 0.5)) {
+        slideManager(distance < 0 ? 1 : -1);
+      } else {
+        body.classList.remove('is-dragging');
+        body.style.transition = 'transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1)';
+        body.style.transform = '';
+        setTimeout(() => { if (!sliding) body.style.transition = ''; }, 240);
       }
     };
+
+    // Slide the current squad out, swap in the next manager off-screen, slide it in.
+    // Pure movement, no fading, so the white panel never shows through.
+    let sliding = false;
+    const slideManager = direction => {
+      if (sliding) return;
+      sliding = true;
+      closePointsBreakdown();
+      const width = body.offsetWidth || 600;
+      body.classList.remove('is-dragging');
+      body.style.transition = 'transform 0.16s cubic-bezier(0.4, 0, 1, 1)';
+      body.style.transform = `translateX(${-direction * width}px)`;
+      setTimeout(() => {
+        body.style.transition = 'none';
+        stepManagerModal(direction);
+        body.style.transform = `translateX(${direction * width}px)`;
+        void body.offsetWidth;
+        body.style.transition = 'transform 0.26s cubic-bezier(0.2, 0.8, 0.2, 1)';
+        body.style.transform = '';
+        setTimeout(() => { body.style.transition = ''; sliding = false; }, 280);
+      }, 160);
+    };
+    window.navigateManagerModal = slideManager;
     body.addEventListener('pointerup', finish);
     body.addEventListener('pointercancel', () => reset());
 
@@ -4023,19 +4046,15 @@
       clearTimeout(wheelIdle);
       wheelIdle = setTimeout(() => {
         wheelAcc = 0; wheelLocked = false;
-        body.style.transform = ''; body.style.opacity = '';
+        if (!sliding) body.style.transform = '';
       }, 180);
-      if (wheelLocked) return;
+      if (wheelLocked || sliding) return;
       wheelAcc += e.deltaX;
       body.style.transform = `translateX(${Math.max(-60, Math.min(60, -wheelAcc * 0.4))}px)`;
       if (Math.abs(wheelAcc) > 120) {
         const dir = wheelAcc > 0 ? 1 : -1;
         wheelLocked = true; wheelAcc = 0;
-        body.style.transform = ''; body.style.opacity = '';
-        closePointsBreakdown();
-        navigateManagerModal(dir);
-        body.classList.add(dir > 0 ? 'swipe-in-right' : 'swipe-in-left');
-        setTimeout(() => body.classList.remove('swipe-in-right', 'swipe-in-left'), 260);
+        slideManager(dir);
       }
     }, { passive: false });
   }
@@ -4071,7 +4090,9 @@
     document.body.style.overflow = '';
   };
 
-  window.navigateManagerModal = function(direction) {
+  // Swap the open panel to the previous/next manager straight away
+  // (window.navigateManagerModal, set up in initSquadPanelGestures, slides it)
+  function stepManagerModal(direction) {
     // Step through managers in the order the standings show them
     const shownIds = [...document.querySelectorAll('#standingsBody tr[data-manager-id]')].map(el => Number(el.dataset.managerId));
     const allManagers = state.dataset.managers || [];
@@ -4089,7 +4110,7 @@
     if (targetManager) {
       openManagerModal(targetManager.id);
     }
-  };
+  }
 
   window.openManagerModal = function(managerId) {
     const modal = document.getElementById('managerDetailModal');
