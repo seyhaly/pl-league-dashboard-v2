@@ -1683,19 +1683,22 @@ html.touch-ui .manager-detail-modal { z-index: 64; padding-top: env(safe-area-in
 
 /* Squad panel scrolled: points and played move up into the header row */
 .mh-mini {
-  display: none; align-items: center; gap: 14px; flex: none;
+  display: none; align-items: center; gap: 12px; flex: none;
   margin-left: auto;
   font-size: 12.5px; color: var(--muted); white-space: nowrap;
 }
 .manager-detail-modal.mini-on .mh-mini { display: flex; animation: mh-in 0.18s ease-out; }
 @keyframes mh-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-.mh-mini b { color: var(--text); font-weight: 700; font-variant-numeric: tabular-nums; }
-.mh-pts b { font-family: var(--font-display); font-size: 20px; color: var(--accent-text); }
-.mh-played { display: inline-flex; align-items: center; gap: 6px; }
-.mh-played .pm-progress { min-width: 56px; width: 56px; }
-.mh-ytp, .mh-done { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 999px; font-size: 11.5px; font-weight: 700; }
-.mh-ytp { background: var(--warn-soft); color: var(--warn); }
-.mh-done { background: var(--pos-soft); color: var(--pos); }
+.mh-stat { display: flex; flex-direction: column; gap: 1px; line-height: 1.2; }
+.mh-label { font-size: 9.5px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.mh-value { display: inline-flex; align-items: baseline; gap: 3px; font-size: 13px; color: var(--muted); }
+.mh-value b { color: var(--text); font-weight: 700; font-variant-numeric: tabular-nums; font-size: 14px; }
+.mh-value b.mh-big { font-family: var(--font-display); font-size: 20px; line-height: 1; color: var(--accent-text); }
+.mh-played .mh-value { align-items: center; }
+.mh-played .pm-progress { min-width: 44px; width: 44px; margin-left: 4px; }
+.mh-ytp .mh-value b { color: var(--warn); }
+.mh-stat .chip-tag { font-size: 10.5px; padding: 1px 6px; }
+.mh-pts { padding-right: 12px; border-right: 1px solid var(--border); }
 .manager-modal-header { transition: padding 0.18s; }
 .manager-detail-modal.mini-on .manager-modal-header { padding-top: 10px; padding-bottom: 10px; }
 .manager-detail-modal.mini-on .manager-modal-sub { flex-wrap: nowrap; white-space: nowrap; overflow: hidden; }

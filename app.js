@@ -4564,12 +4564,16 @@
       `;
       const mini = document.getElementById('modalMiniSummary');
       if (mini) {
+        // The whole summary, squeezed into the header row
+        const stat = (label, value, cls = '') => `<span class="mh-stat${cls}"><span class="mh-label">${label}</span><span class="mh-value">${value}</span></span>`;
         mini.innerHTML = `
-          <span class="mh-pts"><b>${netGwPoints}</b> pts</span>
-          <span class="mh-played"><b>${playedCount}</b>/${maxSquadCount} played
-            <span class="pm-progress"><span style="width:${playedPct}%"></span>${ytpPct > 0 ? `<span class="pm-progress-ytp" style="width:${ytpPct}%"></span>` : ''}</span>
-          </span>
-          ${yetToPlayCount > 0 ? `<span class="mh-ytp">${icon('clock', 12)} ${yetToPlayCount} yet to play</span>` : '<span class="mh-done">All played</span>'}`;
+          ${stat(`GW${gw}`, `<b class="mh-big">${netGwPoints}</b> pts`, ' mh-pts')}
+          ${stat('Played', `<b>${playedCount}</b>/${maxSquadCount}<span class="pm-progress"><span style="width:${playedPct}%"></span>${ytpPct > 0 ? `<span class="pm-progress-ytp" style="width:${ytpPct}%"></span>` : ''}</span>`, ' mh-played')}
+          ${stat('Yet to play', `<b>${yetToPlayCount}</b>`, yetToPlayCount > 0 ? ' mh-ytp' : '')}
+          ${stat('Transfers', `<b>${transfersCount}</b>${transferCost > 0 ? ` <span class="pm-neg">−${transferCost}</span>` : ''}`)}
+          ${stat('Bank', `<b>${bankVal.replace('M', 'm')}</b>`)}
+          ${stat('Bench', `<b>${benchPts}</b>`)}
+          ${stat('Chip', activeChip && activeChip !== 'None' ? `<span class="chip-tag ${getChipColorClass(squadData && squadData.active_chip)}">${activeChip}</span>` : '<b>–</b>')}`;
       }
       syncSquadViewButtons();
       updateSummaryJoin();
