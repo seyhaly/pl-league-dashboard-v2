@@ -371,7 +371,7 @@
     document.documentElement.setAttribute('data-theme', themeName);
     try { localStorage.setItem('fpl_admin_theme', mode); } catch (e) {}
     const themeColor = document.querySelector('meta[name="theme-color"]');
-    if (themeColor) themeColor.setAttribute('content', themeName === 'dark' ? '#0e0912' : '#37003c');
+    if (themeColor) themeColor.setAttribute('content', themeName === 'dark' ? '#0e0912' : '#f6f4f8');
     elements.themeToggleBtns.forEach(btn => {
       btn.classList.toggle('active', btn.dataset.themeBtn === mode);
     });

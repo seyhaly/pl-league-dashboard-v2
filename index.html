@@ -21,7 +21,7 @@
   <link rel="shortcut icon" href="favicon.ico?v=2.0">
   <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png?v=3.0">
   <link rel="manifest" href="manifest.webmanifest">
-  <meta name="theme-color" content="#37003c">
+  <meta name="theme-color" content="#f6f4f8">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -53,6 +53,8 @@
       var mode = localStorage.getItem('fpl_admin_theme') || 'light';
       if (mode === 'auto') mode = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
       document.documentElement.setAttribute('data-theme', mode);
+      // Status bar tint matches the page background
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', mode === 'dark' ? '#0e0912' : '#f6f4f8');
     } catch (e) {}
     // Always open at the top (standings), not where the page was last scrolled to
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
@@ -374,7 +376,7 @@
 
 <script src="demoData.js"></script>
 <script src="squadData.js?v=300.0"></script>
-<script src="app.js?v=530.0"></script>
+<script src="app.js?v=532.0"></script>
 <script>
   // Installable app: offline support via the service worker
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {
