@@ -3727,7 +3727,7 @@
       const tag = st === 'live' ? `<span class="bd-m-live"><span class="live-dot"></span>${f.minutes || 0}'</span>`
         : st === 'upcoming' ? `<span class="bd-m-tag">${f.kickoff_time ? new Date(f.kickoff_time).toLocaleString([], { weekday: 'short', hour: '2-digit', minute: '2-digit' }) : ''}</span>`
         : '<span class="bd-m-tag">FT</span>';
-      return `<span class="bd-match">${crestHtml(h)}${h.short_name}${mid}${a.short_name}${crestHtml(a)}${tag}</span>`;
+      return `<span class="bd-match" title="${h.name} v ${a.name}">${crestHtml(h)}${mid}${crestHtml(a)}${tag}</span>`;
     }).join('');
 
     let body;
