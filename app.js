@@ -2865,9 +2865,9 @@
       const { ctx, chartArea: area, scales: { y } } = chart;
       const dark = state.theme === 'dark';
       const zones = [
-        { from: 1, to: 3, fill: dark ? 'rgba(62, 224, 139, 0.10)' : 'rgba(16, 185, 129, 0.08)', label: 'Win', color: dark ? '#3ee08b' : '#0a7a3e' },
-        { from: 4, to: n - 3, fill: dark ? 'rgba(189, 178, 200, 0.07)' : 'rgba(100, 116, 139, 0.06)', label: 'Neutral', color: dark ? '#998da6' : '#6b6178' },
-        { from: n - 2, to: n, fill: dark ? 'rgba(255, 92, 138, 0.10)' : 'rgba(233, 0, 82, 0.06)', label: 'Loss', color: dark ? '#ff5c8a' : '#c4003f' }
+        { from: 1, to: 3, fill: dark ? 'rgba(62, 224, 139, 0.10)' : 'rgba(16, 185, 129, 0.08)' },
+        { from: 4, to: n - 3, fill: dark ? 'rgba(189, 178, 200, 0.07)' : 'rgba(100, 116, 139, 0.06)' },
+        { from: n - 2, to: n, fill: dark ? 'rgba(255, 92, 138, 0.10)' : 'rgba(233, 0, 82, 0.06)' }
       ];
       ctx.save();
       zones.forEach(z => {
@@ -2876,13 +2876,6 @@
         const bottom = Math.min(area.bottom, y.getPixelForValue(z.to + 0.5));
         ctx.fillStyle = z.fill;
         ctx.fillRect(area.left, top, area.right - area.left, bottom - top);
-        ctx.fillStyle = z.color;
-        ctx.font = `600 11px ${CHART_FONT}`;
-        ctx.textAlign = 'left';
-        ctx.textBaseline = 'middle';
-        ctx.globalAlpha = 0.85;
-        ctx.fillText(z.label, area.right + 10, (top + bottom) / 2);
-        ctx.globalAlpha = 1;
       });
       ctx.restore();
     }
@@ -2899,7 +2892,7 @@
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        layout: { padding: { top: 6, bottom: 6, right: 62 } },
+        layout: { padding: { top: 6, bottom: 6, right: 6 } },
         // Quick fade when highlighting a manager (a 'none' update leaves the dots unfaded)
         transitions: { focus: { animation: { duration: 150 } } },
         scales: {
