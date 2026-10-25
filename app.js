@@ -319,7 +319,7 @@
     populateGwSelect();
     populateViewModeSelect();
     bindEvents();
-    changeGw(state.currentGw);
+    changeGw(preferredGw(state.currentGw));
     initChart();
     initPerformanceChart();
     initCollapsibles();
@@ -336,12 +336,27 @@
     }
 
     // Auto-sync live scores every 60 seconds while on a live league
-    setInterval(() => {
+    const syncNow = () => {
       const code = elements.leagueIdInput ? elements.leagueIdInput.value.trim() : '';
-      if (code && code.toLowerCase() !== 'demo' && !document.hidden) {
-        fetchLeagueData(code);
-      }
-    }, 60000);
+      if (code && code.toLowerCase() !== 'demo') fetchLeagueData(code);
+    };
+    setInterval(() => { if (!document.hidden) syncNow(); }, 60000);
+
+    // Coming back to the app (e.g. reopening it from the iPad home screen): refresh straight away
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && Date.now() - (state.lastSyncedAt || 0) > 30000) syncNow();
+    });
+
+    // Tap the LIVE status to refresh by hand
+    if (elements.syncStatusTag) {
+      elements.syncStatusTag.setAttribute('role', 'button');
+      elements.syncStatusTag.title = 'Refresh now';
+      elements.syncStatusTag.addEventListener('click', () => {
+        if (!elements.syncStatusTag.classList.contains('pending')) syncNow();
+      });
+    }
+
+    initTapTips();
   }
 
   // ===================== THEME =====================
@@ -685,7 +700,7 @@
             state.maxGw = lData.currentGw;
           }
           populateGwSelect();
-          changeGw(state.currentGw);
+          changeGw(preferredGw(state.currentGw));
           updateMemberCountBadge();
           renderAll();
           dataLoadedSuccessfully = true;
@@ -726,7 +741,7 @@
           }
 
           populateGwSelect();
-          changeGw(state.currentGw);
+          changeGw(preferredGw(state.currentGw));
           updateMemberCountBadge();
           renderAll();
           dataLoadedSuccessfully = true;
@@ -758,7 +773,7 @@
             state.eventStatuses = parsed.eventStatuses;
           }
           populateGwSelect();
-          changeGw(state.currentGw);
+          changeGw(preferredGw(state.currentGw));
           updateMemberCountBadge();
           renderAll();
           dataLoadedSuccessfully = true;
@@ -1123,7 +1138,7 @@
         } catch (saveErr) {}
 
         populateGwSelect();
-        changeGw(state.currentGw);
+        changeGw(preferredGw(state.currentGw));
         updateMemberCountBadge();
         renderAll();
         elements.syncStatusTag.className = 'sync-status-tag live';
@@ -1172,9 +1187,19 @@
   }
 
   // ===================== GW NAVIGATION =====================
+  // The gameweek to show after a sync: the one picked last, unless a newer gameweek has begun since
+  function preferredGw(latest) {
+    try {
+      const saved = JSON.parse(localStorage.getItem('fpl_selected_gw') || 'null');
+      if (saved && saved.latest === latest && saved.gw >= 1 && saved.gw <= latest) return saved.gw;
+    } catch (e) {}
+    return latest;
+  }
+
   function changeGw(newGw) {
     if (newGw < 1 || newGw > state.maxGw) return;
     state.currentGw = newGw;
+    try { localStorage.setItem('fpl_selected_gw', JSON.stringify({ gw: newGw, latest: state.maxGw })); } catch (e) {}
     elements.gwDisplay.textContent = `Gameweek ${newGw}`;
     
     if (elements.standingsGwBadge) {
@@ -1886,6 +1911,30 @@
     const mins = Math.floor((Date.now() - state.lastSyncedAt) / 60000);
     el.textContent = mins < 1 ? 'Updated just now' : `Updated ${mins} min ago`;
     el.title = `Last refreshed ${new Date(state.lastSyncedAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}`;
+  }
+
+  // Touch screens can't hover, so a tap shows an element's tooltip text instead
+  function initTapTips() {
+    if (!document.documentElement.classList.contains('touch-ui')) return;
+    let tip = null, timer = null;
+    const hide = () => { if (tip) { tip.remove(); tip = null; } clearTimeout(timer); };
+    document.addEventListener('click', e => {
+      hide();
+      const el = e.target.closest('[title]');
+      if (!el || el.closest('button, a, select, input, [role="button"], [data-manager-id], [data-fixture-id], [data-element], [onclick]')) return;
+      const text = el.getAttribute('title');
+      if (!text || /^(click|see |highlight)/i.test(text)) return;
+      const r = el.getBoundingClientRect();
+      tip = document.createElement('div');
+      tip.className = 'tap-tip';
+      tip.textContent = text;
+      document.body.appendChild(tip);
+      const left = Math.min(Math.max(8, r.left + r.width / 2 - tip.offsetWidth / 2), window.innerWidth - tip.offsetWidth - 8);
+      tip.style.left = `${left}px`;
+      tip.style.top = `${Math.max(8, r.top - tip.offsetHeight - 8)}px`;
+      timer = setTimeout(hide, 2500);
+    }, true);
+    window.addEventListener('scroll', hide, { passive: true, capture: true });
   }
 
   function markSynced() {

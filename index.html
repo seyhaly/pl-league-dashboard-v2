@@ -2,8 +2,18 @@
 <html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
-  <!-- Desktop layout on every device: phones show the full page zoomed to fit -->
-  <meta name="viewport" content="width=1280">
+  <!-- Tablets and computers fit the screen; phones show the full desktop page zoomed to fit -->
+  <meta name="viewport" id="viewportMeta" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <script>
+    (function () {
+      var phone = Math.min(screen.width, screen.height) < 700;
+      if (phone) document.getElementById('viewportMeta').setAttribute('content', 'width=1280, viewport-fit=cover');
+      // Touch tablets (iPad) get the app-style tab bar and touch tweaks (localStorage fpl_touch_ui=1 forces it for testing)
+      var forced = false;
+      try { forced = localStorage.getItem('fpl_touch_ui') === '1'; } catch (e) {}
+      if ((navigator.maxTouchPoints > 1 && !phone) || forced) document.documentElement.classList.add('touch-ui');
+    })();
+  </script>
   <title>Clash of Elite — League Admin</title>
   <meta name="description" content="Gameweek standings, transfer deductions and chip usage tracker for Fantasy Premier League private leagues.">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon.png?v=2.0">
@@ -25,7 +35,7 @@
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     if (location.hash) history.replaceState(null, '', location.pathname + location.search);
   </script>
-  <link rel="stylesheet" href="styles.css?v=517.0">
+  <link rel="stylesheet" href="styles.css?v=520.0">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
@@ -310,9 +320,33 @@
   </button>
 </div>
 
+  <!-- ===================== TAB BAR (touch tablets) ===================== -->
+  <nav class="tabbar" id="tabBar" aria-label="Sections">
+    <button class="tab-btn" data-tab="section-standings">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h12"/></svg>
+      Standings
+    </button>
+    <button class="tab-btn" data-tab="section-gw-status">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      Gameweek
+    </button>
+    <button class="tab-btn" data-tab="section-form-matrix">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+      Form
+    </button>
+    <button class="tab-btn" data-tab="section-performance">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+      Chips
+    </button>
+    <button class="tab-btn" data-tab="section-trajectory">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>
+      Rank
+    </button>
+  </nav>
+
 <script src="demoData.js"></script>
 <script src="squadData.js?v=300.0"></script>
-<script src="app.js?v=517.0"></script>
+<script src="app.js?v=520.0"></script>
 <script>
   // Installable app: offline support via the service worker
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {
@@ -365,6 +399,23 @@
       const target = document.querySelector(l.getAttribute('href'));
       if (target) observer.observe(target);
     });
+  })();
+
+  // Tab bar (touch tablets): one section at a time, remembering the last tab
+  (function () {
+    if (!document.documentElement.classList.contains('touch-ui')) return;
+    const tabs = document.querySelectorAll('.tab-btn');
+    const show = (id, scroll) => {
+      tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === id));
+      document.querySelectorAll('.content > section.card').forEach(sec => sec.classList.toggle('tab-active', sec.id === id));
+      try { localStorage.setItem('fpl_tab', id); } catch (e) {}
+      if (scroll) window.scrollTo(0, 0);
+      window.dispatchEvent(new Event('resize'));
+    };
+    tabs.forEach(t => t.addEventListener('click', () => show(t.dataset.tab, true)));
+    let saved = null;
+    try { saved = localStorage.getItem('fpl_tab'); } catch (e) {}
+    show([...tabs].some(t => t.dataset.tab === saved) ? saved : 'section-standings', false);
   })();
 </script>
 </body>
