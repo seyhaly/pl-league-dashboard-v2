@@ -808,11 +808,12 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
   padding: 12px 14px 0 8px;
   min-height: 150px;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0) 45%),
-    radial-gradient(70% 110% at 8% 100%, rgba(0, 255, 133, 0.22), transparent 60%),
-    radial-gradient(60% 90% at 95% 0%, rgba(4, 245, 255, 0.16), transparent 60%),
-    radial-gradient(80% 120% at 60% 120%, rgba(233, 0, 82, 0.18), transparent 60%),
-    linear-gradient(135deg, #1a0620 0%, #2a0a33 50%, #12041a 100%);
+    radial-gradient(42% 85% at 16% 70%, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0) 70%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 50%),
+    radial-gradient(70% 110% at 8% 100%, rgba(0, 255, 133, 0.30), transparent 60%),
+    radial-gradient(60% 90% at 95% 0%, rgba(4, 245, 255, 0.24), transparent 60%),
+    radial-gradient(80% 120% at 60% 120%, rgba(233, 0, 82, 0.22), transparent 60%),
+    linear-gradient(135deg, #5b2a6e 0%, #6b3a86 50%, #4a2160 100%);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
   color: #ffffff;
@@ -1236,7 +1237,7 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 }
 .pc:hover { transform: translateY(-2px); }
 .pc-kit { position: relative; display: block; width: 66px; height: 64px; margin: 5px auto 2px; }
-.pc-kit img { transform: scaleX(1.18); }
+.pc-kit img { transform: scaleX(1.12); }
 .pc-kit img, .pc-kit .kit-fallback { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 3px 4px rgba(0,0,0,0.3)); }
 .pc-kit img + .kit-fallback, .pc-kit img ~ .kit-fallback { display: none; }
 .pc-kit:has(img) .kit-fallback { visibility: hidden; }
