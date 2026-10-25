@@ -892,7 +892,12 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
   letter-spacing: 0.02em;
   line-height: 1;
 }
-.manager-detail-modal .manager-modal-avatar { color: #fff; border-radius: 50%; }
+.manager-detail-modal .manager-modal-avatar { color: #fff; border-radius: 50%; overflow: hidden; }
+.manager-modal-avatar.has-badge { border-radius: 10px; }
+.manager-modal-avatar img { width: 100%; height: 100%; object-fit: contain; display: block; }
+/* Team badges keep their own shape (shields, squares), so no circle crop */
+.mgr-badge { border-radius: 7px; object-fit: contain; background: transparent; }
+.sc-table .mgr-avatar { width: 34px; height: 34px; }
 
 /* ---------- Slim standings cells ---------- */
 .cell-strong { font-weight: 600; color: var(--text-2); }

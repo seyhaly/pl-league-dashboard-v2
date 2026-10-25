@@ -111,7 +111,24 @@
     return words.slice(0, 2).map(w => Array.from(w)[0]).join('').toUpperCase() || '?';
   }
 
+  // Team badges saved by scripts/sync-badges.py (entry id -> { file, v })
+  let teamBadges = {};
+
+  function getBadgeUrl(managerId) {
+    const b = teamBadges[String(managerId)];
+    return b && b.file ? `${b.file}?v=${b.v || ''}` : null;
+  }
+
+  function loadTeamBadges() {
+    return fetch(`badges/index.json?t=${Date.now()}`)
+      .then(r => (r.ok ? r.json() : {}))
+      .then(data => { teamBadges = data || {}; })
+      .catch(() => { teamBadges = {}; });
+  }
+
   function managerAvatarHtml(managerId, name) {
+    const badge = getBadgeUrl(managerId);
+    if (badge) return `<img class="mgr-avatar mgr-badge" src="${badge}" alt="" loading="lazy">`;
     return `<span class="mgr-avatar" style="background:${getManagerColor(managerId)}">${getManagerInitials(name)}</span>`;
   }
 
@@ -309,6 +326,9 @@
     initPerformanceChart();
     initCollapsibles();
     updateMemberCountBadge();
+
+    // Swap initials for team badges once the badge index has loaded
+    loadTeamBadges().then(() => { if (Object.keys(teamBadges).length) renderAll(); });
 
     // Default to real league Clash of Elite 2026-2027 (389585) on load
     if (elements.leagueIdInput) {
@@ -3136,8 +3156,11 @@
 
     // Header info
     if (modalAvatar) {
-      modalAvatar.textContent = getManagerInitials(manager.name);
-      modalAvatar.style.background = getManagerColor(manager.id);
+      const badge = getBadgeUrl(manager.id);
+      modalAvatar.classList.toggle('has-badge', Boolean(badge));
+      modalAvatar.style.background = badge ? 'transparent' : getManagerColor(manager.id);
+      if (badge) modalAvatar.innerHTML = `<img src="${badge}" alt="">`;
+      else modalAvatar.textContent = getManagerInitials(manager.name);
     }
     if (modalName) modalName.textContent = manager.name;
     if (modalTeam) modalTeam.textContent = `— ${manager.teamName}`;
