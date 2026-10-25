@@ -318,27 +318,12 @@
         <div class="manager-modal-title" id="modalTeamName">Team</div>
         <div class="manager-modal-sub">
           <span id="modalManagerName">Manager</span>
-          <span class="pm-dot">·</span>
-          <span id="modalFplId"></span>
-          <span class="pm-dot">·</span>
-          <span id="modalGwBadge"></span>
         </div>
       </div>
     </div>
     <!-- Points and played, shown here once the summary card scrolls away -->
     <div class="mh-mini" id="modalMiniSummary" aria-hidden="true"></div>
     <div class="manager-modal-actions">
-      <div class="manager-nav">
-        <button id="btnModalPrevManager" class="icon-btn" onclick="navigateManagerModal(-1)" aria-label="Previous manager" title="Previous manager (Left arrow)">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-        </button>
-        <button id="btnModalNextManager" class="icon-btn" onclick="navigateManagerModal(1)" aria-label="Next manager" title="Next manager (Right arrow)">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-        </button>
-      </div>
-      <a id="modalFplDirectLink" href="#" target="_blank" rel="noopener" class="icon-btn" title="Open this team on the official FPL site" aria-label="Open in FPL">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-      </a>
       <button class="icon-btn" onclick="closeManagerModal()" aria-label="Close" title="Close (Esc)">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
       </button>
@@ -379,7 +364,7 @@
 
 <script src="demoData.js"></script>
 <script src="squadData.js?v=300.0"></script>
-<script src="app.js?v=539.0"></script>
+<script src="app.js?v=540.0"></script>
 <script>
   // Installable app: offline support via the service worker
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {
