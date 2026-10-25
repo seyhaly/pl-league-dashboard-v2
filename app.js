@@ -2485,7 +2485,7 @@
         const cls = i === 4 ? ' class="text-center chip-half"' : ' class="text-center"';
         return c && c.used
           ? `<td${cls}><span class="chip-tag ${c.colorClass}">GW${c.usedGw}</span></td>`
-          : `<td${cls}><span class="chip-unused">·</span></td>`;
+          : `<td${cls}><span class="chip-tag chip-unused">${label}</span></td>`;
       }).join('');
       return `
         <tr>
