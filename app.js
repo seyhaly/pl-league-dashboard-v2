@@ -2693,15 +2693,26 @@
   // ===================== MATCH DETAIL POP-UP =====================
   // Uses the stats FPL attaches to each fixture (goals, assists, cards, saves,
   // bonus, BPS …); player names come from the bootstrap player list.
-  const MATCH_STAT_ROWS = [
-    ['goals_scored', 'Goals'],
-    ['assists', 'Assists'],
-    ['own_goals', 'Own goals'],
-    ['penalties_saved', 'Penalties saved'],
-    ['penalties_missed', 'Penalties missed'],
-    ['yellow_cards', 'Yellow cards'],
-    ['red_cards', 'Red cards'],
-    ['saves', 'Saves']
+  // Classic match-event icons (inline SVG so they work offline and in both themes)
+  const MATCH_ICONS = {
+    goal: '<svg class="md-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#fff" stroke="#1d1022" stroke-width="1.5"/><path d="M12 7.2l3.6 2.6-1.4 4.2H9.8L8.4 9.8z" fill="#1d1022"/><path d="M12 7.2V2.6M15.6 9.8l4.4-1.4M14.2 14l2.7 3.7M9.8 14l-2.7 3.7M8.4 9.8L4 8.4" stroke="#1d1022" stroke-width="1.3"/></svg>',
+    ownGoal: '<svg class="md-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#fde8ef" stroke="#c4003f" stroke-width="1.5"/><path d="M12 7.2l3.6 2.6-1.4 4.2H9.8L8.4 9.8z" fill="#c4003f"/><path d="M12 7.2V2.6M15.6 9.8l4.4-1.4M14.2 14l2.7 3.7M9.8 14l-2.7 3.7M8.4 9.8L4 8.4" stroke="#c4003f" stroke-width="1.3"/></svg>',
+    assist: '<svg class="md-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 5.5h6l1.2 5.6 7.6 2.2a3 3 0 0 1 2.2 2.9V17H3.5z" fill="#37003c"/><path d="M3.5 17h16.9v1.6H3.5z" fill="#00c46a"/><circle cx="7" cy="20.6" r="1.1" fill="#37003c"/><circle cx="12" cy="20.6" r="1.1" fill="#37003c"/><circle cx="17" cy="20.6" r="1.1" fill="#37003c"/></svg>',
+    yellow: '<svg class="md-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="3" width="11" height="17" rx="2" fill="#f5c400" stroke="#c99a00" stroke-width="0.8" transform="rotate(10 12 11.5)"/></svg>',
+    red: '<svg class="md-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="3" width="11" height="17" rx="2" fill="#e3262b" stroke="#a8151a" stroke-width="0.8" transform="rotate(10 12 11.5)"/></svg>',
+    penSaved: '<svg class="md-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#e6f8ee" stroke="#0a7a3e" stroke-width="1.5"/><text x="12" y="16.3" text-anchor="middle" font-size="12" font-weight="800" fill="#0a7a3e" font-family="Inter, sans-serif">P</text></svg>',
+    penMissed: '<svg class="md-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#fde8ef" stroke="#c4003f" stroke-width="1.5"/><text x="12" y="16.3" text-anchor="middle" font-size="12" font-weight="800" fill="#c4003f" font-family="Inter, sans-serif">P</text></svg>'
+  };
+
+  // [FPL stat, icon, label shown in the tooltip / legend]
+  const MATCH_EVENTS = [
+    ['goals_scored', 'goal', 'Goal'],
+    ['own_goals', 'ownGoal', 'Own goal'],
+    ['assists', 'assist', 'Assist'],
+    ['penalties_saved', 'penSaved', 'Penalty saved'],
+    ['penalties_missed', 'penMissed', 'Penalty missed'],
+    ['yellow_cards', 'yellow', 'Yellow card'],
+    ['red_cards', 'red', 'Red card']
   ];
 
   function playerName(id) {
@@ -2709,9 +2720,17 @@
     return p ? p.web_name : `Player #${id}`;
   }
 
-  function statList(entries, showValue) {
-    if (!entries || !entries.length) return '<span class="md-none">–</span>';
-    return entries.map(x => `<span class="md-player">${playerName(x.element)}${showValue && x.value > 1 ? ` <b>×${x.value}</b>` : ''}</span>`).join('');
+  // One line per player per event type: name with the icon repeated per occurrence
+  function sideEventsHtml(f, side) {
+    const stat = key => ((f.stats || []).find(x => x.identifier === key) || {})[side] || [];
+    const items = [];
+    MATCH_EVENTS.forEach(([key, ico, label]) => {
+      stat(key).forEach(x => {
+        const icons = Array.from({ length: Math.min(x.value || 1, 4) }, () => MATCH_ICONS[ico]).join('');
+        items.push(`<li class="md-event" title="${label}${x.value > 1 ? ` ×${x.value}` : ''}"><span class="md-icons">${icons}</span><span class="md-name">${playerName(x.element)}</span></li>`);
+      });
+    });
+    return items.length ? `<ul class="md-events md-${side === 'h' ? 'home' : 'away'}">${items.join('')}</ul>` : '<div class="md-none">No events</div>';
   }
 
   window.closeMatchDetail = function() {
@@ -2736,36 +2755,31 @@
 
     let body;
     if (st === 'upcoming') {
-      body = `<div class="md-empty">${icon('clock', 16)} Kick-off ${when}. Match stats appear once it starts.</div>`;
+      body = `<div class="md-empty">${icon('clock', 16)} Kick-off ${when}. Match events appear once it starts.</div>`;
     } else {
-      const rows = MATCH_STAT_ROWS.map(([key, label]) => {
-        const sd = stat(key);
-        if (!sd.h.length && !sd.a.length && key !== 'goals_scored') return '';
-        return `
-          <div class="md-row">
-            <div class="md-side md-home">${statList(sd.h, true)}</div>
-            <div class="md-label">${label}</div>
-            <div class="md-side md-away">${statList(sd.a, true)}</div>
-          </div>`;
-      }).join('');
-
-      const tag = (list, team) => list.map(x => ({ ...x, team }));
-      const bonus = [...tag(stat('bonus').h, h), ...tag(stat('bonus').a, a)].sort((x, y) => y.value - x.value);
-      const bps = [...tag(stat('bps').h, h), ...tag(stat('bps').a, a)].sort((x, y) => y.value - x.value).slice(0, 6);
-      const ranked = (title, list, unit) => `
-        <div class="md-ranked">
-          <div class="md-ranked-title">${title}</div>
-          ${list.length ? list.map(x => `
-            <div class="md-ranked-row">
-              ${crestHtml(x.team)}<span class="md-ranked-name">${playerName(x.element)}</span><b>${x.value}${unit}</b>
-            </div>`).join('') : '<div class="md-none">Not available yet</div>'}
-        </div>`;
-
+      const stat = key => (f.stats || []).find(x => x.identifier === key) || { h: [], a: [] };
+      const saves = list => list.length ? list.map(x => `${playerName(x.element)} <b>${x.value}</b>`).join(', ') : '–';
+      const bonus = [...stat('bonus').h.map(x => ({ ...x, team: h })), ...stat('bonus').a.map(x => ({ ...x, team: a }))]
+        .sort((x, y) => y.value - x.value);
       body = `
-        <div class="md-stats">${rows}</div>
-        <div class="md-ranked-grid">
-          ${ranked(st === 'final' ? 'Bonus points' : 'Bonus points (provisional)', bonus, '')}
-          ${ranked('Top BPS', bps, '')}
+        <div class="md-events-grid">
+          ${sideEventsHtml(f, 'h')}
+          <div class="md-divider"></div>
+          ${sideEventsHtml(f, 'a')}
+        </div>
+        <div class="md-saves">
+          <span class="md-saves-side">${saves(stat('saves').h)}</span>
+          <span class="md-saves-label">Saves</span>
+          <span class="md-saves-side md-saves-away">${saves(stat('saves').a)}</span>
+        </div>
+        <div class="md-bonus">
+          <div class="md-bonus-title">Bonus points${st === 'final' ? '' : ' <span>· provisional</span>'}</div>
+          <div class="md-bonus-list">
+            ${bonus.length ? bonus.map(x => `
+              <span class="md-bonus-chip b${x.value}">
+                <b>${x.value}</b>${crestHtml(x.team)}<span>${playerName(x.element)}</span>
+              </span>`).join('') : '<span class="md-none">Not available yet</span>'}
+          </div>
         </div>`;
     }
 

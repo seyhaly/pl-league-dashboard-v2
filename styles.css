@@ -688,25 +688,47 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 .md-when { font-size: 12px; color: var(--muted); }
 .md-centre .gs-mstate { height: 24px; padding: 0 10px; font-size: 12px; }
 
-.md-stats { padding: 6px 0; }
-.md-row { display: grid; grid-template-columns: minmax(0, 1fr) 120px minmax(0, 1fr); align-items: start; gap: 12px; padding: 9px 20px; }
-.md-row + .md-row { border-top: 1px solid var(--border); }
-.md-label { text-align: center; font-size: 11.5px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; padding-top: 2px; }
-.md-side { display: flex; flex-direction: column; gap: 3px; font-size: 13.5px; font-weight: 600; }
-.md-home { align-items: flex-end; text-align: right; }
-.md-away { align-items: flex-start; }
-.md-player b { color: var(--muted); font-weight: 700; }
-.md-none { color: var(--faint); font-weight: 500; }
+.md-events-grid { display: grid; grid-template-columns: minmax(0, 1fr) 1px minmax(0, 1fr); gap: 0 18px; padding: 18px 20px; }
+.md-divider { background: var(--border); }
+.md-events { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 9px; }
+.md-event { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; }
+.md-home .md-event { flex-direction: row-reverse; text-align: right; }
+.md-icons { display: inline-flex; gap: 2px; flex: none; }
+.md-ico { width: 18px; height: 18px; display: block; }
+.md-name { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.md-events-grid > .md-none:first-child { text-align: right; }
+.md-none { color: var(--faint); font-weight: 500; font-size: 13px; }
 .md-empty { display: flex; align-items: center; gap: 8px; padding: 22px 20px; color: var(--muted); }
 
-.md-ranked-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 14px 20px 20px; border-top: 1px solid var(--border); }
-.md-ranked { border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
-.md-ranked-title { padding: 8px 12px; background: var(--surface-2); border-bottom: 1px solid var(--border); font-size: 11.5px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
-.md-ranked-row { display: flex; align-items: center; gap: 8px; padding: 7px 12px; font-size: 13px; font-weight: 600; }
-.md-ranked-row + .md-ranked-row { border-top: 1px solid var(--border); }
-.md-ranked-row .gs-crest { width: 18px; height: 18px; }
-.md-ranked-name { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.md-ranked .md-none { padding: 10px 12px; font-size: 12.5px; }
+.md-saves {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 12px; align-items: center;
+  margin: 0 20px; padding: 10px 14px;
+  border-radius: var(--radius-lg); background: var(--surface-2);
+  font-size: 13px; color: var(--text-2);
+}
+.md-saves-side { text-align: right; }
+.md-saves-away { text-align: left; }
+.md-saves b { color: var(--text); }
+.md-saves-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+
+.md-bonus { padding: 16px 20px 20px; }
+.md-bonus-title { margin-bottom: 10px; font-size: 11.5px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.md-bonus-title span { text-transform: none; letter-spacing: 0; font-weight: 600; color: var(--warn); }
+.md-bonus-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.md-bonus-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 34px; padding: 0 12px 0 4px;
+  border: 1px solid var(--border); border-radius: 999px;
+  background: var(--surface); font-size: 13px; font-weight: 600;
+}
+.md-bonus-chip b {
+  width: 26px; height: 26px; display: grid; place-items: center; border-radius: 50%;
+  font-size: 13px; font-weight: 800;
+}
+.md-bonus-chip.b3 b { background: var(--gold-soft); color: var(--gold); }
+.md-bonus-chip.b2 b { background: var(--silver-soft); color: var(--silver); }
+.md-bonus-chip.b1 b { background: var(--bronze-soft); color: var(--bronze); }
+.md-bonus-chip .gs-crest { width: 18px; height: 18px; }
 
 /* ---------- Form matrix ---------- */
 .matrix-legend-bar { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 14px; }
