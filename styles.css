@@ -1552,7 +1552,7 @@ html.touch-ui .gs-match:active { opacity: 0.6; }
 
 /* Keep clear of the status bar (clock, battery) and the home indicator */
 html.touch-ui .topbar { padding-top: calc(12px + env(safe-area-inset-top)); padding-left: max(20px, env(safe-area-inset-left)); padding-right: max(20px, env(safe-area-inset-right)); }
-html.touch-ui .content { padding: 20px max(20px, env(safe-area-inset-right)) calc(96px + env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left)); }
+html.touch-ui .content { padding: 20px max(20px, env(safe-area-inset-right)) calc(70px + env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left)); }
 
 /* Bigger touch targets */
 html.touch-ui .icon-btn { width: 40px; height: 40px; }
@@ -1564,18 +1564,19 @@ html.touch-ui .content > section.card:not(#section-empty):not(.tab-active) { dis
 html.touch-ui .tabbar {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
   display: flex; justify-content: center; gap: 4px;
-  padding: 6px 12px calc(6px + env(safe-area-inset-bottom));
+  padding: 3px 12px calc(3px + env(safe-area-inset-bottom));
   background: color-mix(in srgb, var(--surface) 88%, transparent);
   backdrop-filter: saturate(180%) blur(14px); -webkit-backdrop-filter: saturate(180%) blur(14px);
   border-top: 1px solid var(--border);
 }
 .tab-btn {
-  flex: 1; max-width: 150px;
-  display: flex; flex-direction: column; align-items: center; gap: 3px;
-  padding: 6px 0 4px;
-  border: 0; border-radius: 10px; background: none;
-  color: var(--muted); font-size: 11.5px; font-weight: 600;
+  flex: 1; max-width: 130px;
+  display: flex; flex-direction: column; align-items: center; gap: 1px;
+  padding: 4px 0 3px;
+  border: 0; border-radius: 8px; background: none;
+  color: var(--muted); font-size: 10.5px; font-weight: 600;
 }
+.tab-btn svg { width: 18px; height: 18px; }
 .tab-btn.active { color: var(--accent-text); }
 .tab-btn.active svg { stroke-width: 2.4; }
 
