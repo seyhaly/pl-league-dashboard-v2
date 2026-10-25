@@ -2991,44 +2991,61 @@
   }
 
   // ===================== PERFORMANCE CHART =====================
+  // Wins / neutrals / losses per manager as stacked bars, in the result colours
+  // used by the form pills, with each segment's count written on it.
+  const PERF_SERIES = [
+    { key: 'wins', label: 'Wins', color: '#00c46a', text: '#06331d' },
+    { key: 'neutrals', label: 'Neutrals', color: '#cfc8d8', text: '#3d3448' },
+    { key: 'losses', label: 'Losses', color: '#e90052', text: '#ffffff' }
+  ];
+
+  const barCountsPlugin = {
+    id: 'barCounts',
+    afterDatasetsDraw(chart) {
+      const { ctx } = chart;
+      ctx.save();
+      ctx.font = `700 12px ${CHART_FONT}`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      chart.data.datasets.forEach((ds, di) => {
+        const meta = chart.getDatasetMeta(di);
+        if (meta.hidden) return;
+        meta.data.forEach((bar, i) => {
+          const v = ds.data[i];
+          if (!v) return;
+          const width = Math.abs(bar.x - bar.base);
+          if (width < 16) return;
+          ctx.fillStyle = PERF_SERIES[di].text;
+          ctx.fillText(String(v), (bar.x + bar.base) / 2, bar.y);
+        });
+      });
+      ctx.restore();
+    }
+  };
+
+  function perfDatasets(summary) {
+    return PERF_SERIES.map(series => ({
+      label: series.label,
+      data: summary.map(s => s[series.key]),
+      backgroundColor: series.color,
+      hoverBackgroundColor: series.color,
+      borderWidth: 0,
+      borderRadius: 6,
+      borderSkipped: false,
+      barThickness: 22
+    }));
+  }
+
   function initPerformanceChart() {
     const ctx = document.getElementById('performanceChart');
     if (!ctx) return;
-    
+
     const summary = getManagerSeasonSummary();
-    const labels = summary.map(s => s.name);
-    
+
     state.perfChartInstance = new Chart(ctx, {
       type: 'bar',
-      data: {
-        labels,
-        datasets: [
-          {
-            label: 'Wins',
-            data: summary.map(s => s.wins),
-            backgroundColor: 'rgba(16, 185, 129, 0.7)',
-            borderColor: '#10b981',
-            borderWidth: 1,
-            borderRadius: 4
-          },
-          {
-            label: 'Losses',
-            data: summary.map(s => s.losses),
-            backgroundColor: 'rgba(239, 68, 68, 0.7)',
-            borderColor: '#ef4444',
-            borderWidth: 1,
-            borderRadius: 4
-          },
-          {
-            label: 'Neutrals',
-            data: summary.map(s => s.neutrals),
-            backgroundColor: 'rgba(148, 163, 184, 0.7)',
-            borderColor: '#94a3b8',
-            borderWidth: 1,
-            borderRadius: 4
-          }
-        ]
-      },
+      data: { labels: summary.map(s => s.name), datasets: perfDatasets(summary) },
+      plugins: [barCountsPlugin],
       options: {
         indexAxis: 'y',
         responsive: true,
@@ -3038,18 +3055,29 @@
             stacked: true,
             beginAtZero: true,
             ticks: { color: getChartTextColor(), font: { weight: '600' }, stepSize: 1 },
-            grid: { color: getChartGridColor() }
+            grid: { color: getChartGridColor(), drawTicks: false },
+            border: { display: false },
+            title: { display: true, text: 'Gameweeks', color: getChartTextColor(), font: { size: 11, weight: '600' } }
           },
           y: {
             stacked: true,
-            ticks: { color: getChartTextColor(), font: { weight: '600' } },
-            grid: { display: false }
+            ticks: { color: getChartTextColor(), font: { weight: '600', size: 13 } },
+            grid: { display: false },
+            border: { display: false }
           }
         },
         plugins: {
-          legend: { 
+          legend: {
             display: true,
-            labels: { color: getChartTextColor(), font: { family: CHART_FONT, weight: '600' }, usePointStyle: true, boxWidth: 8, boxHeight: 8 }
+            position: 'top',
+            align: 'end',
+            labels: { color: getChartTextColor(), font: { family: CHART_FONT, weight: '600' }, usePointStyle: true, pointStyle: 'rectRounded', boxWidth: 10, boxHeight: 10, padding: 16 }
+          },
+          tooltip: {
+            callbacks: {
+              title: items => items[0] ? items[0].label : '',
+              label: item => ` ${item.dataset.label}: ${item.raw} GW${item.raw === 1 ? '' : 's'}`
+            }
           }
         }
       }
@@ -3057,25 +3085,25 @@
   }
 
   function updatePerformanceChartTheme() {
-    if (!state.perfChartInstance) return;
-    state.perfChartInstance.options.scales.y.ticks.color = getChartTextColor();
-    state.perfChartInstance.options.scales.y.grid.color = getChartGridColor();
-    state.perfChartInstance.options.scales.x.ticks.color = getChartTextColor();
-    if (state.perfChartInstance.options.plugins.legend) {
-      state.perfChartInstance.options.plugins.legend.labels.color = getChartTextColor();
-    }
-    state.perfChartInstance.update();
+    const chart = state.perfChartInstance;
+    if (!chart) return;
+    chart.options.scales.y.ticks.color = getChartTextColor();
+    chart.options.scales.x.ticks.color = getChartTextColor();
+    chart.options.scales.x.grid.color = getChartGridColor();
+    chart.options.scales.x.title.color = getChartTextColor();
+    chart.options.plugins.legend.labels.color = getChartTextColor();
+    chart.update();
   }
 
   function updatePerformanceChart() {
-    if (!state.perfChartInstance) return;
+    const chart = state.perfChartInstance;
+    if (!chart) return;
     const summary = getManagerSeasonSummary();
-    
-    state.perfChartInstance.data.labels = summary.map(s => s.name);
-    state.perfChartInstance.data.datasets[0].data = summary.map(s => s.wins);
-    state.perfChartInstance.data.datasets[1].data = summary.map(s => s.losses);
-    state.perfChartInstance.data.datasets[2].data = summary.map(s => s.neutrals);
-    
+    chart.data.labels = summary.map(s => s.name);
+    perfDatasets(summary).forEach((ds, i) => { chart.data.datasets[i].data = ds.data; });
+    // Give each manager row the same height whatever the league size
+    const box = document.querySelector('.chart-box-perf');
+    if (box) box.style.height = `${Math.max(220, summary.length * 40 + 80)}px`;
     updatePerformanceChartTheme();
   }
 
