@@ -32,7 +32,6 @@
     gwSelect:               document.getElementById('gwSelect'),
     prevGwBtn:              document.getElementById('prevGwBtn'),
     nextGwBtn:              document.getElementById('nextGwBtn'),
-    goToCurrentGwBtn:       document.getElementById('goToCurrentGwBtn'),
     standingsBody:          document.getElementById('standingsBody'),
     winLossTableContainer:  document.getElementById('winLossTableContainer'),
     seasonMatrixContainer:  document.getElementById('seasonMatrixContainer'),
@@ -434,13 +433,21 @@
     if (elements.viewModeSelect) {
       elements.viewModeSelect.addEventListener('change', e => {
         state.viewMode = e.target.value;
+        renderGwStrip();
         renderStandingsTable();
       });
     }
 
     // #7 — "Latest GW" Quick Jump
-    if (elements.goToCurrentGwBtn) {
-      elements.goToCurrentGwBtn.addEventListener('click', () => changeGw(state.maxGw));
+    const stripTiles = document.getElementById('gwStripTiles');
+    if (stripTiles) {
+      stripTiles.addEventListener('click', e => {
+        const tile = e.target.closest('[data-gw]');
+        if (!tile || tile.disabled) return;
+        state.viewMode = 'overall';
+        if (elements.viewModeSelect) elements.viewModeSelect.value = 'overall';
+        changeGw(Number(tile.dataset.gw));
+      });
     }
 
     if (elements.toggleMotmBtn) {
@@ -1152,6 +1159,40 @@
     }
   }
 
+  // ===================== GW STRIP & STATUS =====================
+  // A window of gameweek tiles around the selected one (the next, unplayed
+  // gameweek shows greyed out), plus a status tag next to the big title.
+  const GW_STRIP_SIZE = 8;
+
+  function renderGwStrip() {
+    const wrap = document.getElementById('gwStripTiles');
+    if (!wrap) return;
+    const maxGw = state.maxGw || 1;
+    const cur = state.currentGw || maxGw;
+    let start = Math.max(1, Math.min(cur - Math.floor(GW_STRIP_SIZE / 2), maxGw - GW_STRIP_SIZE + 1));
+    const end = Math.min(maxGw, start + GW_STRIP_SIZE - 1);
+    let html = '';
+    for (let g = start; g <= end; g++) {
+      const on = g === cur && state.viewMode === 'overall';
+      html += `<button class="gw-tile${on ? ' is-on' : ''}${g === maxGw ? ' is-latest' : ''}" data-gw="${g}" aria-pressed="${on}" title="Gameweek ${g}${g === maxGw ? ' (latest)' : ''}">${g}</button>`;
+    }
+    if (end === maxGw && maxGw < 38) {
+      html += `<button class="gw-tile is-future" data-gw="${maxGw + 1}" disabled title="Gameweek ${maxGw + 1} hasn't started">${maxGw + 1}</button>`;
+    }
+    wrap.innerHTML = html;
+
+    const pill = document.getElementById('gwStatusPill');
+    if (pill) {
+      const es = (state.eventStatuses || {})[cur] || {};
+      let label = '', cls = '';
+      if (es.finished && es.data_checked) { label = 'Final'; cls = 'is-final'; }
+      else if (es.finished) { label = 'Provisional'; cls = 'is-live'; }
+      else if (cur === (state.seasonGw || maxGw)) { label = 'In progress'; cls = 'is-live'; }
+      pill.textContent = label;
+      pill.className = `gw-status ${cls}`;
+    }
+  }
+
   // ===================== GW NAVIGATION =====================
   function changeGw(newGw) {
     if (newGw < 1 || newGw > state.maxGw) return;
@@ -1165,6 +1206,7 @@
 
     elements.prevGwBtn.disabled = newGw === 1;
     elements.nextGwBtn.disabled = newGw === state.maxGw;
+    renderGwStrip();
     renderAll();
   }
 

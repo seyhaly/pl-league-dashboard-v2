@@ -320,40 +320,60 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 }
 .topbar-left, .topbar-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 
-/* Gameweek navigator: one 36px control — ‹ | Gameweek 8 ▾ | › */
-.gw-nav {
-  display: flex; align-items: stretch;
-  height: 36px;
+/* Big gameweek title (click to pick any gameweek) */
+.gw-title {
+  position: relative;
+  display: flex; align-items: center; gap: 6px;
+  padding: 2px 8px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.gw-title:hover { background: var(--surface-3); }
+.gw-title h2 { font-family: var(--font-display); font-size: 24px; font-weight: 600; line-height: 1.15; white-space: nowrap; letter-spacing: -0.01em; }
+.gw-caret { color: var(--faint); }
+.gw-title select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+
+.gw-status:empty { display: none; }
+.gw-status {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 24px; padding: 0 10px;
+  border-radius: 999px;
+  font-size: 12px; font-weight: 600;
+  background: var(--neutral-soft); color: var(--muted);
+}
+.gw-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.gw-status.is-live { background: var(--warn-soft); color: var(--warn); }
+.gw-status.is-final { background: var(--pos-soft); color: var(--pos); }
+
+/* Gameweek strip: ‹ 1 2 3 … 8 [9] › */
+.gw-strip {
+  display: flex; align-items: center; gap: 2px;
+  height: 36px; padding: 0 3px;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   background: var(--surface);
   box-shadow: var(--shadow-sm);
-  overflow: hidden;
 }
-.gw-nav .icon-btn {
-  width: 36px; height: 100%;
-  border: 0; border-radius: 0;
+.gw-strip-tiles { display: flex; gap: 2px; }
+.gw-tile {
+  min-width: 30px; height: 28px; padding: 0 6px;
+  display: inline-grid; place-items: center;
+  border: 0; border-radius: 6px;
   background: transparent;
+  color: var(--text-2);
+  font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums;
+  transition: background 0.12s, color 0.12s;
 }
-.gw-nav .icon-btn:not(:disabled):hover { background: var(--surface-3); }
-.gw-nav .icon-btn:disabled { opacity: 0.35; }
-.gw-display {
-  position: relative;
-  display: flex; align-items: center; gap: 6px;
-  min-width: 150px; justify-content: center;
-  padding: 0 14px;
-  border-left: 1px solid var(--border);
-  border-right: 1px solid var(--border);
-  cursor: pointer;
-  transition: background 0.15s;
-}
-.gw-display:hover { background: var(--surface-3); }
-.gw-display h2 { font-family: var(--font-body); font-size: 14px; font-weight: 700; white-space: nowrap; letter-spacing: 0; }
-.gw-caret { color: var(--faint); }
-.gw-display select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+.gw-tile:not(:disabled):hover { background: var(--surface-3); color: var(--text); }
+.gw-tile.is-on { background: var(--accent); color: #fff; }
+[data-theme="dark"] .gw-tile.is-on { color: #17101c; }
+.gw-tile.is-on:hover { background: var(--accent-hover) !important; color: #fff !important; }
+.gw-tile.is-future { color: var(--faint); opacity: 0.6; cursor: not-allowed; }
+.gw-tile.is-latest:not(.is-on) { box-shadow: inset 0 -2px 0 var(--accent); border-radius: 6px 6px 2px 2px; }
+.gw-arrow { color: var(--muted); }
+.gw-arrow:disabled { opacity: 0.35; cursor: default; }
 .topbar-left .select { height: 36px; min-width: 170px; font-weight: 600; box-shadow: var(--shadow-sm); }
-.btn-latest { height: 36px; color: var(--accent-text); }
-.btn-latest svg { color: var(--accent-text); }
 
 .meta-pill, .sync-status-tag:empty { display: none; }
 .meta-pill {
