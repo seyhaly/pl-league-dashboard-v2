@@ -1,298 +1,258 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clash of Elite Fantasy League — Admin Dashboard</title>
-  <meta name="description" content="Professional Gameweek Standings, Transfer Deductions, and Chip Usage Tracker for Fantasy Premier League Private Leagues.">
+  <title>Clash of Elite — League Admin</title>
+  <meta name="description" content="Gameweek standings, transfer deductions and chip usage tracker for Fantasy Premier League private leagues.">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon.png?v=2.0">
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2.0">
   <link rel="shortcut icon" href="favicon.ico?v=2.0">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=2.0">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600&family=Outfit:wght@400;500;800&display=swap" rel="stylesheet">
-  <style>
-    body, html { font-family: 'Outfit', sans-serif; }
-    h3, .pipeline-gw-title { font-family: 'Inter', sans-serif; }
-  </style>
-  <link rel="stylesheet" href="styles.css?v=122.0">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    try { document.documentElement.setAttribute('data-theme', localStorage.getItem('fpl_admin_theme') || 'light'); } catch (e) {}
+  </script>
+  <link rel="stylesheet" href="styles.css?v=200.0">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
-<div class="container">
+<div class="app-shell">
 
-  <!-- ===================== PREMIUM HEADER ===================== -->
-  <!-- ===================== LEAGUE BRANDING ===================== -->
-  <div class="league-brand-header">
-    <div class="brand-text">
-      <div class="brand-eyebrow">FANTASY PREMIER LEAGUE &middot; PRIVATE LEAGUE</div>
-      <h1 class="brand-name" id="leagueNameHeader">Clash of Elite Fantasy League</h1>
-    </div>
-  </div>
-
-  <!-- Hidden elements to preserve JS bindings -->
-  <div style="display:none;">
-    <span id="memberCountBadge"></span>
-    <span id="syncStatusTag"></span>
-  </div>
-
-  <!-- ===================== DASHBOARD CONTROLS ===================== -->
-  <div class="glass-panel dashboard-toolbar">
-    
-    <!-- Group 1: My Leagues -->
-    <div class="toolbar-group">
-      <span class="toolbar-label">My Leagues</span>
-      <div class="pill-group">
-        <button class="league-pill active" data-league-code="389585" data-league-name="Clash of Elite 2026-2027">Clash of Elite 2026-2027</button>
-        <button class="league-pill" data-league-code="390100" data-league-name="Fantasy with Heng">Fantasy with Heng</button>
-        <button class="league-pill" data-league-code="demo" data-league-name="Demo Preview">Demo Preview</button>
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-eyebrow">FPL League Admin</span>
+        <span class="brand-name" id="leagueNameHeader">Clash of Elite 2026-2027</span>
       </div>
     </div>
 
-    <div class="toolbar-divider"></div>
-
-    <!-- Group 2: Live Sync -->
-    <div class="toolbar-group">
-      <div class="live-sync-compact">
-        <span class="sync-icon">⟳</span>
-        <input type="text" id="leagueIdInput" class="live-sync-input" placeholder="League ID" value="389585">
-        <button id="syncFplBtn" class="btn-sync">Sync</button>
+    <div class="sidebar-group">
+      <span class="sidebar-label">Leagues</span>
+      <div class="league-list">
+        <button class="league-pill active" data-league-code="389585" data-league-name="Clash of Elite 2026-2027">
+          <span class="league-dot"></span>Clash of Elite 2026-2027
+        </button>
+        <button class="league-pill" data-league-code="390100" data-league-name="Fantasy with Heng">
+          <span class="league-dot"></span>Fantasy with Heng
+        </button>
+        <button class="league-pill" data-league-code="demo" data-league-name="Demo Preview">
+          <span class="league-dot"></span>Demo Preview
+        </button>
       </div>
-    </div>
-  </div>
-
-  <!-- ===================== ADMIN CONTROLS & THEME ===================== -->
-  <div class="glass-panel dashboard-toolbar">
-
-    <!-- Group 3: Admin Toggles -->
-    <div class="toolbar-group">
-      <span class="toolbar-label">Admin Controls</span>
-      <div class="pill-toggle-group">
-        <button id="toggleMotmBtn" class="pill-btn">MOTM</button>
-        <select id="motmMonthSelect" class="toolbar-motm-select" style="display: none;" title="Select Month for MOTM"></select>
-        <button id="toggleMotsBtn" class="pill-btn">MOTS</button>
+      <div class="sync-box">
+        <input type="text" id="leagueIdInput" class="sync-input" placeholder="League ID" value="389585" aria-label="League ID">
+        <button id="syncFplBtn" class="btn btn-primary btn-sm">Sync</button>
       </div>
     </div>
 
-    <div class="toolbar-divider"></div>
+    <nav class="sidebar-group sidebar-nav" aria-label="Sections">
+      <span class="sidebar-label">Sections</span>
+      <a href="#section-standings" class="nav-link active">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h12"/></svg>
+        Standings
+      </a>
+      <a href="#section-gw-status" class="nav-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        Gameweek status
+      </a>
+      <a href="#section-form-matrix" class="nav-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        Form matrix
+      </a>
+      <a href="#section-performance" class="nav-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+        Performance &amp; chips
+      </a>
+      <a href="#section-trajectory" class="nav-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>
+        Rank trajectory
+      </a>
+    </nav>
 
-    <!-- Group 4: Theme -->
-    <div class="toolbar-group">
-      <span class="toolbar-label">Theme</span>
-      <div class="pill-toggle-group">
-        <button class="pill-btn active" data-theme-btn="dark">Dark</button>
-        <button class="pill-btn" data-theme-btn="light">Light</button>
+    <div class="sidebar-group">
+      <span class="sidebar-label">Awards</span>
+      <div class="toggle-row">
+        <button id="toggleMotmBtn" class="chip-toggle" title="Show Manager of the Month">Month</button>
+        <button id="toggleMotsBtn" class="chip-toggle" title="Show Manager of the Season">Season</button>
       </div>
+      <select id="motmMonthSelect" class="select select-sm" style="display: none;" title="Select month for Manager of the Month" aria-label="Manager of the Month month"></select>
     </div>
 
-  </div>
+    <div class="sidebar-footer">
+      <div class="segmented" role="group" aria-label="Theme">
+        <button class="segmented-btn active" data-theme-btn="light">Light</button>
+        <button class="segmented-btn" data-theme-btn="dark">Dark</button>
+      </div>
+    </div>
+  </aside>
 
-  <!-- ===================== GW NAVIGATION ===================== -->
-  <div class="gw-selector-bar">
-    
-    <!-- LEFT: Main Nav -->
-    <div class="gw-nav-wrapper" style="display: flex; flex-direction: row; align-items: center; gap: 16px;">
-      <span class="gw-nav-label" style="font-size: 11px; font-weight: 800; letter-spacing: 1.5px; color: var(--pl-cyan); text-transform: uppercase;">Official Standings</span>
-      <div class="gw-nav-main">
-        <button id="prevGwBtn" class="gw-nav-btn">‹</button>
-        <div class="gw-badge-display" style="position: relative; cursor: pointer;">
-          <select id="gwSelect" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;"></select>
-          <h2 id="gwDisplay">Gameweek 3</h2>
+  <!-- ===================== MAIN ===================== -->
+  <main class="main">
+
+    <!-- Top bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="gw-nav">
+          <button id="prevGwBtn" class="icon-btn" aria-label="Previous gameweek">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <div class="gw-display">
+            <select id="gwSelect" aria-label="Choose gameweek"></select>
+            <h2 id="gwDisplay">Gameweek 3</h2>
+            <svg class="gw-caret" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+          <button id="nextGwBtn" class="icon-btn" aria-label="Next gameweek" disabled>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
         </div>
-        <button id="nextGwBtn" class="gw-nav-btn" disabled>›</button>
-      </div>
-
-      <!-- View Mode / Monthly Dropdown -->
-      <div class="view-mode-wrapper" style="display: flex; align-items: center; gap: 8px;">
-        <select id="viewModeSelect" class="view-mode-select">
+        <select id="viewModeSelect" class="select" aria-label="Standings view">
           <option value="overall">Overall Standings</option>
         </select>
+        <button id="goToCurrentGwBtn" class="btn btn-ghost">Latest GW</button>
       </div>
-    </div>
-
-    <!-- MIDDLE: Spacer -->
-    <div class="gw-spacer" style="flex-grow: 1;"></div>
-
-    <!-- RIGHT: Quick Jump & Export -->
-    <div class="gw-nav-controls" style="display:flex;align-items:center;gap:8px;">
-      <button id="copyStandingsImgBtn" class="export-btn" title="Copy Image to Clipboard">📋 Copy Image</button>
-      <button id="downloadStandingsImgBtn" class="export-btn" title="Download Image PNG">📥 Download PNG</button>
-      <button id="goToCurrentGwBtn" class="gw-now-btn">▶ Latest GW</button>
-    </div>
-
-  </div>
-
-
-  <!-- ===================== EMPTY STATE ===================== -->
-  <section class="glass-panel" id="section-empty" style="display: none; text-align: center; padding: 48px;">
-    <h2 style="color: var(--text-muted); margin-bottom: 16px;">No Data Available</h2>
-    <p style="color: var(--text-muted);">Please sync a valid Live League or switch to the Demo League to view stats.</p>
-  </section>
-
-  <!-- ===================== STANDINGS ===================== -->
-  <section class="glass-panel" id="section-standings">
-    <div class="section-title">
-      <h3 id="standingsSectionHeading">Gameweek Standings &amp; Weekly Payouts — <span id="leagueNameDisplay" style="color: var(--pl-cyan);">Clash of Elite 2026-2027</span></h3>
-      <div style="display:flex;align-items:center;gap:10px;">
-        <span id="standingsGwBadge" class="standings-gw-badge">Gameweek 1</span>
-      </div>
-    </div>
-    <div id="standingsCollapse" class="collapsible-content">
-      <div id="motsBannerContainer"></div>
-      <div id="motmBannerContainer"></div>
-      <div class="standings-table-wrapper table-responsive">
-        <table class="custom-table sticky-header" id="standingsTable">
-          <colgroup id="standingsColgroup">
-            <col style="width: 4%;">
-            <col style="width: 13%;">
-            <col style="width: 9%;">
-            <col style="width: 8%;">
-            <col style="width: 9%;">
-            <col style="width: 9%;">
-            <col style="width: 12%;">
-            <col style="width: 11%;">
-            <col style="width: 11%;">
-            <col style="width: 14%;">
-          </colgroup>
-          <thead id="standingsThead">
-            <tr>
-              <th class="text-center">Pos</th>
-              <th>Manager &amp; Team</th>
-              <th class="text-center">ABA</th>
-              <th class="text-center">Gross</th>
-              <th class="text-center">Transfers</th>
-              <th class="text-center">Net Pts</th>
-              <th class="text-center sortable-header" id="thSeasonPts" title="Click to sort by Season Points">Season Pts <span id="seasonPtsSortIcon" class="sort-icon">⇅</span></th>
-              <th class="text-center">Chip</th>
-              <th class="text-center">Form</th>
-              <th class="text-center">GW Payout</th>
-            </tr>
-          </thead>
-          <tbody id="standingsBody"></tbody>
-        </table>
-      </div>
-      <div id="mobileCards" class="mobile-cards"></div>
-    </div>
-  </section>
-
-  <!-- ===================== GAMEWEEK STATUS TRACKER ===================== -->
-  <section class="glass-panel" id="section-gw-status">
-    <div class="section-title">
-      <h3>Gameweek Status &amp; Processing Tracker</h3>
-      <button class="collapse-btn" data-target="statusCollapse">▲ Collapse</button>
-    </div>
-    <div id="statusCollapse" class="collapsible-content">
-      <!-- Active GW Pipeline Card -->
-      <div id="gwSpotlightContainer" class="pipeline-wrapper"></div>
-    </div>
-  </section>
-
-  <!-- ===================== 38-GAMEWEEK FORM MATRIX ===================== -->
-  <section class="glass-panel" id="section-form-matrix">
-    <div class="section-title">
-      <h3>38-Gameweek Form Matrix</h3>
-      <button class="collapse-btn" data-target="matrixCollapse">▲ Collapse</button>
-    </div>
-    <div id="matrixCollapse" class="collapsible-content">
-      <div class="matrix-legend-bar">
-        <div class="matrix-legend-item"><span class="matrix-legend-swatch form-w"></span> <span>Win</span></div>
-        <div class="matrix-legend-item"><span class="matrix-legend-swatch form-n"></span> <span>Neutral</span></div>
-        <div class="matrix-legend-item"><span class="matrix-legend-swatch form-l"></span> <span>Loss</span></div>
-        <div class="matrix-legend-item"><span id="matrixLegendCurrent" class="matrix-current-indicator">GW1</span> <span>Active Gameweek</span></div>
-      </div>
-      <div id="seasonMatrixContainer" class="table-responsive matrix-table-wrapper"></div>
-    </div>
-  </section>
-
-  <!-- ===================== PERFORMANCE & CHIPS ===================== -->
-  <section class="glass-panel" id="section-performance">
-    <div class="section-title">
-      <h3>Manager Performance &amp; Chip Tracker</h3>
-      <button class="collapse-btn" data-target="performanceCollapse">▲ Collapse</button>
-    </div>
-    <div id="performanceCollapse" class="collapsible-content">
-      <div id="winLossTableContainer" class="table-responsive" style="margin-bottom:24px;"></div>
-      
-      <div style="height: 300px; width: 100%; margin-bottom: 32px; padding: 0 10px;">
-        <canvas id="performanceChart"></canvas>
-      </div>
-
-      <div id="chipTrackerContainer" class="chip-grid"></div>
-    </div>
-  </section>
-
-  <!-- ===================== RANK TRAJECTORY ===================== -->
-  <section class="glass-panel" id="section-trajectory">
-    <div class="section-title">
-      <h3>Rank Trajectory</h3>
-      <button class="collapse-btn" data-target="chartCollapse">▲ Collapse</button>
-    </div>
-    <div id="chartCollapse" class="collapsible-content">
-      <div style="position:relative;height:320px;width:100%;">
-        <canvas id="rankChart"></canvas>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================== CLASSIC GOOGLE SHEETS VIEW ===================== -->
-  <section class="glass-panel" id="section-classic-sheets">
-    <div class="section-title">
-      <h3>📊 Classic Sheet View (Old Style)</h3>
-      <div class="classic-sheet-toolbar">
-        <select id="classicSheetMonthSelect" class="classic-sheet-select" aria-label="Select Month for Sheet View">
-          <!-- Populated dynamically by JS (default Recent 5 Gameweeks) -->
-        </select>
-        <select id="classicSheetSdChipSelect" class="classic-sheet-select" aria-label="S.D. and Chips Display Mode">
-          <option value="current">⚡ S.D. &amp; Chips: Current GW</option>
-          <option value="all">⚡ S.D. &amp; Chips: All GWs</option>
-          <option value="none">⚡ S.D. &amp; Chips: Hidden</option>
-        </select>
-        <div class="classic-sheet-color-picker-group" title="Customize Header Banner Colors">
-          <label for="classicSheetBannerBg" class="classic-sheet-color-label" title="Banner Background Color">
-            <span>🎨</span>
-            <input type="color" id="classicSheetBannerBg" value="#73679f" class="classic-sheet-color-input">
-          </label>
-          <label for="classicSheetBannerText" class="classic-sheet-color-label" title="Banner Text Color">
-            <span>🔤</span>
-            <input type="color" id="classicSheetBannerText" value="#ffffff" class="classic-sheet-color-input">
-          </label>
+      <div class="topbar-right">
+        <span id="memberCountBadge" class="meta-pill"></span>
+        <span id="syncStatusTag" class="sync-status-tag"></span>
+        <div class="btn-group">
+          <button id="copyStandingsImgBtn" class="btn btn-secondary" title="Copy standings image to clipboard">📋 Copy Image</button>
+          <button id="downloadStandingsImgBtn" class="btn btn-secondary" title="Download standings as PNG">📥 Download PNG</button>
         </div>
-        <button class="collapse-btn" data-target="classicSheetCollapse">▲ Collapse</button>
       </div>
-    </div>
-    <div id="classicSheetCollapse" class="collapsible-content">
-      <div class="table-responsive" style="padding:10px 0;">
-        <div id="classicSheetCard" class="classic-sheet-container">
-          <!-- Customizable Header Banner -->
-          <div class="classic-sheet-header-banner" id="classicSheetBanner">
-            <span id="classicSheetLeagueTitle">Clash of Elite Fantasy League 2026-2027</span>
+    </header>
+
+    <div class="content">
+
+      <!-- Empty state -->
+      <section class="card empty-state" id="section-empty" style="display: none;">
+        <h2>No data available</h2>
+        <p>Sync a valid league ID or switch to the Demo Preview league to see stats.</p>
+      </section>
+
+      <!-- Standings -->
+      <section class="card" id="section-standings">
+        <div class="card-header">
+          <div>
+            <h3 id="standingsSectionHeading">Gameweek Standings &amp; Weekly Payouts — <span id="leagueNameDisplay">Clash of Elite 2026-2027</span></h3>
+            <p class="card-subtitle">Click a manager to see their squad.</p>
           </div>
-          
-          <!-- Classic Sheet Table with Sticky Frozen Columns -->
-          <div class="classic-sheet-table-scroll-wrapper">
-            <table class="classic-sheet-table" id="classicSheetTable">
-              <!-- Populated dynamically by JS -->
+          <span id="standingsGwBadge" class="badge badge-accent">Gameweek 1</span>
+        </div>
+        <div id="standingsCollapse" class="collapsible-content">
+          <div id="motsBannerContainer"></div>
+          <div id="motmBannerContainer"></div>
+          <div class="table-wrap standings-table-wrapper">
+            <table class="custom-table" id="standingsTable">
+              <colgroup id="standingsColgroup"></colgroup>
+              <thead id="standingsThead">
+                <tr>
+                  <th class="text-center">Pos</th>
+                  <th>Manager &amp; Team</th>
+                  <th class="text-center">ABA</th>
+                  <th class="text-center">Gross</th>
+                  <th class="text-center">Transfers</th>
+                  <th class="text-center">Net Pts</th>
+                  <th class="text-center sortable-header" id="thSeasonPts" title="Click to sort by Season Points">Season Pts <span id="seasonPtsSortIcon" class="sort-icon">⇅</span></th>
+                  <th class="text-center">Chip</th>
+                  <th class="text-center">Form</th>
+                  <th class="text-center">GW Payout</th>
+                </tr>
+              </thead>
+              <tbody id="standingsBody"></tbody>
             </table>
           </div>
-
-          <!-- Manager of the Month Banner centered under table -->
-          <div id="classicSheetMoMBanner" class="classic-sheet-mom-container"></div>
+          <div id="mobileCards" class="mobile-cards"></div>
         </div>
-      </div>
-    </div>
-  </section>
+      </section>
 
+      <!-- Gameweek status -->
+      <section class="card" id="section-gw-status">
+        <div class="card-header">
+          <div>
+            <h3>Gameweek Status</h3>
+            <p class="card-subtitle">How far FPL has got with points, bonus and league tables for this gameweek.</p>
+          </div>
+          <button class="collapse-btn" data-target="statusCollapse" aria-expanded="true">Hide</button>
+        </div>
+        <div id="statusCollapse" class="collapsible-content">
+          <div id="gwSpotlightContainer" class="pipeline-wrapper"></div>
+        </div>
+      </section>
+
+      <!-- Form matrix -->
+      <section class="card" id="section-form-matrix">
+        <div class="card-header">
+          <div>
+            <h3>38-Gameweek Form Matrix</h3>
+            <p class="card-subtitle">Net points each gameweek, coloured by payout result.</p>
+          </div>
+          <button class="collapse-btn" data-target="matrixCollapse" aria-expanded="true">Hide</button>
+        </div>
+        <div id="matrixCollapse" class="collapsible-content">
+          <div class="matrix-legend-bar">
+            <div class="matrix-legend-item"><span class="matrix-legend-swatch form-w"></span><span>Win</span></div>
+            <div class="matrix-legend-item"><span class="matrix-legend-swatch form-n"></span><span>Neutral</span></div>
+            <div class="matrix-legend-item"><span class="matrix-legend-swatch form-l"></span><span>Loss</span></div>
+            <div class="matrix-legend-item"><span id="matrixLegendCurrent" class="matrix-current-indicator">GW1</span><span>Selected gameweek</span></div>
+          </div>
+          <div id="seasonMatrixContainer" class="table-wrap matrix-table-wrapper"></div>
+        </div>
+      </section>
+
+      <!-- Performance & chips -->
+      <section class="card" id="section-performance">
+        <div class="card-header">
+          <div>
+            <h3>Manager Performance &amp; Chips</h3>
+            <p class="card-subtitle">Season record, payouts and which chips each manager has used.</p>
+          </div>
+          <button class="collapse-btn" data-target="performanceCollapse" aria-expanded="true">Hide</button>
+        </div>
+        <div id="performanceCollapse" class="collapsible-content">
+          <div class="perf-grid">
+            <div id="winLossTableContainer" class="table-wrap"></div>
+            <div class="chart-panel">
+              <span class="panel-title">Wins, losses &amp; neutrals</span>
+              <div class="chart-box chart-box-perf"><canvas id="performanceChart"></canvas></div>
+            </div>
+          </div>
+          <span class="panel-title panel-title-spaced">Chip tracker</span>
+          <div id="chipTrackerContainer" class="chip-grid"></div>
+        </div>
+      </section>
+
+      <!-- Rank trajectory -->
+      <section class="card" id="section-trajectory">
+        <div class="card-header">
+          <div>
+            <h3>Rank Trajectory</h3>
+            <p class="card-subtitle">League position after each gameweek.</p>
+          </div>
+          <button class="collapse-btn" data-target="chartCollapse" aria-expanded="true">Hide</button>
+        </div>
+        <div id="chartCollapse" class="collapsible-content">
+          <div class="chart-box chart-box-rank"><canvas id="rankChart"></canvas></div>
+        </div>
+      </section>
+
+    </div>
+  </main>
 </div>
 
 <!-- ===================== MANAGER SQUAD DETAIL MODAL ===================== -->
 <div id="managerModalBackdrop" class="manager-modal-backdrop" onclick="closeManagerModal()"></div>
 
-<!-- Floating Outside Navigation Arrows -->
-<button id="btnModalPrevManager" class="modal-nav-arrow prev" onclick="navigateManagerModal(-1)" aria-label="Previous Manager" title="Previous Manager (Left Arrow)">
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+<button id="btnModalPrevManager" class="modal-nav-arrow prev" onclick="navigateManagerModal(-1)" aria-label="Previous manager" title="Previous manager (Left arrow)">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
 </button>
-
-<button id="btnModalNextManager" class="modal-nav-arrow next" onclick="navigateManagerModal(1)" aria-label="Next Manager" title="Next Manager (Right Arrow)">
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+<button id="btnModalNextManager" class="modal-nav-arrow next" onclick="navigateManagerModal(1)" aria-label="Next manager" title="Next manager (Right arrow)">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
 </button>
 
 <div id="managerDetailModal" class="manager-detail-modal" role="dialog" aria-modal="true" aria-hidden="true">
@@ -301,30 +261,43 @@
       <div class="manager-modal-avatar" id="modalManagerAvatar">SL</div>
       <div>
         <div class="manager-modal-title">
-          <span id="modalManagerName">Seyha ly</span>
-          <span class="manager-modal-team" id="modalTeamName">— The Red Devil</span>
-          <span class="manager-modal-fpl-id" id="modalFplId">(#2019453)</span>
+          <span id="modalManagerName">Manager</span>
+          <span class="manager-modal-team" id="modalTeamName"></span>
+          <span class="manager-modal-fpl-id" id="modalFplId"></span>
         </div>
-        <div class="manager-modal-sub" id="modalGwBadge">Gameweek 1 Squad Details</div>
+        <div class="manager-modal-sub" id="modalGwBadge">Squad details</div>
       </div>
     </div>
     <div class="manager-modal-actions">
-      <a id="modalFplDirectLink" href="#" target="_blank" rel="noopener" class="btn-modal-fpl-link">
+      <a id="modalFplDirectLink" href="#" target="_blank" rel="noopener" class="btn btn-secondary btn-sm">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-        Open in Official FPL
+        Open in FPL
       </a>
-      <button class="btn-modal-close" onclick="closeManagerModal()" aria-label="Close modal">✕</button>
+      <button class="icon-btn" onclick="closeManagerModal()" aria-label="Close">✕</button>
     </div>
   </div>
-
-  <div class="manager-modal-body" id="modalContentBody">
-    <!-- Dynamic Squad & Stats Table injected by JS -->
-  </div>
+  <div class="manager-modal-body" id="modalContentBody"></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.min.js"></script>
 <script src="demoData.js"></script>
-<script src="squadData.js?v=122.0"></script>
-<script src="app.js?v=122.0"></script>
+<script src="squadData.js?v=200.0"></script>
+<script src="app.js?v=200.0"></script>
+<script>
+  // Highlight the sidebar link for the section in view
+  (function () {
+    const links = document.querySelectorAll('.nav-link');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + entry.target.id));
+      });
+    }, { rootMargin: '-30% 0px -60% 0px' });
+    links.forEach(l => {
+      const target = document.querySelector(l.getAttribute('href'));
+      if (target) observer.observe(target);
+    });
+  })();
+</script>
 </body>
 </html>

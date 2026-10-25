@@ -9,10 +9,7 @@
     entryFee: 3,
     showMotmBadge: false,
     showMotsBadge: false,
-    classicSheetSdChipMode: 'current', // 'current' | 'all' | 'none'
-    classicSheetBannerBg: localStorage.getItem('cs_banner_bg') || '#73679f',
-    classicSheetBannerText: localStorage.getItem('cs_banner_text') || '#ffffff',
-    theme: localStorage.getItem('fpl_admin_theme') || 'dark',
+    theme: localStorage.getItem('fpl_admin_theme') || 'light',
     motsPrizePool: 50,
     dataset: JSON.parse(JSON.stringify(window.DEMO_DATA)),
     eventStatuses: {},
@@ -350,7 +347,6 @@
           if (state.showMotmBadge) populateMotmMonthSelect();
         }
         renderStandingsTable();
-        renderClassicSheetView();
       });
     }
 
@@ -358,7 +354,6 @@
       elements.motmMonthSelect.addEventListener('change', e => {
         state.motmSelectedMonth = e.target.value;
         renderStandingsTable();
-        renderClassicSheetView();
       });
     }
 
@@ -367,7 +362,6 @@
         state.showMotsBadge = !state.showMotsBadge;
         elements.toggleMotsBtn.classList.toggle('active', state.showMotsBadge);
         renderStandingsTable();
-        renderClassicSheetView();
       });
     }
 
@@ -451,97 +445,26 @@
     if (!targetElement) return;
 
     const capturePngUrl = async () => {
-      const currentTheme = document.documentElement.getAttribute('data-theme');
-      const isDark = currentTheme !== 'light';
-      const bgColor = isDark ? '#060913' : '#ffffff';
-
+      const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--surface').trim() || '#ffffff';
       const rect = targetElement.getBoundingClientRect();
-      const h3 = targetElement.querySelector('.section-title h3');
-      let originalH3Html = '';
-      let originalH3Style = '';
 
       try {
-        if (h3) {
-          originalH3Html = h3.innerHTML;
-          originalH3Style = h3.getAttribute('style') || '';
-          
-          const text = h3.innerText.toUpperCase();
-          const computed = window.getComputedStyle(h3);
-          
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
-          const scale = 2;
-          
-          const fontSize = parseFloat(computed.fontSize) || 18;
-          const fontWeight = computed.fontWeight || '800';
-          const fontFamily = computed.fontFamily || 'Outfit, sans-serif';
-          
-          ctx.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
-          if ('letterSpacing' in ctx) ctx.letterSpacing = computed.letterSpacing;
-          
-          const textWidth = ctx.measureText(text).width;
-          const canvasWidth = Math.ceil(textWidth + 20);
-          const canvasHeight = Math.ceil(fontSize * 1.5);
-          
-          canvas.width = canvasWidth * scale;
-          canvas.height = canvasHeight * scale;
-          canvas.style.width = canvasWidth + 'px';
-          canvas.style.height = canvasHeight + 'px';
-          
-          ctx.scale(scale, scale);
-          ctx.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
-          if ('letterSpacing' in ctx) ctx.letterSpacing = computed.letterSpacing;
-          ctx.textBaseline = 'middle';
-          
-          const gradient = ctx.createLinearGradient(0, 0, textWidth, 0);
-          if (isDark) {
-            gradient.addColorStop(0, '#ffffff');
-            gradient.addColorStop(1, '#a5b4fc');
-          } else {
-            gradient.addColorStop(0, '#0f172a');
-            gradient.addColorStop(1, '#4338ca');
-          }
-          ctx.fillStyle = gradient;
-          ctx.fillText(text, 0, canvasHeight / 2);
-          
-          h3.innerHTML = '';
-          h3.appendChild(canvas);
-          h3.style.background = 'none';
-          h3.style.webkitBackgroundClip = 'unset';
-          h3.style.webkitTextFillColor = 'initial';
-        }
-
         await document.fonts.ready;
-        
         if (typeof htmlToImage !== 'undefined') {
-          targetElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme'));
-          
-          const dataUrl = await htmlToImage.toPng(targetElement, {
+          targetElement.classList.add('is-exporting');
+          return await htmlToImage.toPng(targetElement, {
             quality: 1.0,
             pixelRatio: 2,
             backgroundColor: bgColor,
             width: Math.round(rect.width),
             height: Math.round(rect.height),
-            style: {
-              borderRadius: '12px',
-              transform: 'none',
-              margin: '0'
-            }
+            style: { transform: 'none', margin: '0' }
           });
-          return dataUrl;
         }
       } catch (err) {
         console.warn('htmlToImage capture failed:', err);
       } finally {
-        targetElement.removeAttribute('data-theme');
-        if (h3) {
-          h3.innerHTML = originalH3Html;
-          if (originalH3Style) {
-            h3.setAttribute('style', originalH3Style);
-          } else {
-            h3.removeAttribute('style');
-          }
-        }
+        targetElement.classList.remove('is-exporting');
       }
       return null;
     };
@@ -586,46 +509,6 @@
         }
       });
     }
-
-    const sdChipSelect = document.getElementById('classicSheetSdChipSelect');
-    if (sdChipSelect) {
-      sdChipSelect.value = state.classicSheetSdChipMode || 'current';
-      sdChipSelect.addEventListener('change', (e) => {
-        state.classicSheetSdChipMode = e.target.value;
-        renderClassicSheetView();
-      });
-    }
-
-    const bgPicker = document.getElementById('classicSheetBannerBg');
-    const textPicker = document.getElementById('classicSheetBannerText');
-    const bannerEl = document.getElementById('classicSheetBanner');
-
-    function applyBannerColors() {
-      if (bannerEl) {
-        bannerEl.style.backgroundColor = state.classicSheetBannerBg;
-        bannerEl.style.color = state.classicSheetBannerText;
-      }
-      if (bgPicker) bgPicker.value = state.classicSheetBannerBg;
-      if (textPicker) textPicker.value = state.classicSheetBannerText;
-    }
-
-    if (bgPicker) {
-      bgPicker.addEventListener('input', (e) => {
-        state.classicSheetBannerBg = e.target.value;
-        localStorage.setItem('cs_banner_bg', state.classicSheetBannerBg);
-        applyBannerColors();
-      });
-    }
-
-    if (textPicker) {
-      textPicker.addEventListener('input', (e) => {
-        state.classicSheetBannerText = e.target.value;
-        localStorage.setItem('cs_banner_text', state.classicSheetBannerText);
-        applyBannerColors();
-      });
-    }
-
-    applyBannerColors();
   }
 
   // ===================== #8 COLLAPSIBLE SECTIONS =====================
@@ -636,7 +519,8 @@
         const content = document.getElementById(targetId);
         if (!content) return;
         const isCollapsed = content.classList.toggle('collapsed');
-        btn.textContent = isCollapsed ? '▼ Expand' : '▲ Collapse';
+        btn.textContent = isCollapsed ? 'Show' : 'Hide';
+        btn.setAttribute('aria-expanded', String(!isCollapsed));
       });
     });
   }
@@ -1921,9 +1805,6 @@
     if (document.getElementById('section-awards')) {
       document.getElementById('section-awards').style.display = hasData ? 'block' : 'none';
     }
-    if (document.getElementById('section-classic-sheets')) {
-      document.getElementById('section-classic-sheets').style.display = hasData ? 'block' : 'none';
-    }
     document.getElementById('section-standings').style.display = hasData ? 'block' : 'none';
     document.getElementById('section-performance').style.display = hasData ? 'block' : 'none';
     document.getElementById('section-trajectory').style.display = hasData ? 'block' : 'none';
@@ -1939,7 +1820,6 @@
     updateChart();
     updatePerformanceChart();
     renderSeasonAwards();
-    renderClassicSheetView();
   }
 
   // ===================== STANDINGS TABLE =====================
@@ -2937,7 +2817,7 @@
   }
 
   // ===================== CHART =====================
-  const CHART_COLORS = ['#00ff87', '#04f5ff', '#eab308', '#ff2882', '#a855f7', '#38bdf8', '#64748b'];
+  const CHART_COLORS = ['#4f46e5', '#0ea5e9', '#10b981', '#f59e0b', '#ef4444', '#a855f7', '#ec4899', '#64748b'];
 
   function buildDatasets() {
     return state.dataset.managers.map((m, idx) => {
@@ -2954,8 +2834,9 @@
         borderColor: color,
         backgroundColor: color,
         tension: 0,
-        borderWidth: 2.5,
-        pointRadius: 4,
+        clip: 8,
+        borderWidth: 2,
+        pointRadius: 3,
         pointHoverRadius: 7,
         pointBorderWidth: 2,
         pointBackgroundColor: color
@@ -2963,8 +2844,8 @@
     });
   }
 
-  function getChartTextColor() { return state.theme === 'light' ? '#475569' : '#94a3b8'; }
-  function getChartGridColor() { return state.theme === 'light' ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.06)'; }
+  function getChartTextColor() { return state.theme === 'light' ? '#64748b' : '#94a3b8'; }
+  function getChartGridColor() { return state.theme === 'light' ? 'rgba(15,23,42,0.06)' : 'rgba(255,255,255,0.06)'; }
 
   function initChart() {
     const ctx = document.getElementById('rankChart');
@@ -2976,6 +2857,7 @@
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        layout: { padding: { top: 6, bottom: 6, right: 6 } },
         scales: {
           y: {
             reverse: true,
@@ -2991,7 +2873,7 @@
         },
         plugins: {
           legend: {
-            labels: { color: getChartTextColor(), font: { family: 'Plus Jakarta Sans', weight: '700' } }
+            labels: { color: getChartTextColor(), font: { family: 'Inter', weight: '600' }, usePointStyle: true, boxWidth: 8, boxHeight: 8 }
           }
         }
       }
@@ -3074,7 +2956,7 @@
         plugins: {
           legend: { 
             display: true,
-            labels: { color: getChartTextColor(), font: { family: 'Plus Jakarta Sans', weight: '700' } }
+            labels: { color: getChartTextColor(), font: { family: 'Inter', weight: '600' }, usePointStyle: true, boxWidth: 8, boxHeight: 8 }
           }
         }
       }
@@ -3102,265 +2984,6 @@
     state.perfChartInstance.data.datasets[2].data = summary.map(s => s.neutrals);
     
     updatePerformanceChartTheme();
-  }
-
-  // ===================== CLASSIC GOOGLE SHEETS VIEW =====================
-  function renderClassicSheetView() {
-    const tableEl = document.getElementById('classicSheetTable');
-    const titleEl = document.getElementById('classicSheetLeagueTitle');
-    const selectEl = document.getElementById('classicSheetMonthSelect');
-    if (!tableEl) return;
-
-    if (titleEl) {
-      const rawLeague = state.dataset.leagueName || "Clash of Elite";
-      const cleanLeague = rawLeague.replace(/\s*(fantasy\s*league|20\d\d[-–]20\d\d|\d\d\/\d\d)\s*/gi, ' ').trim();
-      titleEl.textContent = `${cleanLeague} Fantasy League 2026-2027`;
-    }
-
-    const bannerEl = document.getElementById('classicSheetBanner');
-    if (bannerEl) {
-      bannerEl.style.backgroundColor = state.classicSheetBannerBg || '#73679f';
-      bannerEl.style.color = state.classicSheetBannerText || '#ffffff';
-    }
-
-    const months = state.dataset.months || [];
-    const currentGw = state.currentGw || 1;
-
-    // Populate month / view select dropdown if empty
-    if (selectEl && selectEl.options.length === 0) {
-      const optRecent = document.createElement('option');
-      optRecent.value = 'recent';
-      optRecent.textContent = 'Recent 5 Gameweeks';
-      selectEl.appendChild(optRecent);
-
-      const optAll = document.createElement('option');
-      optAll.value = 'all';
-      optAll.textContent = 'All 38 Gameweeks (Full Season)';
-      selectEl.appendChild(optAll);
-
-      months.forEach(m => {
-        const opt = document.createElement('option');
-        opt.value = m.name;
-        opt.textContent = `${m.name} (GW${Math.min(...m.gws)}-${Math.max(...m.gws)})`;
-        selectEl.appendChild(opt);
-      });
-
-      // Default by user request: Recent 5 Gameweeks
-      selectEl.value = 'recent';
-
-      selectEl.addEventListener('change', () => {
-        renderClassicSheetView();
-      });
-    }
-
-    const selectedVal = selectEl ? selectEl.value : 'recent';
-    let gwsToDisplay = [];
-    let selectedMonthObj = null;
-
-    if (selectedVal === 'all') {
-      for (let g = 1; g <= 38; g++) {
-        gwsToDisplay.push(g);
-      }
-    } else if (selectedVal === 'recent') {
-      const startGw = Math.max(1, currentGw - 4);
-      for (let g = startGw; g <= currentGw; g++) {
-        gwsToDisplay.push(g);
-      }
-    } else {
-      selectedMonthObj = months.find(m => m.name === selectedVal);
-      if (selectedMonthObj) {
-        const maxMonthGw = Math.max(...selectedMonthObj.gws);
-        if (currentGw < maxMonthGw) {
-          gwsToDisplay = selectedMonthObj.gws.filter(g => g <= currentGw);
-          if (gwsToDisplay.length === 0) gwsToDisplay = [selectedMonthObj.gws[0]];
-        } else {
-          gwsToDisplay = [...selectedMonthObj.gws];
-        }
-      } else {
-        gwsToDisplay = [currentGw];
-      }
-    }
-
-    const currentStandings = getGameweekStandings(currentGw);
-    const totalManagers = currentStandings.length;
-    const splitSize = Math.floor(totalManagers / 2);
-    const hasNeutral = totalManagers % 2 === 1;
-    const neutralRank = hasNeutral ? splitSize + 1 : null;
-
-    const showMots = Boolean(state.showMotsBadge);
-    const showMotm = Boolean(state.showMotmBadge);
-
-    const sdChipSelect = document.getElementById('classicSheetSdChipSelect');
-    const sdChipMode = sdChipSelect ? sdChipSelect.value : (state.classicSheetSdChipMode || 'current');
-    state.classicSheetSdChipMode = sdChipMode;
-
-    const activeLatestGw = gwsToDisplay.filter(g => g <= currentGw).pop() || currentGw;
-
-    function shouldShowSdChipForGw(g) {
-      if (sdChipMode === 'all') return true;
-      if (sdChipMode === 'current' && g === activeLatestGw) return true;
-      return false;
-    }
-
-    function getChipCode(chipRaw) {
-      if (!chipRaw) return '';
-      const cn = String(chipRaw).toLowerCase();
-      if (cn.includes('wildcard') || cn.includes('wc')) return 'WC';
-      if (cn.includes('free hit') || cn.includes('freehit') || cn.includes('fh')) return 'FH';
-      if (cn.includes('bench boost') || cn.includes('bboost') || cn.includes('bb')) return 'BB';
-      if (cn.includes('triple captain') || cn.includes('3xc') || cn.includes('tc')) return 'TC';
-      return String(chipRaw).toUpperCase();
-    }
-
-    // Calculate MOTS (Manager of the Season)
-    let seasonLeader = null;
-    if (showMots && currentStandings.length > 0) {
-      const seasonList = [...currentStandings].sort((a, b) => b.seasonTotalNet - a.seasonTotalNet);
-      seasonLeader = seasonList[0];
-    }
-
-    // Table Header
-    let theadColsHtml = '';
-    gwsToDisplay.forEach(g => {
-      theadColsHtml += `<th class="cs-col-gw">GW${g}</th>`;
-      if (shouldShowSdChipForGw(g)) {
-        theadColsHtml += `<th class="cs-col-sd cs-th-sd">S.D.</th><th class="cs-col-chip cs-th-chip">Chip</th>`;
-      }
-    });
-
-    let theadHtml = `
-      <thead>
-        <tr>
-          <th class="cs-col-rank">Rank</th>
-          <th class="cs-col-manager">Manager</th>
-          <th class="cs-col-team">Team</th>
-          <th class="cs-col-aba">ABA</th>
-          ${theadColsHtml}
-          <th class="cs-col-total">Total</th>
-          <th class="cs-col-payment">Payment</th>
-          ${showMots ? `<th class="cs-col-seasonal">Seasonal prize</th>` : ''}
-        </tr>
-      </thead>
-    `;
-
-    // Table Body
-    let tbodyHtml = '<tbody>';
-    const maxTotalScore = Math.max(...currentStandings.map(m => m.seasonTotalNet !== undefined ? m.seasonTotalNet : (m.totalPoints || 0)));
-
-    currentStandings.forEach((m, idx) => {
-      const rank = idx + 1;
-      let rankBorderClass = 'cs-rank-loss';
-      let paymentText = '';
-
-      if (rank <= splitSize) {
-        rankBorderClass = 'cs-rank-win';
-        const payerRank = totalManagers - rank + 1;
-        paymentText = `Get 3$ from ${payerRank}`;
-      } else if (hasNeutral && rank === neutralRank) {
-        rankBorderClass = 'cs-rank-neutral';
-        paymentText = `Neutral (0$)`;
-      } else {
-        rankBorderClass = 'cs-rank-loss';
-        const receiverRank = totalManagers - rank + 1;
-        paymentText = `Pay 3$ to ${receiverRank}`;
-      }
-
-      const abaNum = ABA_ACCOUNTS[m.id] || '';
-      const totalScore = m.seasonTotalNet !== undefined ? m.seasonTotalNet : (m.totalPoints || 0);
-      const isHighestTotal = totalScore > 0 && totalScore === maxTotalScore;
-      const totalColClass = isHighestTotal ? 'cs-col-total cs-total-highest' : 'cs-col-total';
-
-      // Build GW score cells & optional SD/Chip per GW
-      let gwCellsHtml = '';
-      gwsToDisplay.forEach(g => {
-        if (g > currentGw) {
-          gwCellsHtml += `<td class="cs-col-gw cs-cell-unplayed">-</td>`;
-          if (shouldShowSdChipForGw(g)) {
-            gwCellsHtml += `<td class="cs-col-sd"></td><td class="cs-col-chip"></td>`;
-          }
-          return;
-        }
-
-        const gStandings = getGameweekStandings(g);
-        const gManager = gStandings.find(x => x.id === m.id);
-        if (!gManager || (gManager.grossScore === 0 && gManager.hitCost === 0)) {
-          gwCellsHtml += `<td class="cs-col-gw cs-cell-unplayed">-</td>`;
-          if (shouldShowSdChipForGw(g)) {
-            gwCellsHtml += `<td class="cs-col-sd"></td><td class="cs-col-chip"></td>`;
-          }
-          return;
-        }
-
-        const gScore = gManager.netScore !== undefined ? gManager.netScore : gManager.grossScore;
-        let cellClass = 'cs-cell-neutral';
-        if (gManager.outcomeCode === 'W' || gManager.rank <= splitSize) {
-          cellClass = 'cs-cell-win';
-        } else if (gManager.outcomeCode === 'L' || (hasNeutral ? gManager.rank > neutralRank : gManager.rank > splitSize)) {
-          cellClass = 'cs-cell-loss';
-        }
-
-        gwCellsHtml += `<td class="cs-col-gw ${cellClass}">${gScore}</td>`;
-
-        if (shouldShowSdChipForGw(g)) {
-          const gData = state.dataset.gameweeks.find(x => x.gw === g);
-          const hitCost = gData && gData.hits ? (gData.hits[m.id] || 0) : (gManager.hitCost || 0);
-          const sdHtml = hitCost > 0
-            ? `<td class="cs-col-sd" style="color:#dc2626;font-weight:900;font-size:15px;">-${hitCost}</td>`
-            : `<td class="cs-col-sd"></td>`;
-
-          const chipRaw = (gData && gData.chipsUsed && gData.chipsUsed[m.id]) || gManager.chip || '';
-          const chipCode = getChipCode(chipRaw);
-          const chipHtml = chipCode
-            ? `<td class="cs-col-chip" style="color:#f59e0b;font-weight:900;font-size:15px;">${chipCode}</td>`
-            : `<td class="cs-col-chip"></td>`;
-
-          gwCellsHtml += `${sdHtml}${chipHtml}`;
-        }
-      });
-
-      const motsCellHtml = (showMots && idx === 0)
-        ? `<td class="cs-col-seasonal" rowspan="${totalManagers}">
-            <div class="classic-sheet-mots-content">
-              <div>Manager of the Season:</div>
-              <div class="classic-sheet-mots-winner">${seasonLeader ? seasonLeader.name : 'Leader'}</div>
-            </div>
-           </td>`
-        : '';
-
-      tbodyHtml += `
-        <tr>
-          <td class="cs-col-rank ${rankBorderClass}">${rank}</td>
-          <td class="cs-col-manager">${m.name}</td>
-          <td class="cs-col-team">${m.teamName}</td>
-          <td class="cs-col-aba">${abaNum || '-'}</td>
-          ${gwCellsHtml}
-          <td class="${totalColClass}">${totalScore}</td>
-          <td class="cs-col-payment">${paymentText}</td>
-          ${motsCellHtml}
-        </tr>
-      `;
-    });
-    tbodyHtml += '</tbody>';
-
-    tableEl.innerHTML = theadHtml + tbodyHtml;
-
-    // Manager of the Month (MoM) Banner centered below table
-    const momEl = document.getElementById('classicSheetMoMBanner');
-    if (momEl) {
-      if (showMotm) {
-        const targetMonthName = state.motmSelectedMonth || (selectedMonthObj ? selectedMonthObj.name : (getCurrentGwMonth(currentGw)?.name || 'September'));
-        const motmInfo = getMonthlyMotmLeader(targetMonthName);
-        if (motmInfo && motmInfo.leaders && motmInfo.leaders.length > 0) {
-          const names = motmInfo.leaders.map(l => l.name).join(' & ');
-          const splitText = motmInfo.isTied ? ' (split the prize)' : '';
-          momEl.innerHTML = `<div class="classic-sheet-mom-pill">MoM (${motmInfo.activeMonth.name}): ${names}${splitText}</div>`;
-        } else {
-          momEl.innerHTML = '';
-        }
-      } else {
-        momEl.innerHTML = '';
-      }
-    }
   }
 
   // ===================== MANAGER SQUAD DETAIL MODAL =====================
