@@ -320,19 +320,40 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 }
 .topbar-left, .topbar-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 
-.gw-nav { display: flex; align-items: center; gap: 6px; }
+/* Gameweek navigator: one 36px control — ‹ | Gameweek 8 ▾ | › */
+.gw-nav {
+  display: flex; align-items: stretch;
+  height: 36px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+.gw-nav .icon-btn {
+  width: 36px; height: 100%;
+  border: 0; border-radius: 0;
+  background: transparent;
+}
+.gw-nav .icon-btn:not(:disabled):hover { background: var(--surface-3); }
+.gw-nav .icon-btn:disabled { opacity: 0.35; }
 .gw-display {
   position: relative;
   display: flex; align-items: center; gap: 6px;
-  height: 36px;
-  padding: 0 12px;
-  border-radius: var(--radius-md);
+  min-width: 150px; justify-content: center;
+  padding: 0 14px;
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  cursor: pointer;
   transition: background 0.15s;
 }
 .gw-display:hover { background: var(--surface-3); }
-.gw-display h2 { font-size: 18px; font-weight: 700; white-space: nowrap; }
+.gw-display h2 { font-family: var(--font-body); font-size: 14px; font-weight: 700; white-space: nowrap; letter-spacing: 0; }
 .gw-caret { color: var(--faint); }
 .gw-display select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+.topbar-left .select { height: 36px; min-width: 170px; font-weight: 600; box-shadow: var(--shadow-sm); }
+.btn-latest { height: 36px; color: var(--accent-text); }
+.btn-latest svg { color: var(--accent-text); }
 
 .meta-pill, .sync-status-tag:empty { display: none; }
 .meta-pill {
