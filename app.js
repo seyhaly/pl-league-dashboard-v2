@@ -29,7 +29,6 @@
   // DOM Elements
   const elements = {
     gwDisplay:              document.getElementById('gwDisplay'),
-    gwSelect:               document.getElementById('gwSelect'),
     prevGwBtn:              document.getElementById('prevGwBtn'),
     nextGwBtn:              document.getElementById('nextGwBtn'),
     standingsBody:          document.getElementById('standingsBody'),
@@ -366,15 +365,9 @@
   }
 
   // ===================== GW & VIEW MODE SELECTOR =====================
+  // The gameweek strip is the gameweek picker; rebuild it when the season length changes
   function populateGwSelect() {
-    elements.gwSelect.innerHTML = '';
-    for (let i = 1; i <= state.maxGw; i++) {
-      const opt = document.createElement('option');
-      opt.value = i;
-      opt.textContent = `Gameweek ${i}`;
-      if (i === state.currentGw) opt.selected = true;
-      elements.gwSelect.appendChild(opt);
-    }
+    renderGwStrip();
   }
 
   function populateViewModeSelect() {
@@ -423,11 +416,6 @@
       state.viewMode = 'overall';
       if (elements.viewModeSelect) elements.viewModeSelect.value = 'overall';
       changeGw(state.currentGw + 1);
-    });
-    elements.gwSelect.addEventListener('change', e => {
-      state.viewMode = 'overall';
-      if (elements.viewModeSelect) elements.viewModeSelect.value = 'overall';
-      changeGw(parseInt(e.target.value));
     });
 
     if (elements.viewModeSelect) {
@@ -1159,45 +1147,35 @@
     }
   }
 
-  // ===================== GW STRIP & STATUS =====================
-  // A window of gameweek tiles around the selected one (the next, unplayed
-  // gameweek shows greyed out), plus a status tag next to the big title.
-  const GW_STRIP_SIZE = 8;
-
+  // ===================== GW STRIP =====================
+  const GW_STRIP_VISIBLE = 5;
+  // Every gameweek as a tile in a bar that shows five at a time and scrolls
+  // sideways (two-finger swipe on a trackpad). The next, unplayed gameweek is greyed out.
   function renderGwStrip() {
     const wrap = document.getElementById('gwStripTiles');
     if (!wrap) return;
     const maxGw = state.maxGw || 1;
     const cur = state.currentGw || maxGw;
-    let start = Math.max(1, Math.min(cur - Math.floor(GW_STRIP_SIZE / 2), maxGw - GW_STRIP_SIZE + 1));
-    const end = Math.min(maxGw, start + GW_STRIP_SIZE - 1);
     let html = '';
-    for (let g = start; g <= end; g++) {
+    for (let g = 1; g <= maxGw; g++) {
       const on = g === cur && state.viewMode === 'overall';
       html += `<button class="gw-tile${on ? ' is-on' : ''}${g === maxGw ? ' is-latest' : ''}" data-gw="${g}" aria-pressed="${on}" title="Gameweek ${g}${g === maxGw ? ' (latest)' : ''}">${g}</button>`;
     }
-    if (end === maxGw && maxGw < 38) {
+    if (maxGw < 38) {
       html += `<button class="gw-tile is-future" data-gw="${maxGw + 1}" disabled title="Gameweek ${maxGw + 1} hasn't started">${maxGw + 1}</button>`;
     }
     wrap.innerHTML = html;
 
-    const pill = document.getElementById('gwStatusPill');
-    if (pill) {
-      const es = (state.eventStatuses || {})[cur] || {};
-      let label = '', cls = '';
-      if (es.finished && es.data_checked) { label = 'Final'; cls = 'is-final'; }
-      else if (es.finished) { label = 'Provisional'; cls = 'is-live'; }
-      else if (cur === (state.seasonGw || maxGw)) { label = 'In progress'; cls = 'is-live'; }
-      pill.textContent = label;
-      pill.className = `gw-status ${cls}`;
-    }
+    // Show the selected gameweek in the middle of the visible five (tile + gap = 36px)
+    const tiles = wrap.children.length;
+    const firstVisible = Math.max(0, Math.min(cur - 3, tiles - GW_STRIP_VISIBLE));
+    wrap.scrollTo({ left: firstVisible * 36, behavior: 'auto' });
   }
 
   // ===================== GW NAVIGATION =====================
   function changeGw(newGw) {
     if (newGw < 1 || newGw > state.maxGw) return;
     state.currentGw = newGw;
-    elements.gwSelect.value = newGw;
     elements.gwDisplay.textContent = `Gameweek ${newGw}`;
     
     if (elements.standingsGwBadge) {
