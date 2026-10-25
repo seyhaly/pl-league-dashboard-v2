@@ -3046,6 +3046,18 @@
       else if (e.type === 'S' && e.description === 'ON') subOn[e.personId] = clockLabel(e);
     });
 
+    // Who each substitute replaced: the ON and OFF entries of one substitution share an event id
+    const nameById = {};
+    ordered.forEach(tl => [...(tl.lineup || []), ...(tl.substitutes || [])].forEach(p => {
+      if (p.name) nameById[p.id] = p.name.last || p.name.display;
+    }));
+    const offByEvent = {};
+    (fixture.events || []).forEach(e => { if (e.type === 'S' && e.description === 'OFF') offByEvent[e.id] = e.personId; });
+    const replaced = {};
+    (fixture.events || []).forEach(e => {
+      if (e.type === 'S' && e.description === 'ON' && offByEvent[e.id]) replaced[e.personId] = nameById[offByEvent[e.id]];
+    });
+
     const playerCard = p => {
       const photo = playerPhotoUrl(p);
       return `
@@ -3080,7 +3092,7 @@
         <ul>
           ${(tl.substitutes || []).map(p => `
             <li class="${subOn[p.id] ? 'is-on' : ''}">
-              <b>${p.matchShirtNumber ?? ''}</b><span>${p.name ? p.name.display : ''}</span>
+              <b>${p.matchShirtNumber ?? ''}</b><span>${p.name ? p.name.display : ''}${replaced[p.id] ? `<small class="lu-sub-for"><i>▼</i> ${replaced[p.id]}</small>` : ''}</span>
               ${subOn[p.id] ? `<em title="Came on">▲ ${subOn[p.id]}</em>` : ''}
               ${marks[p.id] ? `<span class="lu-bench-marks">${marks[p.id].filter(m => !m.includes('lu-off')).join('')}</span>` : ''}
             </li>`).join('')}
