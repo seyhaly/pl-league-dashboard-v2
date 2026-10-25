@@ -25,7 +25,7 @@
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     if (location.hash) history.replaceState(null, '', location.pathname + location.search);
   </script>
-  <link rel="stylesheet" href="styles.css?v=430.0">
+  <link rel="stylesheet" href="styles.css?v=460.0">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
@@ -196,7 +196,7 @@
         <div class="card-header">
           <div>
             <h3>Gameweek Status</h3>
-            <p class="card-subtitle">How far FPL has got with points, bonus and league tables for this gameweek.</p>
+            <p class="card-subtitle">Matches, bonus points and league tables for the selected gameweek, straight from FPL.</p>
           </div>
           <button class="collapse-btn" data-target="statusCollapse" aria-expanded="true">Hide</button>
         </div>
@@ -312,7 +312,7 @@
 
 <script src="demoData.js"></script>
 <script src="squadData.js?v=300.0"></script>
-<script src="app.js?v=450.0"></script>
+<script src="app.js?v=460.0"></script>
 <script>
   // Installable app: offline support via the service worker
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {

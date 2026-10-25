@@ -945,6 +945,7 @@
           }
 
           if (fixData && Array.isArray(fixData)) {
+            state.fixturesByGw = Object.assign({}, state.fixturesByGw, { [detectedGw]: fixData });
             state.fixtures = fixData;
             if (state.dataset) state.dataset.fixtures = fixData;
           }
@@ -1025,6 +1026,7 @@
             });
             if (state.eventStatuses[detectedGw]) {
               state.eventStatuses[detectedGw].daily_status = stData.status.filter(s => s.event === detectedGw);
+              state.eventStatuses[detectedGw].leagues = stData.leagues || '';
             }
           }
         } catch (stErr) {
@@ -2524,287 +2526,159 @@
     `;
   }
 
-  function populateStatusGwDropdown(activeGw) {
-    const select = document.getElementById('statusGwSelect');
-    const prevBtn = document.getElementById('statusPrevGwBtn');
-    const nextBtn = document.getElementById('statusNextGwBtn');
-    if (!select) return;
-    let html = '';
-    for (let gw = 1; gw <= 38; gw++) {
-      const isCurrentMark = (gw === (state.currentGw || 1)) ? ' (Current)' : '';
-      const selected = (gw === activeGw) ? 'selected' : '';
-      html += `<option value="${gw}" ${selected}>Gameweek ${gw}${isCurrentMark}</option>`;
-    }
-    select.innerHTML = html;
-    if (prevBtn) prevBtn.disabled = activeGw <= 1;
-    if (nextBtn) nextBtn.disabled = activeGw >= 38;
+  // ===================== GAMEWEEK STATUS =====================
+  // Built from FPL's own data: the gameweek's fixtures (scores, live minutes,
+  // finished flags), the event-status feed (live / bonus per matchday, league
+  // tables) and the gameweek's finished / data_checked flags.
+  const statusFixtureRequests = {};
+
+  function fixturesForGw(gw) {
+    const cached = state.fixturesByGw && state.fixturesByGw[gw];
+    if (cached) return cached;
+    const loaded = state.fixtures || (state.dataset && state.dataset.fixtures);
+    if (Array.isArray(loaded) && loaded.length && loaded.every(f => Number(f.event) === Number(gw))) return loaded;
+    return null;
   }
 
-  window.selectStatusGw = function(val) {
-    state.statusGw = parseInt(val, 10) || 1;
-    renderGwStatus();
-  };
+  function loadFixturesForGw(gw) {
+    if (statusFixtureRequests[gw]) return;
+    statusFixtureRequests[gw] = fetchFplWithTimeout(`https://fantasy.premierleague.com/api/fixtures/?event=${gw}`, 8000)
+      .then(data => {
+        if (Array.isArray(data)) {
+          state.fixturesByGw = Object.assign({}, state.fixturesByGw, { [gw]: data });
+          if (state.currentGw === gw) renderGwStatus();
+        } else {
+          statusFixtureRequests[gw] = null;
+        }
+      })
+      .catch(() => { statusFixtureRequests[gw] = null; });
+  }
 
-  window.jumpToCurrentStatusGw = function() {
-    state.statusGw = state.currentGw || 1;
-    renderGwStatus();
-  };
+  function teamById(id) {
+    const t = getTeamsMap()[id] || getTeamsMap()[String(id)];
+    return t || { short_name: '?', code: null };
+  }
 
-  window.changeStatusGw = function(delta) {
-    const current = state.statusGw || state.currentGw || 1;
-    const nextGw = Math.max(1, Math.min(38, current + delta));
-    state.statusGw = nextGw;
-    renderGwStatus();
-  };
+  function crestHtml(team) {
+    return team.code
+      ? `<img class="gs-crest" src="https://resources.premierleague.com/premierleague/badges/70/t${team.code}.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'">`
+      : '<span class="gs-crest"></span>';
+  }
+
+  function fixtureState(f) {
+    if (f.finished) return 'final';
+    if (f.finished_provisional) return 'ft';
+    if (f.started) return 'live';
+    return 'upcoming';
+  }
 
   function renderGwStatus() {
-    const spotlightContainer = document.getElementById('gwSpotlightContainer');
-    if (!spotlightContainer) return;
-
+    const container = document.getElementById('gwSpotlightContainer');
+    if (!container) return;
     const gw = state.currentGw || 1;
-    let statusObj = state.eventStatuses[gw];
+    const es = (state.eventStatuses || {})[gw] || {};
+    const fixtures = fixturesForGw(gw);
 
-    const inputVal = (state.leagueIdInput ? state.leagueIdInput.value.trim().toLowerCase() : '');
-    const isDemoMode = inputVal === 'demo' || state.isDemoMode === true;
-    const isRealLeague = !isDemoMode;
-
-    const activeManagers = state.dataset.managers || [];
-    const currentGwData = state.dataset.gameweeks ? state.dataset.gameweeks.find(g => g.gw === gw) : null;
-    const hasLiveScores = activeManagers.length > 0 && currentGwData && activeManagers.some(m => (currentGwData.scores[m.id] || 0) > 0);
-
-    if (!statusObj) {
-      statusObj = {
-        gw: gw,
-        finished: isDemoMode,
-        data_checked: isDemoMode,
-        bonus_added: isDemoMode,
-        leagues: isDemoMode ? 'Updated' : (hasLiveScores ? 'Updated' : 'Pending'),
-        daily_status: [],
-        is_current: hasLiveScores || isDemoMode || gw === 1
-      };
-    } else {
-      if (statusObj.is_current === undefined) statusObj.is_current = (gw === state.currentGw || hasLiveScores);
-      if (hasLiveScores && !statusObj.leagues) statusObj.leagues = 'Updated';
+    if (!fixtures) {
+      container.innerHTML = `<div class="gs-empty">Loading Gameweek ${gw} fixtures…</div>`;
+      loadFixturesForGw(gw);
+      return;
     }
 
-    // Determine daily_status for current/past/future GWs
-    let dailyStatus = (statusObj && statusObj.daily_status && statusObj.daily_status.length > 0)
-      ? statusObj.daily_status
-      : null;
+    const isFinal = Boolean(es.finished && es.data_checked);
+    const total = fixtures.length;
+    const states = fixtures.map(fixtureState);
+    const done = states.filter(x => x === 'ft' || x === 'final').length;
+    const live = states.filter(x => x === 'live').length;
+    const anyStarted = states.some(x => x !== 'upcoming');
 
-    if (!dailyStatus || dailyStatus.length === 0) {
-      if (isDemoMode) {
-        dailyStatus = [
-          { date: '2026-08-22', points: 'r', bonus_added: true },
-          { date: '2026-08-23', points: 'r', bonus_added: true }
-        ];
-      } else if (gw === 1) {
-        // GW1 Live matchday tracking:
-        // Friday: Finished & Bonus Added
-        // Saturday: Match points updated, Bonus processing live
-        // Sunday: Pending
-        const isFinished = Boolean(statusObj.finished && statusObj.data_checked);
-        dailyStatus = [
-          { date: '2026-08-21', points: 'r', bonus_added: true },
-          { date: '2026-08-22', points: 'r', bonus_added: isFinished },
-          { date: '2026-08-23', points: isFinished ? 'r' : 'p', bonus_added: isFinished }
-        ];
-      } else {
-        const isFinished = Boolean(statusObj.finished && statusObj.data_checked);
-        let gwStart = new Date(2026, 7, 21);
-        if (statusObj.deadline_time) gwStart = new Date(statusObj.deadline_time);
-        else gwStart = new Date(gwStart.getTime() + (gw - 1) * 7 * 86400000);
+    // Matchdays as FPL counts them (UK date of kick-off), with FPL's per-day status
+    const daily = Array.isArray(es.daily_status) ? es.daily_status : [];
+    const dayKey = f => (f.kickoff_time || '').slice(0, 10);
+    const days = [...new Set(fixtures.map(dayKey))].filter(Boolean).sort();
+    const bonusDays = days.filter(d => (daily.find(x => x.date === d) || {}).bonus_added).length;
+    const allBonus = isFinal || es.finished || (daily.length > 0 && done === total && bonusDays === days.length);
+    const leagues = String(es.leagues || '').toLowerCase();
+    const tablesDone = isFinal || es.finished || (allBonus && leagues === 'updated');
 
-        const d1 = new Date(gwStart.getTime() + 1 * 86400000).toISOString().split('T')[0];
-        const d2 = new Date(gwStart.getTime() + 2 * 86400000).toISOString().split('T')[0];
-        dailyStatus = [
-          { date: d1, points: isFinished ? 'r' : 'p', bonus_added: isFinished },
-          { date: d2, points: isFinished ? 'r' : 'p', bonus_added: isFinished }
-        ];
-      }
-    }
+    const step = (state_, title, detail) => ({ state: state_, title, detail });
+    const steps = [
+      step(done === total ? 'done' : (anyStarted ? 'active' : 'wait'), 'Matches',
+        `${done} of ${total} finished${live ? ` · ${live} live` : ''}`),
+      step(allBonus ? 'done' : (bonusDays > 0 || done > 0 ? 'active' : 'wait'), 'Bonus points',
+        allBonus ? 'Added' : (days.length ? `Added for ${bonusDays} of ${days.length} days` : 'Waiting')),
+      step(tablesDone ? 'done' : (leagues === 'updating' ? 'active' : 'wait'), 'League tables',
+        tablesDone ? 'Updated' : (leagues === 'updating' ? 'Updating…' : 'After bonus is added')),
+      step(isFinal ? 'done' : 'wait', 'Final', isFinal ? 'Confirmed by FPL' : 'After FPL checks the data')
+    ];
 
-    // Normalize dailyStatus from official FPL API status
-    const normalizedDailyStatus = dailyStatus.map(day => {
-      const ptsRaw = (day.points || '').trim().toLowerCase();
-      return {
-        ...day,
-        points: ptsRaw, // 'r', 'p', or ''
-        bonus_added: Boolean(day.bonus_added)
-      };
-    });
+    let pill = { cls: 'is-wait', text: 'Upcoming' };
+    if (isFinal) pill = { cls: 'is-done', text: 'Final' };
+    else if (live) pill = { cls: 'is-live', text: 'Live' };
+    else if (done === total && total) pill = { cls: 'is-active', text: allBonus ? 'Updating tables' : 'Waiting for bonus' };
+    else if (anyStarted) pill = { cls: 'is-active', text: 'In progress' };
 
-    const isGwFinalized = Boolean(statusObj.finished && statusObj.data_checked) || (normalizedDailyStatus.length > 0 && normalizedDailyStatus.every(d => d.points === 'r' && d.bonus_added));
-    const isGwInProgress = !isGwFinalized && (statusObj.is_current || hasLiveScores || normalizedDailyStatus.some(d => d.points === 'r' || d.points === 'p'));
+    const stepIcon = st => st === 'done' ? icon('check', 13) : (st === 'active' ? '<span class="gs-spinner"></span>' : '');
+    const stepsHtml = steps.map((st, i) => `
+      <li class="gs-step is-${st.state}">
+        <span class="gs-step-dot">${stepIcon(st.state) || i + 1}</span>
+        <span class="gs-step-text"><strong>${st.title}</strong><span>${st.detail}</span></span>
+      </li>`).join('');
 
-    // Determine overall status label
-    let overallStatusLabel = 'Upcoming';
-    let overallStatusClass = 'pipe-badge-muted';
+    const timeFmt = d => d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+    const daysHtml = days.map(d => {
+      const dayFixtures = fixtures.filter(f => dayKey(f) === d).sort((x, y) => x.kickoff_time.localeCompare(y.kickoff_time));
+      const ds = daily.find(x => x.date === d) || {};
+      const dayStates = dayFixtures.map(fixtureState);
+      let tag;
+      if (isFinal || dayStates.every(x => x === 'final')) tag = { cls: 'is-done', text: 'Final' };
+      else if (ds.bonus_added) tag = { cls: 'is-done', text: 'Bonus added' };
+      else if (dayStates.includes('live')) tag = { cls: 'is-live', text: 'Live' };
+      else if (dayStates.every(x => x === 'ft' || x === 'final')) tag = { cls: 'is-active', text: 'Bonus pending' };
+      else if (dayStates.some(x => x !== 'upcoming')) tag = { cls: 'is-active', text: 'In progress' };
+      else tag = { cls: 'is-wait', text: 'Upcoming' };
 
-    if (isDemoMode || isGwFinalized) {
-      overallStatusLabel = 'Finalized';
-      overallStatusClass = 'pipe-badge-success';
-    } else if (isGwInProgress) {
-      overallStatusLabel = 'In Progress';
-      overallStatusClass = 'pipe-badge-live';
-    }
-
-    // ── Compute progress bar ──────────────────────────────
-    const doneDays    = isGwFinalized ? normalizedDailyStatus.length : normalizedDailyStatus.filter(d => d.points === 'r' && d.bonus_added).length;
-    const totalDays   = normalizedDailyStatus.length;
-    const progressPct = totalDays > 0 ? Math.round((doneDays / totalDays) * 100) : 0;
-    const progressLabel = `${doneDays} of ${totalDays} day${totalDays !== 1 ? 's' : ''} finalized`;
-
-    // ── Helpers ───────────────────────────────────────────
-    const CHECK  = `<svg width="10" height="10" viewBox="0 0 10 10" fill="none" style="margin-right:4px;vertical-align:middle"><path d="M1.5 5L3.8 7.5L8.5 2.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-    const SPIN   = `<svg width="10" height="10" viewBox="0 0 10 10" fill="none" style="margin-right:4px;vertical-align:middle"><path d="M5 1A4 4 0 1 1 1 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`;
-    const CLOCK  = `<span style="margin-right:4px;font-size:9px;vertical-align:middle">○</span>`;
-
-    const makeTag = (type, label) => {
-      const icon = type === 'done' ? CHECK : (type === 'active' ? SPIN : CLOCK);
-      return `<span class="day-tag tag-${type}">${icon}${label}</span>`;
-    };
-
-    // ── Fixtures helper: count matches on each day ──────────────
-    const KNOWN_MATCH_COUNTS = {
-      // GW1
-      '2026-08-21': 1, '2026-08-22': 5, '2026-08-23': 3, '2026-08-24': 1,
-      // GW2
-      '2026-08-28': 1, '2026-08-29': 4, '2026-08-30': 4, '2026-08-31': 1,
-      // GW3
-      '2026-09-04': 1, '2026-09-05': 7, '2026-09-06': 2,
-      // GW4
-      '2026-09-12': 7, '2026-09-13': 2, '2026-09-14': 1
-    };
-
-    const getMatchCountForDay = (dateStr) => {
-      const fixturesList = state.fixtures || 
-                           (state.dataset && state.dataset.fixtures) || 
-                           (window.FPL_LIVE_STATIC && window.FPL_LIVE_STATIC.fixtures) || [];
-      if (Array.isArray(fixturesList) && fixturesList.length > 0) {
-        const matchesOnDate = fixturesList.filter(f => f && f.kickoff_time && f.kickoff_time.split('T')[0] === dateStr);
-        if (matchesOnDate.length > 0) {
-          return matchesOnDate.length;
-        }
-      }
-      if (KNOWN_MATCH_COUNTS[dateStr] !== undefined) {
-        return KNOWN_MATCH_COUNTS[dateStr];
-      }
-      return 1;
-    };
-
-    // ── Build rows matching official matchday calendar ──────────────
-    const tableRows = normalizedDailyStatus.map((day, idx, arr) => {
-      const [y, m, d] = day.date.split('-').map(Number);
-      const dateObj = new Date(Date.UTC(y, m - 1, d, 12, 0, 0));
-      const weekday = dateObj.toLocaleDateString('en-GB', { weekday: 'long', timeZone: 'UTC' });
-      const dateFmt = dateObj.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
-
-      const isDayConfirmed = isGwFinalized || (day.points === 'r' && day.bonus_added);
-      const isDayLiveOrProvisional = !isDayConfirmed && (day.points === 'p' || day.points === 'r');
-      const isDayUpcoming = !isDayConfirmed && !isDayLiveOrProvisional;
-
-      const matchCount = getMatchCountForDay(day.date);
-      const fixturesLabel = matchCount === 1 ? '(1 match)' : `(${matchCount} matches)`;
-
-      let dayStatusBadge = '';
-      let ptsType = 'pending';
-      let ptsLabel = 'Pending';
-      let bonusType = 'pending';
-      let bonusLabel = 'Pending';
-      let leaguesTagType = 'pending';
-      let leaguesLabel = 'Pending';
-
-      if (isDayConfirmed) {
-        dayStatusBadge = `<span class="fpl-status-badge fpl-badge-final">CONFIRMED</span>`;
-        ptsType = 'done'; ptsLabel = 'Updated';
-        bonusType = 'done'; bonusLabel = 'Added';
-        leaguesTagType = 'done'; leaguesLabel = 'Updated';
-      } else if (isDayLiveOrProvisional) {
-        if (day.bonus_added) {
-          dayStatusBadge = `<span class="fpl-status-badge fpl-badge-final">CONFIRMED</span>`;
-          bonusType = 'done'; bonusLabel = 'Added';
-        } else {
-          dayStatusBadge = `<span class="fpl-status-badge fpl-badge-provisional">PROVISIONAL</span>`;
-          bonusType = 'active'; bonusLabel = 'Processing';
-        }
-        ptsType = 'done'; ptsLabel = 'Updated';
-        const leaguesUpdating = (statusObj.leagues || '').toLowerCase() === 'updating';
-        leaguesTagType = leaguesUpdating ? 'active' : 'pending';
-        leaguesLabel = leaguesUpdating ? 'Updating…' : 'Pending';
-      } else {
-        dayStatusBadge = `<span class="fpl-status-badge fpl-badge-upcoming">YET TO PLAY</span>`;
-        ptsType = 'pending'; ptsLabel = 'Pending';
-        bonusType = 'pending'; bonusLabel = 'Pending';
-        leaguesTagType = 'pending'; leaguesLabel = 'Pending';
-      }
-
-      const rowClass = isDayConfirmed ? 'row-done' : (isDayLiveOrProvisional ? 'row-active' : 'row-pending');
-
+      const label = new Date(`${d}T12:00:00Z`).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'short', timeZone: 'UTC' });
+      const rows = dayFixtures.map(f => {
+        const h = teamById(f.team_h), a = teamById(f.team_a);
+        const st = fixtureState(f);
+        const score = st === 'upcoming'
+          ? `<span class="gs-kickoff">${timeFmt(new Date(f.kickoff_time))}</span>`
+          : `<span class="gs-score">${f.team_h_score ?? 0}<i>–</i>${f.team_a_score ?? 0}</span>`;
+        const status = st === 'live' ? `<span class="gs-mstate is-live"><span class="live-dot"></span>${f.minutes || 0}'</span>`
+          : st === 'ft' ? '<span class="gs-mstate is-active">FT</span>'
+          : st === 'final' ? '<span class="gs-mstate is-done">FT</span>'
+          : '<span class="gs-mstate is-wait">Kick-off</span>';
+        return `
+          <li class="gs-match is-${st}">
+            <span class="gs-team gs-home">${h.short_name}${crestHtml(h)}</span>
+            ${score}
+            <span class="gs-team gs-away">${crestHtml(a)}${a.short_name}</span>
+            ${status}
+          </li>`;
+      }).join('');
       return `
-        <tr class="daily-row ${rowClass}">
-          <td class="daily-td-date">
-            <span class="date-weekday">${weekday}</span>
-            <span class="date-short">${dateFmt}</span>
-          </td>
-          <td>${dayStatusBadge}</td>
-          <td><span class="fixtures-count-badge">${fixturesLabel}</span></td>
-          <td>${makeTag(ptsType, ptsLabel)}</td>
-          <td>${makeTag(bonusType, bonusLabel)}</td>
-          <td>${makeTag(leaguesTagType, leaguesLabel)}</td>
-        </tr>
-      `;
+        <section class="gs-day">
+          <header class="gs-day-head"><strong>${label}</strong><span class="gs-tag ${tag.cls}">${tag.text}</span></header>
+          <ul class="gs-matches">${rows}</ul>
+        </section>`;
     }).join('');
 
-    // ── Last-synced timestamp ─────────────────────────────
-    const now = new Date();
-    const syncTime = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-    const syncDate = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
-
-    const tableHtml = `
-      <div class="tracker-progress-bar-wrap">
-        <div class="tracker-progress-bar-track">
-          <div class="tracker-progress-bar-fill" style="width:${progressPct}%"></div>
-        </div>
-        <span class="tracker-progress-label">${progressLabel}</span>
-      </div>
-      <div class="premium-table-container">
-        <table class="daily-table">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Day Status</th>
-              <th>Fixtures</th>
-              <th>Match Points</th>
-              <th>Bonus Points</th>
-              <th>League Standings</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${tableRows}
-          </tbody>
-        </table>
-      </div>
-      <div class="tracker-footer">
-        <span class="tracker-sync-label">Last synced: ${syncDate}, ${syncTime}</span>
-      </div>
-    `;
-
-    spotlightContainer.innerHTML = `
-      <div class="pipe-card-premium">
-        <div class="pipe-card-top">
-          <div class="pipe-card-title-area">
-            <div class="pipe-card-gw">Gameweek ${gw}</div>
-            <div class="pipe-card-subtitle">Daily Processing Tracker</div>
+    const pct = total ? Math.round((done / total) * 100) : 0;
+    const updated = state.lastSyncedAt ? ` · Updated ${timeFmt(new Date(state.lastSyncedAt))}` : '';
+    container.innerHTML = `
+      <div class="gs">
+        <div class="gs-head">
+          <div>
+            <div class="gs-title">Gameweek ${gw}</div>
+            <div class="gs-sub">${done} of ${total} matches finished${updated}</div>
           </div>
-          <div class="pipe-card-right">
-            <span class="pipe-badge ${overallStatusClass}">${overallStatusLabel}</span>
-          </div>
+          <span class="gs-pill ${pill.cls}">${pill.text}</span>
         </div>
-        ${tableHtml}
-      </div>
-    `;
-
+        <div class="gs-progress" aria-hidden="true"><span style="width:${pct}%"></span></div>
+        <ol class="gs-steps">${stepsHtml}</ol>
+        <div class="gs-days">${daysHtml}</div>
+      </div>`;
   }
 
   // ===================== CHART =====================
