@@ -1312,15 +1312,22 @@ html.md-open { overflow: hidden; scrollbar-gutter: stable; }
 .pm-card { padding: 14px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); }
 .pm-empty { color: var(--muted); font-size: 13px; text-align: center; }
 
+/* Compact one-row summary that stays at the top while the squad scrolls */
 .pm-summary {
-  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 20px; align-items: center;
-  padding: 16px 18px;
+  position: sticky; top: -20px; z-index: 6;
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px; align-items: center;
+  padding: 10px 16px;
   background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  box-shadow: 0 6px 16px -10px rgba(29, 16, 34, 0.35);
 }
-.pm-hero { display: flex; flex-direction: column; padding-right: 20px; border-right: 1px solid var(--border); }
-.pm-hero-value { font-family: var(--font-display); font-size: 44px; font-weight: 600; line-height: 1.05; color: var(--accent-text); font-variant-numeric: tabular-nums; }
-.pm-hero-sub { font-size: 12.5px; color: var(--muted); }
-.pm-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px 16px; }
+.pm-hero { display: flex; flex-direction: column; padding-right: 16px; border-right: 1px solid var(--border); }
+.pm-hero .pm-label { font-size: 10.5px; }
+.pm-hero-value { font-family: var(--font-display); font-size: 32px; font-weight: 600; line-height: 1.05; color: var(--accent-text); font-variant-numeric: tabular-nums; }
+.pm-hero-sub { font-size: 11.5px; color: var(--muted); white-space: nowrap; }
+.pm-facts { display: grid; grid-template-columns: repeat(6, minmax(0, auto)); justify-content: space-between; gap: 6px 14px; }
+.pm-facts .pm-label { font-size: 10.5px; white-space: nowrap; }
+.pm-facts .pm-fact-value { font-size: 15px; white-space: nowrap; }
+.pm-facts .pm-of { font-size: 12px; }
 .pm-fact-ytp .pm-fact-value, .pm-fact-ytp .pm-fact-value .pm-of { color: var(--warn); }
 .ytp-pill {
   display: inline-flex; align-items: center; gap: 5px;
@@ -1333,8 +1340,9 @@ html.md-open { overflow: hidden; scrollbar-gutter: stable; }
 .pm-fact { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .pm-fact-value { font-size: 17px; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; }
 .pm-of { font-size: 13px; font-weight: 500; color: var(--muted); }
-.pm-progress { display: block; height: 4px; border-radius: 999px; background: var(--surface-3); overflow: hidden; }
-.pm-progress span { display: block; height: 100%; border-radius: inherit; background: var(--pos); }
+.pm-progress { display: flex; gap: 2px; width: 100%; min-width: 96px; height: 5px; border-radius: 999px; background: var(--surface-3); overflow: hidden; }
+.pm-progress span { display: block; height: 100%; border-radius: 999px; background: var(--pos); }
+.pm-progress span.pm-progress-ytp { background: var(--warn); }
 .pm-fact .chip-tag { align-self: flex-start; }
 
 .pm-section { display: flex; flex-direction: column; gap: 10px; }

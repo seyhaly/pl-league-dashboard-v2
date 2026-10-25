@@ -4419,6 +4419,7 @@
 
       // ── Summary strip ──────────────────────────────────────
       const playedPct = maxSquadCount > 0 ? Math.round((playedCount / maxSquadCount) * 100) : 0;
+      const ytpPct = maxSquadCount > 0 ? Math.round((Math.min(yetToPlayCount, maxSquadCount - playedCount) / maxSquadCount) * 100) : 0;
       const chipHtml = activeChip && activeChip !== 'None'
         ? `<span class="chip-tag ${getChipColorClass(squadData && squadData.active_chip)}">${activeChip}</span>`
         : '<span class="pm-fact-value">None</span>';
@@ -4434,7 +4435,7 @@
             <div class="pm-fact">
               <span class="pm-label">Played</span>
               <span class="pm-fact-value">${playedCount}<span class="pm-of"> / ${maxSquadCount}</span></span>
-              <span class="pm-progress"><span style="width:${playedPct}%"></span></span>
+              <span class="pm-progress" title="Green: played · amber: yet to play"><span style="width:${playedPct}%"></span>${ytpPct > 0 ? `<span class="pm-progress-ytp" style="width:${ytpPct}%"></span>` : ''}</span>
             </div>
             <div class="pm-fact${yetToPlayCount > 0 ? ' pm-fact-ytp' : ''}">
               <span class="pm-label">Yet to play</span>
