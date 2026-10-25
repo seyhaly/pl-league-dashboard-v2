@@ -763,6 +763,9 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 /* Line-ups */
 .lu-formations { display: flex; justify-content: space-between; padding: 14px 20px 8px; font-size: 14px; font-weight: 700; }
 .lu-formations span { display: inline-flex; align-items: center; gap: 8px; }
+.lu-formations em { font-style: normal; font-size: 12.5px; font-weight: 600; color: var(--muted); padding: 0 4px; }
+.lu-manager { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--border); font-size: 13px; }
+.lu-manager span { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
 .lu-pitch {
   position: relative; margin: 0 20px; height: 470px; border-radius: 14px; overflow: hidden;
   background: repeating-linear-gradient(90deg, #1f8f52 0 60px, #1b844b 60px 120px);

@@ -2766,7 +2766,7 @@
         const seasons = await plFetch('/compseasons');
         const seasonId = Math.round(seasons.content[0].id);
         const season = await plFetch(`/season/${seasonId}`);
-        const index = {};
+        const index = { _seasonId: seasonId };
         season.content.forEach(f => {
           const [home, away] = f.teams.map(t => t.team.club.abbr);
           index[`${home}-${away}`] = Math.round(f.id);
@@ -2777,15 +2777,34 @@
     return plSeasonIndexPromise;
   }
 
+  // Each club's current manager, keyed by club code (e.g. SUN -> Régis Le Bris)
+  let plManagersPromise = null;
+  function plManagers(seasonId) {
+    if (!plManagersPromise) {
+      plManagersPromise = plFetch(`/managers/${seasonId}`)
+        .then(data => {
+          const byClub = {};
+          (data.content || []).forEach(o => {
+            const abbr = o.currentTeam && o.currentTeam.club && o.currentTeam.club.abbr;
+            if (o.role === 'Manager' && abbr && o.name) byClub[abbr] = o.name.display;
+          });
+          return byClub;
+        })
+        .catch(() => { plManagersPromise = null; return {}; });
+    }
+    return plManagersPromise;
+  }
+
   async function plMatchFor(f) {
     const index = await plSeasonIndex();
     const id = index[`${teamById(f.team_h).short_name}-${teamById(f.team_a).short_name}`];
     if (!id) throw new Error('Match not found');
-    const [fixture, stats] = await Promise.all([
+    const [fixture, stats, managers] = await Promise.all([
       plFetch(`/fixture/${id}`),
-      plFetch(`/stats/${id}`).catch(() => null)
+      plFetch(`/stats/${id}`).catch(() => null),
+      plManagers(index._seasonId)
     ]);
-    return { id, fixture, stats };
+    return { id, fixture, stats, managers };
   }
 
   // Every FPL fixture of the season, for the league table (refreshed each minute)
@@ -2910,7 +2929,7 @@
       return '<div class="md-empty"><span class="gs-spinner"></span> Loading match centre…</div>';
     }
     if (tab === 'events') return plEventsHtml(pl.fixture, f, h, a, st);
-    if (tab === 'lineups') return lineupsTabHtml(pl.fixture);
+    if (tab === 'lineups') return lineupsTabHtml(pl.fixture, pl.managers || {});
     if (tab === 'stats') return statsTabHtml(pl);
     return '';
   }
@@ -3007,7 +3026,7 @@
     return opta ? `https://resources.premierleague.com/premierleague25/photos/players/110x140/${opta}.png` : '';
   }
 
-  function lineupsTabHtml(fixture) {
+  function lineupsTabHtml(fixture, managers) {
     const lists = fixture.teamLists || [];
     if (lists.length < 2 || !lists[0].lineup || !lists[0].lineup.length) {
       return '<div class="md-empty">Line-ups are usually announced about an hour before kick-off.</div>';
@@ -3057,6 +3076,7 @@
     const benchHtml = (tl, team) => `
       <div class="lu-bench">
         <div class="lu-bench-head">${crestHtml(team)}<strong>${team.name || team.short_name}</strong><span>${(tl.formation && tl.formation.label) || ''}</span></div>
+        ${managers[team.short_name] ? `<div class="lu-manager"><span>Manager</span><strong>${managers[team.short_name]}</strong></div>` : ''}
         <ul>
           ${(tl.substitutes || []).map(p => `
             <li class="${subOn[p.id] ? 'is-on' : ''}">
@@ -3070,8 +3090,8 @@
     const homeTeam = teamById(currentMatchFixture().team_h), awayTeam = teamById(currentMatchFixture().team_a);
     return `
       <div class="lu-formations">
-        <span>${crestHtml(homeTeam)}${(ordered[0].formation && ordered[0].formation.label) || ''}</span>
-        <span>${(ordered[1].formation && ordered[1].formation.label) || ''}${crestHtml(awayTeam)}</span>
+        <span>${crestHtml(homeTeam)}${(ordered[0].formation && ordered[0].formation.label) || ''}${managers[homeTeam.short_name] ? `<em>${managers[homeTeam.short_name]}</em>` : ''}</span>
+        <span>${managers[awayTeam.short_name] ? `<em>${managers[awayTeam.short_name]}</em>` : ''}${(ordered[1].formation && ordered[1].formation.label) || ''}${crestHtml(awayTeam)}</span>
       </div>
       <div class="lu-pitch">
         <div class="lu-lines"></div>

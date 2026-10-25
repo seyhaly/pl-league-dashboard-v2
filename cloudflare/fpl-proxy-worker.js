@@ -11,6 +11,7 @@
 //   /pl/season/<id>      -> every fixture of that season
 //   /pl/fixture/<id>     -> one match: line-ups, formation, events
 //   /pl/stats/<id>       -> one match: team stats
+//   /pl/managers/<id>    -> every club's current manager for that season
 //
 // Only these read-only endpoints are allowed, and answers are cached briefly
 // so many page loads don't all hit the upstream services.
@@ -23,7 +24,8 @@ const PL_ROUTES = [
   [/^\/pl\/compseasons$/, () => `${PL_API}/competitions/1/compseasons?page=0&pageSize=1`, 21600],
   [/^\/pl\/season\/(\d+)$/, m => `${PL_API}/fixtures?comps=1&compSeasons=${m[1]}&page=0&pageSize=400&altIds=true`, 300],
   [/^\/pl\/fixture\/(\d+)$/, m => `${PL_API}/fixtures/${m[1]}?altIds=true`, 20],
-  [/^\/pl\/stats\/(\d+)$/, m => `${PL_API}/stats/match/${m[1]}`, 30]
+  [/^\/pl\/stats\/(\d+)$/, m => `${PL_API}/stats/match/${m[1]}`, 30],
+  [/^\/pl\/managers\/(\d+)$/, m => `${PL_API}/teamofficials?compSeasons=${m[1]}&pageSize=40`, 21600]
 ];
 
 // Sites allowed to read the responses in a browser
