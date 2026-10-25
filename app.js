@@ -3948,7 +3948,10 @@
   function updateSummaryJoin() {
     const modal = document.getElementById('managerDetailModal');
     const body = document.getElementById('modalContentBody');
-    if (modal && body) modal.classList.toggle('summary-joined', body.scrollTop > 2);
+    const summary = body && body.querySelector('.pm-summary');
+    if (!modal || !body) return;
+    const gone = summary ? body.scrollTop > summary.offsetTop + summary.offsetHeight - 8 : false;
+    modal.classList.toggle('mini-on', gone);
   }
 
   function initSquadPanelGestures() {
@@ -3956,7 +3959,7 @@
     const body = document.getElementById('modalContentBody');
     if (!modal || !body) return;
 
-    // Once the squad scrolls, the summary joins the header as one bar
+    // Once the summary card scrolls away, its key numbers show in the header
     body.addEventListener('scroll', updateSummaryJoin, { passive: true });
 
     body.addEventListener('click', e => {
@@ -4559,6 +4562,15 @@
         ${squadHtml}
         ${activityHtml}
       `;
+      const mini = document.getElementById('modalMiniSummary');
+      if (mini) {
+        mini.innerHTML = `
+          <span class="mh-pts"><b>${netGwPoints}</b> pts</span>
+          <span class="mh-played"><b>${playedCount}</b>/${maxSquadCount} played
+            <span class="pm-progress"><span style="width:${playedPct}%"></span>${ytpPct > 0 ? `<span class="pm-progress-ytp" style="width:${ytpPct}%"></span>` : ''}</span>
+          </span>
+          ${yetToPlayCount > 0 ? `<span class="mh-ytp">${icon('clock', 12)} ${yetToPlayCount} yet to play</span>` : '<span class="mh-done">All played</span>'}`;
+      }
       syncSquadViewButtons();
       updateSummaryJoin();
     } catch (err) {
