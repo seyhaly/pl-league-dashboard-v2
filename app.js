@@ -95,7 +95,7 @@
     return `<svg class="ico ico-${name}" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON_PATHS[name] || ''}</svg>`;
   }
 
-  const CHART_FONT = "'Inter', 'Noto Sans Khmer', sans-serif";
+  const CHART_FONT = "'Inter', 'Kantumruy Pro', sans-serif";
 
   // ===================== MANAGER IDENTITY =====================
   // Same palette and order as the rank chart, so a manager keeps one colour everywhere
@@ -606,6 +606,7 @@
     card.className = 'share-card';
     card.setAttribute('data-theme', 'light');
     card.innerHTML = `
+      <div class="sc-stripe"></div>
       <div class="sc-header">
         <div class="sc-brand">
           <span class="sc-mark">${icon('trophy', 18)}</span>
@@ -2597,7 +2598,7 @@
           <td class="text-center"><span class="stat-pill win">${m.wins} W</span></td>
           <td class="text-center"><span class="stat-pill loss">${m.losses} L</span></td>
           <td class="text-center"><span class="stat-pill neu">${m.neutrals} N</span></td>
-          <td class="text-center"><span style="font-weight:700;font-family:'Outfit',sans-serif;">${m.winRate}%</span></td>
+          <td class="text-center"><span class="cell-strong">${m.winRate}%</span></td>
           <td class="text-center"><span ${ptsStyle}>${m.totalNetPoints}</span></td>
           <td class="text-right"><span class="payout-badge ${earnClass}">${earnText}</span></td>
         </tr>
@@ -2953,8 +2954,8 @@
     });
   }
 
-  function getChartTextColor() { return state.theme === 'light' ? '#64748b' : '#94a3b8'; }
-  function getChartGridColor() { return state.theme === 'light' ? 'rgba(15,23,42,0.06)' : 'rgba(255,255,255,0.06)'; }
+  function getChartTextColor() { return state.theme === 'light' ? '#6b6178' : '#a99db8'; }
+  function getChartGridColor() { return state.theme === 'light' ? 'rgba(55,0,60,0.07)' : 'rgba(255,255,255,0.07)'; }
 
   function initChart() {
     const ctx = document.getElementById('rankChart');

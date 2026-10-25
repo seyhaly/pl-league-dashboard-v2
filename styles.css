@@ -4,47 +4,54 @@
    ===================================================================== */
 
 /* ---------- Design tokens ---------- */
+/* Restrained FPL style: dark Premier League purple as the one brand colour,
+   purple-tinted greys for structure, green/red only for results and money. */
 :root,
 [data-theme="light"] {
-  --bg: #f5f6fa;
+  --font-body: 'Inter', 'Kantumruy Pro', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Outfit', 'Kantumruy Pro', 'Inter', system-ui, sans-serif;
+
+  --bg: #f6f4f8;
   --surface: #ffffff;
-  --surface-2: #f8f9fc;
-  --surface-3: #f1f3f8;
-  --border: #e5e8ef;
-  --border-strong: #d5dae4;
-  --text: #0f172a;
-  --text-2: #475569;
-  --muted: #64748b;
-  --faint: #94a3b8;
+  --surface-2: #faf8fb;
+  --surface-3: #f1edf4;
+  --border: #e9e4ee;
+  --border-strong: #d9d1e1;
+  --text: #1d1022;
+  --text-2: #4c4257;
+  --muted: #6b6178;
+  --faint: #a49bb0;
 
-  --accent: #4f46e5;
-  --accent-hover: #4338ca;
-  --accent-soft: #eef2ff;
-  --accent-text: #4338ca;
+  --accent: #37003c;
+  --accent-hover: #4d0a54;
+  --accent-soft: #f4ecf6;
+  --accent-text: #5a1462;
+  --brand-gradient: linear-gradient(90deg, #04f5ff 0%, #00ff85 35%, #e90052 100%);
 
-  --pos: #059669;
-  --pos-soft: #ecfdf5;
-  --pos-border: #a7f3d0;
-  --neg: #dc2626;
-  --neg-soft: #fef2f2;
-  --neg-border: #fecaca;
-  --warn: #b45309;
-  --warn-soft: #fffbeb;
-  --warn-border: #fde68a;
-  --neutral-soft: #f1f5f9;
-  --neutral-border: #e2e8f0;
+  --pos: #0a7a3e;
+  --pos-soft: #e6f8ee;
+  --pos-border: #b4ebcb;
+  --pos-fill: #00ff85;
+  --neg: #c4003f;
+  --neg-soft: #fde8ef;
+  --neg-border: #f7bfd1;
+  --warn: #a15c00;
+  --warn-soft: #fff5e1;
+  --warn-border: #fbdba0;
+  --neutral-soft: #f1edf4;
+  --neutral-border: #e2dbe8;
 
-  --gold: #ca8a04;
-  --gold-soft: #fef9c3;
-  --silver: #64748b;
-  --silver-soft: #f1f5f9;
-  --bronze: #c2410c;
-  --bronze-soft: #ffedd5;
+  --gold: #a87800;
+  --gold-soft: #fff4cc;
+  --silver: #5f6670;
+  --silver-soft: #eef0f3;
+  --bronze: #a8460d;
+  --bronze-soft: #fde9da;
 
-  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
-  --shadow: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
-  --shadow-lg: 0 20px 50px rgba(15, 23, 42, 0.18);
-  --ring: 0 0 0 3px rgba(79, 70, 229, 0.18);
+  --shadow-sm: 0 1px 2px rgba(29, 16, 34, 0.04);
+  --shadow: 0 1px 3px rgba(29, 16, 34, 0.06), 0 1px 2px rgba(29, 16, 34, 0.04);
+  --shadow-lg: 0 20px 50px rgba(29, 16, 34, 0.2);
+  --ring: 0 0 0 3px rgba(55, 0, 60, 0.18);
 
   --radius-xl: 16px;
   --radius-lg: 12px;
@@ -54,7 +61,7 @@
   --topbar-h: 64px;
 
   /* Names the app's generated markup still references */
-  --pl-cyan: var(--accent);
+  --pl-cyan: var(--accent-text);
   --pl-green: var(--pos);
   --text-primary: var(--text);
   --text-secondary: var(--text-2);
@@ -65,45 +72,46 @@
 }
 
 [data-theme="dark"] {
-  --bg: #0b0f17;
-  --surface: #121722;
-  --surface-2: #161c29;
-  --surface-3: #1c2333;
-  --border: #242c3c;
-  --border-strong: #2f394c;
-  --text: #e6e9ef;
-  --text-2: #a6afc0;
-  --muted: #8691a5;
-  --faint: #5d677b;
+  --bg: #0e0912;
+  --surface: #17101c;
+  --surface-2: #1c1422;
+  --surface-3: #241a2b;
+  --border: #2e2337;
+  --border-strong: #3c2f47;
+  --text: #f2edf5;
+  --text-2: #bdb2c8;
+  --muted: #998da6;
+  --faint: #685c75;
 
-  --accent: #818cf8;
-  --accent-hover: #a5b4fc;
-  --accent-soft: rgba(129, 140, 248, 0.14);
-  --accent-text: #a5b4fc;
+  --accent: #d6a9f0;
+  --accent-hover: #e6c6f7;
+  --accent-soft: rgba(214, 169, 240, 0.13);
+  --accent-text: #e2bff6;
 
-  --pos: #34d399;
-  --pos-soft: rgba(52, 211, 153, 0.12);
-  --pos-border: rgba(52, 211, 153, 0.3);
-  --neg: #f87171;
-  --neg-soft: rgba(248, 113, 113, 0.12);
-  --neg-border: rgba(248, 113, 113, 0.3);
-  --warn: #fbbf24;
-  --warn-soft: rgba(251, 191, 36, 0.12);
-  --warn-border: rgba(251, 191, 36, 0.3);
-  --neutral-soft: rgba(148, 163, 184, 0.1);
-  --neutral-border: rgba(148, 163, 184, 0.22);
+  --pos: #3ee08b;
+  --pos-soft: rgba(62, 224, 139, 0.12);
+  --pos-border: rgba(62, 224, 139, 0.3);
+  --pos-fill: #00ff85;
+  --neg: #ff5c8a;
+  --neg-soft: rgba(255, 92, 138, 0.13);
+  --neg-border: rgba(255, 92, 138, 0.3);
+  --warn: #ffc457;
+  --warn-soft: rgba(255, 196, 87, 0.12);
+  --warn-border: rgba(255, 196, 87, 0.3);
+  --neutral-soft: rgba(189, 178, 200, 0.1);
+  --neutral-border: rgba(189, 178, 200, 0.22);
 
   --gold: #facc15;
   --gold-soft: rgba(250, 204, 21, 0.14);
-  --silver: #cbd5e1;
-  --silver-soft: rgba(203, 213, 225, 0.12);
+  --silver: #d3d8df;
+  --silver-soft: rgba(211, 216, 223, 0.12);
   --bronze: #fb923c;
   --bronze-soft: rgba(251, 146, 60, 0.14);
 
   --shadow-sm: none;
-  --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.55);
-  --ring: 0 0 0 3px rgba(129, 140, 248, 0.25);
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.6);
+  --ring: 0 0 0 3px rgba(214, 169, 240, 0.25);
 
   color-scheme: dark;
 }
@@ -117,14 +125,15 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: 'Inter', 'Noto Sans Khmer', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   font-feature-settings: 'cv11', 'tnum';
 }
 
-h1, h2, h3, h4 { margin: 0; font-weight: 700; letter-spacing: -0.01em; }
+h1, h2, h3, h4 { margin: 0; font-family: var(--font-display); font-weight: 600; letter-spacing: -0.005em; }
+.brand-name, .sc-title, .manager-modal-title, .pipe-card-gw, .mots-winner-names { font-family: var(--font-display); }
 p { margin: 0; }
 a { color: var(--accent); text-decoration: none; }
 button, input, select { font: inherit; color: inherit; }
@@ -863,6 +872,28 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 .auto-sub-pill-in, .transfer-pill-in { color: var(--pos); }
 .auto-sub-pill-out, .transfer-pill-out { color: var(--neg); }
 
+/* ---------- FPL brand touches ---------- */
+/* Thin FPL gradient along the top of the sticky bar */
+.topbar::before {
+  content: '';
+  position: absolute; left: 0; right: 0; top: 0;
+  height: 3px;
+  background: var(--brand-gradient);
+}
+.sc-stripe { height: 4px; margin: -28px -28px 24px; background: var(--brand-gradient); }
+.share-card .sc-mark { color: #ffffff; }
+.sc-title { white-space: nowrap; }
+
+/* Small form pills use FPL's filled result colours */
+.form-pill.form-w { background: var(--pos-fill); color: #1d1022; }
+.form-pill.form-l { background: #e90052; color: #ffffff; }
+
+/* Filled accent elements need dark text on the light purple used in dark mode */
+[data-theme="dark"] .brand-mark,
+[data-theme="dark"] .chip-toggle.active,
+[data-theme="dark"] .btn-primary,
+[data-theme="dark"] .matrix-current-indicator { color: #17101c; }
+
 /* ---------- Collapsible sidebar ---------- */
 .app-shell.sidebar-collapsed { grid-template-columns: minmax(0, 1fr); }
 .app-shell.sidebar-collapsed .sidebar { display: none; }
@@ -934,7 +965,7 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 
 .card-header-actions { display: flex; align-items: center; gap: 8px; flex: none; }
 .chip-toggle-sm { flex: none; height: 26px; padding: 0 10px; font-size: 12px; border-radius: 999px; }
-.mobile-aba { font-size: 12px; letter-spacing: 0.02em; }
+.mobile-aba { font-size: 12px; letter-spacing: 0.02em; white-space: nowrap; }
 
 /* ---------- Sync freshness & loading ---------- */
 .sync-ago { font-size: 12px; color: var(--muted); white-space: nowrap; }
@@ -963,7 +994,7 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
   padding: 28px;
   background: var(--surface);
   color: var(--text);
-  font-family: 'Inter', 'Noto Sans Khmer', system-ui, sans-serif;
+  font-family: var(--font-body);
 }
 .sc-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
 .sc-brand { display: flex; align-items: center; gap: 12px; }
@@ -1027,7 +1058,8 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 }
 
 @media (max-width: 760px) {
-  .topbar { position: static; }
+  .topbar { position: relative; }
+  .topbar-league { border-right: 0; max-width: none; }
   .topbar-left, .topbar-right { width: 100%; }
   .topbar-left #viewModeSelect { flex: 1; min-width: 0; }
   .gw-display h2 { font-size: 16px; }
