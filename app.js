@@ -2930,7 +2930,7 @@
     }
     if (tab === 'events') return plEventsHtml(pl.fixture, f, h, a, st);
     if (tab === 'lineups') return lineupsTabHtml(pl.fixture, pl.managers || {});
-    if (tab === 'stats') return statsTabHtml(pl);
+    if (tab === 'stats') return statsTabHtml(pl, h, a);
     return '';
   }
 
@@ -3050,7 +3050,7 @@
       const photo = playerPhotoUrl(p);
       return `
         <div class="lu-player">
-          <div class="lu-photo"><span class="lu-initials">${getManagerInitials(p.name ? p.name.display : '')}</span>${photo ? `<img src="${photo}" alt="" loading="lazy" onerror="this.remove()">` : ''}${p.captain ? '<span class="lu-captain">C</span>' : ''}</div>
+          <div class="lu-photo-wrap"><div class="lu-photo${photo ? '' : ' no-img'}"><span class="lu-initials">${getManagerInitials(p.name ? p.name.display : '')}</span>${photo ? `<img src="${photo}" alt="" loading="lazy" onerror="this.parentNode.classList.add('no-img');this.remove()">` : ''}</div>${p.captain ? '<span class="lu-captain" title="Captain">C</span>' : ''}</div>
           <div class="lu-name"><b>${p.matchShirtNumber ?? ''}</b>${p.name ? p.name.last || p.name.display : ''}</div>
           ${marks[p.id] ? `<div class="lu-marks">${marks[p.id].join('')}</div>` : ''}
         </div>`;
@@ -3106,24 +3106,31 @@
 
   // ---- Stats tab ----
   const MATCH_STATS = [
-    ['possession_percentage', 'Possession', v => `${Math.round(v)}%`],
-    ['total_scoring_att', 'Shots'],
-    ['ontarget_scoring_att', 'Shots on target'],
-    ['big_chance_created', 'Big chances'],
-    ['total_pass', 'Passes'],
-    ['pass_accuracy', 'Pass accuracy', v => `${Math.round(v)}%`],
-    ['won_corners', 'Corners'],
-    ['fk_foul_lost', 'Fouls'],
-    ['total_offside', 'Offsides'],
-    ['total_tackle', 'Tackles'],
-    ['interception', 'Interceptions'],
-    ['total_clearance', 'Clearances'],
-    ['saves', 'Saves'],
-    ['total_yel_card', 'Yellow cards'],
-    ['total_red_card', 'Red cards']
+    ['Attack', [
+      ['total_scoring_att', 'Shots'],
+      ['ontarget_scoring_att', 'Shots on target'],
+      ['big_chance_created', 'Big chances'],
+      ['won_corners', 'Corners'],
+      ['total_offside', 'Offsides']
+    ]],
+    ['Passing', [
+      ['total_pass', 'Passes'],
+      ['pass_accuracy', 'Pass accuracy', v => `${Math.round(v)}%`]
+    ]],
+    ['Defence', [
+      ['total_tackle', 'Tackles'],
+      ['interception', 'Interceptions'],
+      ['total_clearance', 'Clearances'],
+      ['saves', 'Saves']
+    ]],
+    ['Discipline', [
+      ['fk_foul_lost', 'Fouls'],
+      ['total_yel_card', 'Yellow cards'],
+      ['total_red_card', 'Red cards']
+    ]]
   ];
 
-  function statsTabHtml(pl) {
+  function statsTabHtml(pl, homeTeam, awayTeam) {
     const data = pl.stats && pl.stats.data;
     if (!data) return '<div class="md-empty">Stats appear once the match starts.</div>';
     const ids = pl.fixture.teams.map(t => String(Math.round(t.team.id)));
@@ -3135,18 +3142,49 @@
     };
     const home = statMap(ids[0]), away = statMap(ids[1]);
     if (!Object.keys(home).length && !Object.keys(away).length) return '<div class="md-empty">Stats appear once the match starts.</div>';
-    const rows = MATCH_STATS.map(([key, label, fmt]) => {
+
+    // Possession: one split bar
+    const hPos = Math.round(home.possession_percentage || 0), aPos = Math.round(away.possession_percentage || 0);
+    const possession = (hPos || aPos) ? `
+      <div class="ms-possession">
+        <div class="ms-pos-head"><b>${hPos}%</b><span>Possession</span><b>${aPos}%</b></div>
+        <div class="ms-pos-bar"><span class="ms-home" style="flex:${hPos || 1}"></span><span class="ms-away" style="flex:${aPos || 1}"></span></div>
+      </div>` : '';
+
+    // Every other stat: values either side, bars growing out from the middle
+    const row = ([key, label, fmt]) => {
       const hv = home[key] || 0, av = away[key] || 0;
-      const total = hv + av;
-      const hp = total ? (hv / total) * 100 : 50, ap = total ? (av / total) * 100 : 50;
+      const max = Math.max(hv, av);
       const show = v => (fmt ? fmt(v) : Math.round(v));
+      const pct = v => (max ? (v / max) * 100 : 0);
       return `
         <div class="ms-row">
-          <div class="ms-vals"><b class="${hv > av ? 'is-lead' : ''}">${show(hv)}</b><span>${label}</span><b class="${av > hv ? 'is-lead' : ''}">${show(av)}</b></div>
-          <div class="ms-bars"><span class="ms-home" style="width:${hp}%"></span><span class="ms-away" style="width:${ap}%"></span></div>
+          <b class="ms-val${hv > av ? ' is-lead ms-lead-home' : ''}">${show(hv)}</b>
+          <div class="ms-mid">
+            <span class="ms-label">${label}</span>
+            <div class="ms-track">
+              <div class="ms-half ms-half-home"><span class="ms-home" style="width:${pct(hv)}%"></span></div>
+              <div class="ms-half"><span class="ms-away" style="width:${pct(av)}%"></span></div>
+            </div>
+          </div>
+          <b class="ms-val${av > hv ? ' is-lead ms-lead-away' : ''}">${show(av)}</b>
         </div>`;
-    }).join('');
-    return `<div class="ms-list">${rows}</div>`;
+    };
+    const groups = MATCH_STATS.map(([title, stats]) => `
+      <section class="ms-group">
+        <h4>${title}</h4>
+        ${stats.map(row).join('')}
+      </section>`).join('');
+
+    return `
+      <div class="ms-wrap">
+        <div class="ms-teams">
+          <span>${crestHtml(homeTeam)}${homeTeam.name || homeTeam.short_name}</span>
+          <span>${awayTeam.name || awayTeam.short_name}${crestHtml(awayTeam)}</span>
+        </div>
+        ${possession}
+        ${groups}
+      </div>`;
   }
 
   // ---- Table tab ----
