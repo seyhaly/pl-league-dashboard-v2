@@ -1606,3 +1606,74 @@ html.touch-ui .tabbar {
   .manager-cell { gap: 8px; }
   #standingsTable { min-width: 0; }
 }
+
+/* Status bar strip: the iPad clock and battery are white, so keep a dark band behind them */
+html.touch-ui body::before {
+  content: ''; position: fixed; top: 0; left: 0; right: 0; z-index: 70;
+  height: env(safe-area-inset-top);
+  background: #37003c;
+  pointer-events: none;
+}
+[data-theme="dark"].touch-ui body::before { background: var(--bg); }
+
+/* Third theme button (Auto) */
+.theme-switch .segmented-btn { padding: 0 10px; }
+
+/* Pull to refresh */
+.ptr {
+  position: fixed; left: 50%; top: calc(env(safe-area-inset-top) + 6px); z-index: 75;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px; border-radius: 999px;
+  background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-lg);
+  color: var(--text-2); font-size: 12.5px; font-weight: 600;
+  transform: translate(-50%, -60px); opacity: 0; pointer-events: none;
+  transition: opacity 0.15s;
+}
+.ptr.show, .ptr.busy { opacity: 1; }
+.ptr.busy { transform: translate(-50%, 50px) !important; transition: transform 0.2s, opacity 0.15s; }
+.ptr svg { transition: transform 0.15s; }
+.ptr.ready svg { transform: rotate(180deg); color: var(--accent-text); }
+.ptr.busy svg { animation: ptr-spin 0.9s linear infinite; }
+@keyframes ptr-spin { to { transform: rotate(360deg); } }
+
+/* Rank chart: holding a finger on it */
+#rankChart { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+
+/* Two-row top bar on narrower screens: title + gameweeks, then view + status + theme */
+.topbar-break { display: none; }
+@media (max-width: 1024px) {
+  .topbar { justify-content: flex-start; gap: 10px 10px; }
+  .topbar-left, .topbar-right { display: contents; }
+  .topbar-break { display: block; flex-basis: 100%; height: 0; }
+  .gw-title { font-size: 22px; }
+}
+
+/* Upright iPad: squad panel and match pop-up as full-width sheets with a bigger pitch */
+@media (max-width: 1024px) and (orientation: portrait) {
+  .manager-detail-modal { width: 100vw; border-left: 0; }
+  .panel-edge-nav.prev { left: 10px; }
+  .md-overlay { padding: calc(10px + env(safe-area-inset-top)) 10px 10px; }
+  .md-card { width: 100%; max-height: calc(100vh - 20px - env(safe-area-inset-top)); }
+  .lu-pitch { height: 560px; margin: 0 12px; }
+  .lu-photo { width: 52px; height: 52px; }
+}
+
+/* Split View / Slide Over (narrow app window): tables scroll sideways with the names pinned */
+@media (max-width: 700px) {
+  .topbar-league { display: none !important; }
+  #standingsTable { min-width: 760px; }
+  #standingsTable th:nth-child(1), #standingsTable td:nth-child(1),
+  #winLossTableContainer table th:nth-child(1), #winLossTableContainer table td:nth-child(1) {
+    position: sticky; left: 0; z-index: 2; width: 40px; min-width: 40px; background: var(--surface);
+  }
+  #standingsTable th:nth-child(2), #standingsTable td:nth-child(2),
+  #winLossTableContainer table th:nth-child(2), #winLossTableContainer table td:nth-child(2) {
+    position: sticky; left: 40px; z-index: 2; background: var(--surface); box-shadow: 1px 0 0 var(--border);
+  }
+  #standingsTable th:nth-child(-n+2), #winLossTableContainer table th:nth-child(-n+2) { z-index: 3; background: var(--surface-2); }
+  #winLossTableContainer table { min-width: 640px; }
+  .tab-btn { font-size: 10.5px; }
+  .md-overlay { padding: calc(6px + env(safe-area-inset-top)) 6px 6px; }
+  .md-card { width: 100%; }
+  .manager-detail-modal { width: 100vw; }
+}

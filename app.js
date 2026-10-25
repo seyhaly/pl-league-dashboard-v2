@@ -280,6 +280,7 @@
   // ===================== INITIALIZE APPLICATION =====================
   function init() {
     applyTheme(state.theme);
+    if (darkQuery) darkQuery.addEventListener('change', () => { if (state.themeMode === 'auto') applyTheme('auto'); });
     if (typeof Chart !== 'undefined') Chart.defaults.font.family = CHART_FONT;
 
     // If pre-bundled live static data exists, initialize immediately with real league 389585
@@ -357,15 +358,22 @@
     }
 
     initTapTips();
+    initPullToRefresh(syncNow);
   }
 
   // ===================== THEME =====================
-  function applyTheme(themeName) {
+  // mode is 'light', 'dark' or 'auto' (follow the device setting)
+  const darkQuery = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  function applyTheme(mode) {
+    state.themeMode = mode;
+    const themeName = mode === 'auto' ? (darkQuery && darkQuery.matches ? 'dark' : 'light') : mode;
     state.theme = themeName;
     document.documentElement.setAttribute('data-theme', themeName);
-    localStorage.setItem('fpl_admin_theme', themeName);
+    try { localStorage.setItem('fpl_admin_theme', mode); } catch (e) {}
+    const themeColor = document.querySelector('meta[name="theme-color"]');
+    if (themeColor) themeColor.setAttribute('content', themeName === 'dark' ? '#0e0912' : '#37003c');
     elements.themeToggleBtns.forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.themeBtn === themeName);
+      btn.classList.toggle('active', btn.dataset.themeBtn === mode);
     });
     if (state.chartInstance) updateChartTheme();
     if (state.perfChartInstance) updatePerformanceChartTheme();
@@ -1913,6 +1921,54 @@
     el.title = `Last refreshed ${new Date(state.lastSyncedAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}`;
   }
 
+  // Pull down at the top of the page to refresh (touch tablets)
+  function initPullToRefresh(syncNow) {
+    if (!document.documentElement.classList.contains('touch-ui')) return;
+    const ind = document.createElement('div');
+    ind.className = 'ptr';
+    ind.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg><span></span>';
+    document.body.appendChild(ind);
+    const label = ind.querySelector('span');
+    const THRESHOLD = 110;
+    let startY = null, ready = false;
+    const overlayOpen = () => document.getElementById('matchDetail') || document.getElementById('pointsPopover') ||
+      document.querySelector('.manager-detail-modal.open');
+    const reset = () => { ind.classList.remove('show', 'ready'); ind.style.transform = ''; startY = null; ready = false; };
+    document.addEventListener('touchstart', e => {
+      if (window.scrollY > 0 || overlayOpen() || e.touches.length > 1 || ind.classList.contains('busy')) return;
+      startY = e.touches[0].clientY;
+    }, { passive: true });
+    document.addEventListener('touchmove', e => {
+      if (startY === null) return;
+      const dy = e.touches[0].clientY - startY;
+      if (dy <= 10 || window.scrollY > 0) { if (dy < 0) reset(); return; }
+      ready = dy > THRESHOLD;
+      ind.classList.add('show');
+      ind.classList.toggle('ready', ready);
+      ind.style.transform = `translate(-50%, ${Math.min(dy / 2, 70)}px)`;
+      label.textContent = ready ? 'Release to refresh' : 'Pull to refresh';
+    }, { passive: true });
+    document.addEventListener('touchend', () => {
+      if (startY === null) return;
+      if (!ready) { reset(); return; }
+      startY = null; ready = false;
+      ind.classList.remove('ready');
+      ind.classList.add('busy');
+      label.textContent = 'Refreshing…';
+      syncNow();
+      // Hide once the sync has finished (or after 20 seconds at most)
+      const started = Date.now();
+      const check = setInterval(() => {
+        const pending = elements.syncStatusTag && elements.syncStatusTag.classList.contains('pending');
+        if ((!pending && Date.now() - started > 800) || Date.now() - started > 20000) {
+          clearInterval(check);
+          ind.classList.remove('busy');
+          reset();
+        }
+      }, 300);
+    }, { passive: true });
+  }
+
   // Touch screens can't hover, so a tap shows an element's tooltip text instead
   function initTapTips() {
     if (!document.documentElement.classList.contains('touch-ui')) return;
@@ -3406,11 +3462,16 @@
           }
           if (idx !== state.rankHoverIndex) { state.rankHoverIndex = idx; applyRankFocus(); }
         },
+        // On touch tablets the chart ignores plain touches (so a swipe scrolls the page);
+        // press and hold, then drag, to read the ranks (see initRankScrub)
+        events: document.documentElement.classList.contains('touch-ui') ? ['mousemove', 'mouseout', 'click'] : undefined,
         plugins: {
-          legend: { display: false }
+          legend: { display: false },
+          tooltip: { itemSort: (a, b) => a.parsed.y - b.parsed.y }
         }
       }
     });
+    initRankScrub(state.chartInstance);
 
     // Manager buttons under the chart: hover to preview a line, click to keep it highlighted
     const chips = document.getElementById('rankChartManagers');
@@ -3456,6 +3517,42 @@
       b.classList.toggle('is-pinned', state.rankPinnedIndex === i);
       b.setAttribute('aria-pressed', String(state.rankPinnedIndex === i));
     });
+  }
+
+  // Touch: hold a finger on the rank chart, then drag to see every manager's rank at that gameweek
+  function initRankScrub(chart) {
+    if (!chart || !document.documentElement.classList.contains('touch-ui')) return;
+    const canvas = chart.canvas;
+    let timer = null, scrubbing = false, start = null;
+    const showAt = clientX => {
+      const rect = canvas.getBoundingClientRect();
+      const x = clientX - rect.left;
+      const last = chart.data.labels.length - 1;
+      const index = Math.max(0, Math.min(last, Math.round(chart.scales.x.getValueForPixel(x))));
+      const active = chart.data.datasets
+        .map((ds, datasetIndex) => ({ datasetIndex, index }))
+        .filter(a => chart.data.datasets[a.datasetIndex].data[index] != null);
+      chart.tooltip.setActiveElements(active, { x: chart.scales.x.getPixelForValue(index), y: chart.chartArea.top });
+      chart.update('none');
+    };
+    const stop = () => {
+      clearTimeout(timer); timer = null;
+      if (scrubbing) { scrubbing = false; canvas.classList.remove('is-scrubbing'); chart.tooltip.setActiveElements([], { x: 0, y: 0 }); chart.update('none'); }
+      start = null;
+    };
+    canvas.addEventListener('touchstart', e => {
+      if (e.touches.length > 1) return stop();
+      start = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      timer = setTimeout(() => { scrubbing = true; canvas.classList.add('is-scrubbing'); showAt(start.x); }, 250);
+    }, { passive: true });
+    canvas.addEventListener('touchmove', e => {
+      if (!start) return;
+      const t = e.touches[0];
+      if (scrubbing) { e.preventDefault(); showAt(t.clientX); return; }
+      if (Math.hypot(t.clientX - start.x, t.clientY - start.y) > 10) stop();
+    }, { passive: false });
+    canvas.addEventListener('touchend', stop);
+    canvas.addEventListener('touchcancel', stop);
   }
 
   function updateChartTheme() {
@@ -4454,6 +4551,16 @@
     } else if (isModalOpen && e.key === 'ArrowRight') {
       e.preventDefault();
       navigateManagerModal(1);
+    } else if (!isModalOpen && !document.getElementById('matchDetail') && !document.getElementById('pointsPopover') &&
+               !e.metaKey && !e.ctrlKey && !e.altKey && !e.target.closest('input, select, textarea')) {
+      // Keyboard (Mac or iPad Magic Keyboard): ← → change gameweek, 1–5 pick a section
+      if (e.key === 'ArrowLeft' && !elements.prevGwBtn.disabled) { e.preventDefault(); elements.prevGwBtn.click(); }
+      else if (e.key === 'ArrowRight' && !elements.nextGwBtn.disabled) { e.preventDefault(); elements.nextGwBtn.click(); }
+      else if (/^[1-5]$/.test(e.key)) {
+        const id = ['section-standings', 'section-gw-status', 'section-form-matrix', 'section-performance', 'section-trajectory'][Number(e.key) - 1];
+        if (window.showTab) window.showTab(id);
+        else { const sec = document.getElementById(id); if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+      }
     }
   });
 
