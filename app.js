@@ -2847,10 +2847,12 @@
       ds.borderColor = dim ? `${base}26` : base;
       ds.backgroundColor = dim ? `${base}26` : base;
       ds.pointBackgroundColor = dim ? `${base}26` : base;
+      ds.pointBorderColor = dim ? `${base}26` : base;
+      ds.pointRadius = focusIndex !== null && i === focusIndex ? 4.5 : 3;
       ds.borderWidth = focusIndex !== null && i === focusIndex ? 3.5 : 2;
       ds.order = focusIndex !== null && i === focusIndex ? -1 : 0;
     });
-    chart.update('none');
+    chart.update('focus');
   }
 
   function initChart() {
@@ -2864,6 +2866,8 @@
         responsive: true,
         maintainAspectRatio: false,
         layout: { padding: { top: 6, bottom: 6, right: 6 } },
+        // Quick fade when highlighting a manager (a 'none' update leaves the dots unfaded)
+        transitions: { focus: { animation: { duration: 150 } } },
         scales: {
           y: {
             reverse: true,
@@ -2877,14 +2881,64 @@
             grid: { color: getChartGridColor() }
           }
         },
-        plugins: {
-          legend: {
-            onHover: (e, item, legend) => focusRankLine(legend.chart, item.datasetIndex),
-            onLeave: (e, item, legend) => focusRankLine(legend.chart, null),
-            labels: { color: getChartTextColor(), font: { family: CHART_FONT, weight: '600' }, usePointStyle: true, boxWidth: 8, boxHeight: 8 }
+        // Hovering near a point on a line focuses that manager
+        onHover: (e, els, chart) => {
+          let idx = null;
+          if (e.type !== 'mouseout') {
+            const near = chart.getElementsAtEventForMode(e, 'nearest', { intersect: false }, false)[0];
+            if (near && Math.hypot(near.element.x - e.x, near.element.y - e.y) < 16) idx = near.datasetIndex;
           }
+          if (idx !== state.rankHoverIndex) { state.rankHoverIndex = idx; applyRankFocus(); }
+        },
+        plugins: {
+          legend: { display: false }
         }
       }
+    });
+
+    // Manager buttons under the chart: hover to preview a line, click to keep it highlighted
+    const chips = document.getElementById('rankChartManagers');
+    if (chips) {
+      chips.addEventListener('mouseover', e => {
+        const b = e.target.closest('[data-rank-index]');
+        state.rankHoverIndex = b ? Number(b.dataset.rankIndex) : null;
+        applyRankFocus();
+      });
+      chips.addEventListener('mouseleave', () => { state.rankHoverIndex = null; applyRankFocus(); });
+      chips.addEventListener('click', e => {
+        const b = e.target.closest('[data-rank-index]');
+        if (!b) return;
+        const i = Number(b.dataset.rankIndex);
+        state.rankPinnedIndex = state.rankPinnedIndex === i ? null : i;
+        applyRankFocus();
+      });
+    }
+    renderRankChips();
+  }
+
+  function renderRankChips() {
+    const chips = document.getElementById('rankChartManagers');
+    if (!chips || !state.chartInstance) return;
+    chips.innerHTML = state.chartInstance.data.datasets.map((ds, i) => `
+      <button class="rank-chip" data-rank-index="${i}" title="Highlight ${ds.label} (click to keep it highlighted)">
+        <span class="rank-chip-dot" style="background:${ds.baseColor || ds.borderColor}"></span>${ds.label}
+      </button>`).join('');
+    applyRankFocus();
+  }
+
+  // Hover wins over the clicked (pinned) manager; nothing set shows every line
+  function applyRankFocus() {
+    const chart = state.chartInstance;
+    if (!chart) return;
+    const hover = state.rankHoverIndex;
+    const idx = hover !== null && hover !== undefined ? hover : (state.rankPinnedIndex ?? null);
+    focusRankLine(chart, idx);
+    document.querySelectorAll('#rankChartManagers .rank-chip').forEach(b => {
+      const i = Number(b.dataset.rankIndex);
+      b.classList.toggle('is-focus', idx === i);
+      b.classList.toggle('is-dim', idx !== null && idx !== i);
+      b.classList.toggle('is-pinned', state.rankPinnedIndex === i);
+      b.setAttribute('aria-pressed', String(state.rankPinnedIndex === i));
     });
   }
 
@@ -2894,7 +2948,6 @@
     state.chartInstance.options.scales.y.grid.color = getChartGridColor();
     state.chartInstance.options.scales.x.ticks.color = getChartTextColor();
     state.chartInstance.options.scales.x.grid.color = getChartGridColor();
-    state.chartInstance.options.plugins.legend.labels.color = getChartTextColor();
     state.chartInstance.update();
   }
 
@@ -2902,7 +2955,9 @@
     if (!state.chartInstance) return;
     state.chartInstance.data.datasets = buildDatasets();
     state.chartInstance.options.scales.y.max = state.dataset.managers.length;
+    if (state.rankPinnedIndex !== null && state.rankPinnedIndex >= state.chartInstance.data.datasets.length) state.rankPinnedIndex = null;
     updateChartTheme();
+    renderRankChips();
   }
 
   // ===================== PERFORMANCE CHART =====================

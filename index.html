@@ -25,7 +25,7 @@
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     if (location.hash) history.replaceState(null, '', location.pathname + location.search);
   </script>
-  <link rel="stylesheet" href="styles.css?v=420.0">
+  <link rel="stylesheet" href="styles.css?v=430.0">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
@@ -258,6 +258,7 @@
         </div>
         <div id="chartCollapse" class="collapsible-content">
           <div class="chart-box chart-box-rank"><canvas id="rankChart"></canvas></div>
+          <div id="rankChartManagers" class="rank-chips" aria-label="Highlight a manager"></div>
         </div>
       </section>
 
@@ -311,7 +312,7 @@
 
 <script src="demoData.js"></script>
 <script src="squadData.js?v=300.0"></script>
-<script src="app.js?v=420.0"></script>
+<script src="app.js?v=432.0"></script>
 <script>
   // Installable app: offline support via the service worker
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {
