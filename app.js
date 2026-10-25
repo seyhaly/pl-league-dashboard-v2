@@ -3137,38 +3137,6 @@
   }
 
   // ===================== SQUAD PANEL HELPERS =====================
-  const FT_MAX = 5;
-
-  // Free transfers rebuilt from each gameweek's entry history:
-  // 1 free transfer from GW2, +1 per gameweek up to FT_MAX, minus transfers made.
-  // Wildcard / Free Hit weeks keep the banked transfers.
-  function computeFreeTransfers(mgrPicks, gw) {
-    if (!mgrPicks || gw < 1) return null;
-    const histFor = g => {
-      const sq = mgrPicks[String(g)] || mgrPicks[Number(g)];
-      return sq && sq.entry_history ? { hist: sq.entry_history, chip: sq.active_chip || '' } : null;
-    };
-    let ftAvail = 1; // available at the start of GW2
-    let atStart = gw === 1 ? 0 : 1;
-    let used = 0;
-    let chipName = '';
-    for (let g = 2; g <= gw; g++) {
-      const h = histFor(g);
-      if (!h) return null;
-      const n = Number(h.hist.event_transfers) || 0;
-      const chip = String(h.chip).toLowerCase();
-      const keepsBank = chip.includes('wildcard') || chip.includes('freehit') || chip.includes('free hit');
-      if (g === gw) { atStart = ftAvail; used = n; chipName = keepsBank ? getChipLabel(h.chip) : ''; }
-      if (!keepsBank) ftAvail = Math.max(0, ftAvail - n);
-      ftAvail = Math.min(FT_MAX, ftAvail + 1);
-    }
-    if (gw === 1) {
-      const h = histFor(1);
-      used = h ? Number(h.hist.event_transfers) || 0 : 0;
-    }
-    return { atStart, used, next: ftAvail, chip: chipName };
-  }
-
   function ptsText(n) {
     return `${n} ${Math.abs(Number(n)) === 1 ? 'pt' : 'pts'}`;
   }
@@ -3183,8 +3151,52 @@
     WOL: '#FDB913', MID: '#E21A23', NOR: '#00A650', WAT: '#FBEE23', WBA: '#122F67'
   };
 
+  function shirtSvg(team, cls) {
+    const color = CLUB_COLORS[String(team).toUpperCase()] || '#8a8197';
+    return `<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.4 3.5 16 2a4 4 0 0 1-8 0L3.6 3.5a2 2 0 0 0-1.3 2.2l.6 3.5a1 1 0 0 0 1 .8H6v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V10h2.1a1 1 0 0 0 1-.8l.6-3.5a2 2 0 0 0-1.3-2.2z" fill="${color}" stroke="rgba(0,0,0,0.25)" stroke-width="0.8"/></svg>`;
+  }
+
+  function playerStatusHtml(c) {
+    if (c.status === 'yet_to_play') return `<span class="status-pill-yet-to-play">${icon('clock', 12)} Yet to play</span>`;
+    if (c.status === 'live') return `<span class="status-pill-live"><span class="live-dot"></span>Live ${c.minutes || 0}'</span>`;
+    if (c.status === 'dnp') return `<span class="status-pill-dnp">${icon('x', 12)} Did not play</span>`;
+    return `<span class="status-pill-played">${icon('check', 12)} Played</span>`;
+  }
+
+  const POSITION_GROUPS = { 1: 'Goalkeeper', 2: 'Defenders', 3: 'Midfielders', 4: 'Forwards' };
+
+  function squadListRowHtml(c) {
+    const role = c.isCaptain ? `<span class="pc-role-inline pc-c">C</span>` : (c.isVice ? '<span class="pc-role-inline pc-v">V</span>' : '');
+    const sub = c.subbedIn ? '<span class="sl-tag in">Auto-sub in</span>' : (c.subbedOut ? '<span class="sl-tag out">Auto-sub out</span>' : '');
+    const opp = c.opp ? `<span class="opp-pill fdr-${c.difficulty}">${c.opp}</span>` : '<span class="cell-empty">–</span>';
+    const ptsCls = c.status === 'yet_to_play' ? ' is-pending' : '';
+    return `
+      <div class="sl-row${c.subbedOut ? ' is-out' : ''}${c.subbedIn ? ' is-in' : ''}">
+        <span class="sl-lead">${c.benchRole ? `<span class="sl-order">${c.benchRole}</span>` : ''}${shirtSvg(c.team, 'sl-shirt')}</span>
+        <div class="sl-player">
+          <span class="sl-name">${c.name}${role}${sub}</span>
+          <span class="sl-team">${c.team}${c.isCaptain ? ` · Captain ×${c.multiplier}` : ''}</span>
+        </div>
+        <span class="sl-opp">${opp}</span>
+        <span class="sl-status">${playerStatusHtml(c)}</span>
+        <span class="sl-pts${ptsCls}">${c.status === 'yet_to_play' ? '–' : c.pts}</span>
+      </div>`;
+  }
+
+  function squadListHtml(starters, bench, benchPts, isBenchBoost) {
+    const head = `<div class="sl-head"><span></span><span>Player</span><span>Opponent</span><span>Status</span><span class="sl-pts">Pts</span></div>`;
+    const groups = [1, 2, 3, 4].map(type => {
+      const rows = starters.filter(c => c.type === type);
+      if (!rows.length) return '';
+      return `<div class="sl-group">${POSITION_GROUPS[type]}</div>${rows.map(squadListRowHtml).join('')}`;
+    }).join('');
+    const benchGroup = bench.length
+      ? `<div class="sl-group sl-group-bench"><span>Bench${isBenchBoost ? ' · Bench Boost' : ''}</span><span>${ptsText(benchPts)}</span></div>${bench.map(squadListRowHtml).join('')}`
+      : '';
+    return `<div class="sl">${head}${groups}${benchGroup}</div>`;
+  }
+
   function pitchCardHtml(c) {
-    const color = CLUB_COLORS[String(c.team).toUpperCase()] || '#8a8197';
     const statusCls = c.status === 'yet_to_play' ? 'is-pending' : (c.status === 'live' ? 'is-live' : (c.status === 'dnp' ? 'is-dnp' : 'is-played'));
     const role = c.isCaptain
       ? `<span class="pc-role pc-c" title="Captain ×${c.multiplier}">C</span>`
@@ -3196,7 +3208,7 @@
       <div class="pc ${statusCls}${c.subbedOut ? ' is-out' : ''}${c.subbedIn ? ' is-in' : ''}">
         ${role}${subTag}
         ${c.benchRole ? `<span class="pc-bench-role">${c.benchRole}</span>` : ''}
-        <svg class="pc-shirt" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.4 3.5 16 2a4 4 0 0 1-8 0L3.6 3.5a2 2 0 0 0-1.3 2.2l.6 3.5a1 1 0 0 0 1 .8H6v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V10h2.1a1 1 0 0 0 1-.8l.6-3.5a2 2 0 0 0-1.3-2.2z" fill="${color}" stroke="rgba(0,0,0,0.25)" stroke-width="0.8"/></svg>
+        ${shirtSvg(c.team, 'pc-shirt')}
         <span class="pc-name">${c.name}</span>
         <span class="pc-pts">${c.status === 'yet_to_play' ? '–' : c.pts}${live}</span>
         <span class="pc-opp">${c.opp ? `<span class="pc-fdr fdr-${c.difficulty}"></span>${c.opp}` : c.team}</span>
@@ -3574,6 +3586,14 @@
               <span class="pm-fact-value">${playedCount}<span class="pm-of"> / ${maxSquadCount}</span></span>
               <span class="pm-progress"><span style="width:${playedPct}%"></span></span>
             </div>
+            <div class="pm-fact pm-fact-ytp${yetToPlayCount > 0 ? ' has-pending' : ''}">
+              <span class="pm-label">Yet to play</span>
+              <span class="pm-fact-value">${yetToPlayCount}<span class="pm-of"> player${yetToPlayCount === 1 ? '' : 's'}</span></span>
+            </div>
+            <div class="pm-fact">
+              <span class="pm-label">Transfers</span>
+              <span class="pm-fact-value">${transfersCount}${transferCost > 0 ? ` <span class="pm-of pm-neg">−${transferCost}</span>` : ''}</span>
+            </div>
             <div class="pm-fact">
               <span class="pm-label">Bank</span>
               <span class="pm-fact-value">${bankVal.replace('M', 'm')}</span>
@@ -3589,29 +3609,6 @@
           </div>
         </div>`;
 
-      // ── Free transfers ─────────────────────────────────────
-      const ft = computeFreeTransfers(mgrPicks, gw);
-      let freeTransfersHtml = '';
-      if (ft) {
-        const dots = Array.from({ length: FT_MAX }, (_, i) => `<span class="ft-dot${i < ft.next ? ' on' : ''}"></span>`).join('');
-        freeTransfersHtml = `
-          <div class="pm-card ft-card">
-            <div class="ft-main">
-              <span class="ft-count">${ft.next}</span>
-              <div>
-                <div class="ft-title">Free transfer${ft.next === 1 ? '' : 's'} for GW${gw + 1}</div>
-                <div class="ft-dots" aria-label="${ft.next} of ${FT_MAX}">${dots}</div>
-              </div>
-            </div>
-            <div class="ft-detail">
-              <span>GW${gw}: had <strong>${ft.atStart}</strong></span>
-              <span>used <strong>${ft.used}</strong></span>
-              <span>${transferCost > 0 ? `<span class="pm-neg">−${transferCost} pts hit</span>` : 'no hit'}</span>
-              ${ft.chip ? `<span>${ft.chip} played</span>` : ''}
-            </div>
-          </div>`;
-      }
-
       // ── Squad: pitch view ──────────────────────────────────
       const starters = squadCards.filter(c => c.starter);
       const bench = squadCards.filter(c => !c.starter);
@@ -3624,7 +3621,7 @@
       const squadHtml = squadCards.length ? `
         <div class="pm-section">
           <div class="pm-section-head">
-            <span class="modal-section-title">${icon('shirt', 15)} Squad <span class="pm-muted">${playedCount} played · ${yetToPlayCount} to play</span></span>
+            <span class="modal-section-title">${icon('shirt', 15)} Squad <span class="pm-muted">${playedCount} played</span>${yetToPlayCount > 0 ? `<span class="ytp-pill">${icon('clock', 12)} ${yetToPlayCount} yet to play</span>` : '<span class="ytp-pill done">All played</span>'}</span>
             <div class="segmented segmented-sm" role="group" aria-label="Squad view">
               <button class="segmented-btn" data-squad-view="pitch" onclick="setSquadView('pitch')">Pitch</button>
               <button class="segmented-btn" data-squad-view="list" onclick="setSquadView('list')">List</button>
@@ -3638,17 +3635,7 @@
                 <div class="bench-cards">${bench.map(pitchCardHtml).join('')}</div>
               </div>
             </div>
-            <div class="squad-list">
-              <table class="modal-squad-table">
-                <thead><tr><th class="col-pos">Pos</th><th class="col-player">Player</th><th class="col-opp">Opponent</th><th class="col-status">Status</th><th class="col-role">Role</th><th class="col-pts text-center">Points</th></tr></thead>
-                <tbody>${startingRows}</tbody>
-              </table>
-              <div class="pm-subhead">Bench · ${ptsText(benchPts)}</div>
-              <table class="modal-squad-table">
-                <thead><tr><th class="col-pos">Pos</th><th class="col-player">Player</th><th class="col-opp">Opponent</th><th class="col-status">Status</th><th class="col-role">Role</th><th class="col-pts text-center">Points</th></tr></thead>
-                <tbody>${benchRows}</tbody>
-              </table>
-            </div>
+            <div class="squad-list">${squadListHtml(starters, bench, benchPts, isBenchBoostActive)}</div>
           </div>
         </div>` : `
         <div class="pm-card pm-empty">Squad not available for Gameweek ${gw} yet.</div>`;
@@ -3703,7 +3690,6 @@
 
       modalBody.innerHTML = `
         ${summaryHtml}
-        ${freeTransfersHtml}
         ${squadHtml}
         ${activityHtml}
       `;
