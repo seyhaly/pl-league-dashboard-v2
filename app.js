@@ -2484,25 +2484,21 @@
     const container = elements.chipTrackerContainer;
     if (!container) return;
 
-    // Columns: first-half set then second-half set, matched to each manager's chip list by label
-    const columns = ['WC 1', 'FH 1', 'BB 1', 'TC 1', 'WC 2', 'FH 2', 'BB 2', 'TC 2'];
-    const fullNames = { WC: 'Wildcard', FH: 'Free Hit', BB: 'Bench Boost', TC: 'Triple Captain' };
-    const head = columns.map((c, i) => {
-      const [code, set] = c.split(' ');
-      return `<th class="text-center${i === 4 ? ' chip-half' : ''}">${fullNames[code]} ${set}</th>`;
-    }).join('');
+    // One column per chip, each holding its first-half (1) and second-half (2) copy
+    const columns = [['WC', 'Wildcard'], ['FH', 'Free Hit'], ['BB', 'Bench Boost'], ['TC', 'Triple Captain']];
+    const head = columns.map(([, name]) => `<th class="text-center">${name}</th>`).join('');
 
     const rows = managerData.map(m => {
       const byLabel = {};
       m.chipsStatus.forEach(c => { byLabel[getChipLabel(c.chipName)] = c; });
       const left = m.chipsStatus.filter(c => !c.used).length;
-      const cells = columns.map((label, i) => {
+      const tag = label => {
         const c = byLabel[label];
-        const cls = i === 4 ? ' class="text-center chip-half"' : ' class="text-center"';
         return c && c.used
-          ? `<td${cls}><span class="chip-tag ${c.colorClass}">GW${c.usedGw}</span></td>`
-          : `<td${cls}><span class="chip-tag chip-unused">${label}</span></td>`;
-      }).join('');
+          ? `<span class="chip-tag ${c.colorClass}">GW${c.usedGw}</span>`
+          : `<span class="chip-tag chip-unused">${label}</span>`;
+      };
+      const cells = columns.map(([code]) => `<td class="text-center"><div class="chip-pair">${tag(`${code} 1`)}${tag(`${code} 2`)}</div></td>`).join('');
       return `
         <tr>
           <td>
