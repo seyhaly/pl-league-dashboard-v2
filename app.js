@@ -934,6 +934,14 @@
               if (el && el.id && el.explain) liveExplain[String(el.id)] = compactExplain(el.explain);
             });
             state.dataset.playerGwExplain = Object.assign({}, state.dataset.playerGwExplain, { [String(detectedGw)]: liveExplain });
+
+            // Live points per player for this gameweek (the saved copy from the
+            // GitHub sync can be hours old and would otherwise win in the squad panel)
+            const livePoints = {};
+            liveEventData.elements.forEach(el => {
+              if (el && el.id && el.stats) livePoints[String(el.id)] = el.stats.total_points || 0;
+            });
+            state.dataset.playerGwPoints = Object.assign({}, state.dataset.playerGwPoints, { [String(detectedGw)]: livePoints });
           }
 
           if (fixData && Array.isArray(fixData)) {
@@ -1118,6 +1126,7 @@
         renderAll();
         elements.syncStatusTag.className = 'sync-status-tag live';
         elements.syncStatusTag.textContent = `LIVE (${state.dataset.managers.length} Members)`; markSynced();
+        refreshOpenManagerModal();
       } else {
         throw new Error('No live standings found');
       }
@@ -3303,6 +3312,18 @@
         setTimeout(() => body.classList.remove('swipe-in-right', 'swipe-in-left'), 260);
       }
     }, { passive: false });
+  }
+
+  // Redraw an open squad panel with fresh live data, keeping the scroll position.
+  // Skipped while a points breakdown is open so it isn't closed under the reader.
+  function refreshOpenManagerModal() {
+    const modal = document.getElementById('managerDetailModal');
+    if (!state.activeModalManagerId || !modal || !modal.classList.contains('open')) return;
+    if (document.getElementById('pointsPopover')) return;
+    const body = document.getElementById('modalContentBody');
+    const scrollTop = body ? body.scrollTop : 0;
+    openManagerModal(state.activeModalManagerId);
+    if (body) body.scrollTop = scrollTop;
   }
 
   // ===================== MANAGER SQUAD DETAIL MODAL =====================
