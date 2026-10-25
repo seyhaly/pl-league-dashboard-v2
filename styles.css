@@ -26,7 +26,6 @@
   --accent-hover: #4d0a54;
   --accent-soft: #f4ecf6;
   --accent-text: #5a1462;
-  --brand-gradient: linear-gradient(90deg, #04f5ff 0%, #00ff85 35%, #e90052 100%);
 
   --pos: #0a7a3e;
   --pos-soft: #e6f8ee;
@@ -552,14 +551,15 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
   border-radius: var(--radius-lg);
   border: 1px solid var(--border);
 }
-.motm-banner { background: var(--accent-soft); border-color: transparent; }
+.motm-banner { background: #37003c; border-color: #37003c; box-shadow: 0 6px 18px rgba(55, 0, 60, 0.18); }
+[data-theme="dark"] .motm-banner { border-color: #5a1462; box-shadow: none; }
 .mots-banner { background: var(--gold-soft); border-color: transparent; }
 .motm-banner-content, .mots-banner-content { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .motm-icon, .mots-icon { font-size: 20px; }
-.motm-title { font-weight: 600; color: var(--text-2); }
-.motm-winner-name { font-weight: 700; color: var(--accent-text); }
-.motm-split-tag { font-size: 12px; color: var(--muted); }
-.mots-text-wrapper { display: flex; flex-direction: column; }
+.motm-title { font-weight: 600; color: rgba(255, 255, 255, 0.85); }
+.motm-winner-name { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: #00ff85; }
+.motm-split-tag { font-size: 12px; color: rgba(255, 255, 255, 0.7); }
+.mots-text-wrapper { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; }
 .mots-title { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; color: var(--gold); }
 .mots-winner-names { font-size: 15px; font-weight: 700; color: var(--text); }
 
@@ -873,14 +873,8 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 .auto-sub-pill-out, .transfer-pill-out { color: var(--neg); }
 
 /* ---------- FPL brand touches ---------- */
-/* Thin FPL gradient along the top of the sticky bar */
-.topbar::before {
-  content: '';
-  position: absolute; left: 0; right: 0; top: 0;
-  height: 3px;
-  background: var(--brand-gradient);
-}
-.sc-stripe { height: 4px; margin: -28px -28px 24px; background: var(--brand-gradient); }
+
+.sc-stripe { height: 4px; margin: -28px -28px 24px; background: #37003c; }
 .share-card .sc-mark { color: #ffffff; }
 .sc-title { white-space: nowrap; }
 
@@ -922,7 +916,7 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 .transfer-pill-in, .transfer-pill-out, .auto-sub-pill-in, .auto-sub-pill-out { display: inline-flex; align-items: center; gap: 4px; }
 .auto-sub-box-header .ico { color: var(--muted); }
 .motm-icon, .mots-icon { display: inline-flex; }
-.motm-icon { color: var(--accent-text); }
+.motm-icon { color: #00ff85; }
 .mots-icon { color: var(--gold); }
 .auto-sub-badge { display: inline-flex; align-items: center; gap: 3px; }
 
