@@ -3172,7 +3172,7 @@
     const ptsCls = c.status === 'yet_to_play' ? ' is-pending' : '';
     return `
       <div class="sl-row${c.subbedOut ? ' is-out' : ''}${c.subbedIn ? ' is-in' : ''}">
-        <span class="sl-lead">${c.benchRole ? `<span class="sl-order">${c.benchRole}</span>` : ''}${shirtSvg(c.team, 'sl-shirt')}</span>
+        <span class="sl-lead">${c.benchRole ? `<span class="sl-order">${c.benchRole}</span>` : ''}${kitHtml(c.team, c.type === 1, 'sl-shirt')}</span>
         <div class="sl-player">
           <span class="sl-name">${c.name}${role}${sub}</span>
           <span class="sl-team">${c.team}${c.isCaptain ? ` · Captain ×${c.multiplier}` : ''}</span>
@@ -3196,23 +3196,64 @@
     return `<div class="sl">${head}${groups}${benchGroup}</div>`;
   }
 
+  // Official FPL shirt image (falls back to the club-colour shirt icon if it can't load)
+  function getTeamsMap() {
+    return (state.dataset && state.dataset.teams && Object.keys(state.dataset.teams).length)
+      ? state.dataset.teams
+      : ((window.FPL_LIVE_STATIC && window.FPL_LIVE_STATIC.teams) || {});
+  }
+
+  function teamByShort(short) {
+    const key = String(short || '').toUpperCase();
+    return Object.values(getTeamsMap()).find(t => String(t.short_name).toUpperCase() === key) || null;
+  }
+
+  function kitHtml(team, isGoalkeeper, cls) {
+    const t = teamByShort(team);
+    const img = t && t.code
+      ? `<img src="https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_${t.code}${isGoalkeeper ? '_1' : ''}-110.webp" alt="" loading="lazy" onerror="this.remove()">`
+      : '';
+    return `<span class="${cls}">${shirtSvg(team, 'kit-fallback')}${img}</span>`;
+  }
+
+  // "H" or "A" for a club's fixture in a gameweek, when the fixture list covers it
+  function fixtureVenue(teamShort, gw) {
+    const t = teamByShort(teamShort);
+    const fixtures = state.fixtures || (state.dataset && state.dataset.fixtures) || [];
+    if (!t || !Array.isArray(fixtures)) return '';
+    const f = fixtures.find(x => x && Number(x.event) === Number(gw) && (x.team_h === t.id || x.team_a === t.id));
+    return f ? (f.team_h === t.id ? 'H' : 'A') : '';
+  }
+
   function pitchCardHtml(c) {
     const statusCls = c.status === 'yet_to_play' ? 'is-pending' : (c.status === 'live' ? 'is-live' : (c.status === 'dnp' ? 'is-dnp' : 'is-played'));
     const role = c.isCaptain
       ? `<span class="pc-role pc-c" title="Captain ×${c.multiplier}">C</span>`
       : (c.isVice ? '<span class="pc-role pc-v" title="Vice-captain">V</span>' : '');
-    const subTag = c.subbedIn ? '<span class="pc-sub in" title="Auto-subbed in">↑</span>'
-      : (c.subbedOut ? '<span class="pc-sub out" title="Auto-subbed out">↓</span>' : '');
-    const live = c.status === 'live' ? `<span class="pc-live">${c.minutes || 0}'</span>` : '';
+    const subTag = c.subbedIn
+      ? `<span class="pc-sub in" title="Auto-subbed in">${icon('up', 11)}</span>`
+      : (c.subbedOut ? `<span class="pc-sub out" title="Auto-subbed out">${icon('down', 11)}</span>` : '');
+    const fixture = c.opp ? `${c.opp}${c.venue ? ` (${c.venue})` : ''}` : '–';
+    const info = c.status === 'yet_to_play'
+      ? `<span class="pc-info pc-fixture">${fixture}</span>`
+      : `<span class="pc-info pc-points">${c.pts}${c.status === 'live' ? `<span class="pc-live">${c.minutes || 0}'</span>` : ''}</span>`;
     return `
-      <div class="pc ${statusCls}${c.subbedOut ? ' is-out' : ''}${c.subbedIn ? ' is-in' : ''}">
-        ${role}${subTag}
-        ${c.benchRole ? `<span class="pc-bench-role">${c.benchRole}</span>` : ''}
-        ${shirtSvg(c.team, 'pc-shirt')}
-        <span class="pc-name">${c.name}</span>
-        <span class="pc-pts">${c.status === 'yet_to_play' ? '–' : c.pts}${live}</span>
-        <span class="pc-opp">${c.opp ? `<span class="pc-fdr fdr-${c.difficulty}"></span>${c.opp}` : c.team}</span>
+      <div class="pc ${statusCls}${c.subbedOut ? ' is-out' : ''}${c.subbedIn ? ' is-in' : ''}" title="${c.name} · ${c.team}${c.opp ? ` vs ${fixture}` : ''}">
+        ${subTag}${role}
+        ${kitHtml(c.team, c.type === 1, 'pc-kit')}
+        <span class="pc-strip">
+          <span class="pc-name">${c.name}</span>
+          <span class="pc-club">${c.team}</span>
+        </span>
+        ${info}
       </div>`;
+  }
+
+  // Bench card with FPL-style label (GKP, 1 DEF, 2 MID …) above it
+  const POSITION_SHORT = { 1: 'GKP', 2: 'DEF', 3: 'MID', 4: 'FWD' };
+  function benchCardHtml(c, i) {
+    const label = i === 0 ? 'GKP' : `${i}. ${POSITION_SHORT[c.type] || ''}`;
+    return `<div class="bench-slot"><span class="bench-slot-label">${label}</span>${pitchCardHtml(c)}</div>`;
   }
 
   function getSquadView() {
@@ -3469,6 +3510,7 @@
             status: pl.match_status,
             minutes: pl.minutes,
             opp: pl.opponent && pl.opponent !== '-' ? String(pl.opponent_short || pl.opponent).replace(/\s*\([HAha]\)/g, '').trim() : '',
+            venue: fixtureVenue(pl.team, gw),
             difficulty: pl.difficulty || 3,
             isCaptain: Boolean(p.is_captain),
             isVice: Boolean(p.is_vice_captain),
@@ -3586,7 +3628,7 @@
               <span class="pm-fact-value">${playedCount}<span class="pm-of"> / ${maxSquadCount}</span></span>
               <span class="pm-progress"><span style="width:${playedPct}%"></span></span>
             </div>
-            <div class="pm-fact pm-fact-ytp${yetToPlayCount > 0 ? ' has-pending' : ''}">
+            <div class="pm-fact${yetToPlayCount > 0 ? ' pm-fact-ytp' : ''}">
               <span class="pm-label">Yet to play</span>
               <span class="pm-fact-value">${yetToPlayCount}<span class="pm-of"> player${yetToPlayCount === 1 ? '' : 's'}</span></span>
             </div>
@@ -3632,7 +3674,7 @@
               <div class="pitch">${pitchRows}</div>
               <div class="bench-row">
                 <span class="bench-label">Bench${isBenchBoostActive ? ' · Bench Boost' : ''}</span>
-                <div class="bench-cards">${bench.map(pitchCardHtml).join('')}</div>
+                <div class="bench-cards">${bench.map(benchCardHtml).join('')}</div>
               </div>
             </div>
             <div class="squad-list">${squadListHtml(starters, bench, benchPts, isBenchBoostActive)}</div>
@@ -3641,51 +3683,55 @@
         <div class="pm-card pm-empty">Squad not available for Gameweek ${gw} yet.</div>`;
 
       // ── Gameweek activity: auto-subs + transfers ──────────
-      const activityItems = [];
       const squadAutoSubs = (typeof autoSubs !== 'undefined') ? autoSubs : [];
-      squadAutoSubs.forEach(sub => {
-        const pOut = playersMap[sub.element_out] || { web_name: 'Starter' };
-        const pIn = playersMap[sub.element_in] || { web_name: 'Bench' };
-        activityItems.push(`
-          <li class="act-item">
-            <span class="act-icon act-sub">${icon('swap', 14)}</span>
-            <div class="act-body">
-              <div class="act-line"><strong>${pIn.web_name}</strong> came on for <strong>${pOut.web_name}</strong></div>
-              <div class="act-meta">Automatic substitution · +${pIn.event_points || 0} pts
-                <span class="${sub.is_official ? 'auto-sub-confirmed-tag' : 'auto-sub-live-tag'}">${sub.is_official ? 'Confirmed' : 'Live preview'}</span>
-              </div>
-            </div>
-          </li>`);
-      });
+      const actSide = (kind, label, player, meta) => `
+        <div class="act-side act-${kind}">
+          ${kitHtml(player.team, player.element_type === 1, 'act-kit')}
+          <div class="act-who">
+            <span class="act-label">${label}</span>
+            <strong>${player.web_name}</strong>
+            <span class="act-meta">${meta}</span>
+          </div>
+        </div>`;
+      const arrow = `<span class="act-arrow">${icon('arrowRight', 16)}</span>`;
+
+      const subRows = squadAutoSubs.map(sub => {
+        const pOut = playersMap[sub.element_out] || { web_name: 'Starter', team: '' };
+        const pIn = playersMap[sub.element_in] || { web_name: 'Bench', team: '' };
+        return `<div class="act-row">${actSide('out', 'Off', pOut, `${pOut.team || ''} · 0 pts`)}${arrow}${actSide('in', 'On', pIn, `${pIn.team || ''} · +${ptsText(pIn.event_points || 0)}`)}</div>`;
+      }).join('');
 
       const allTransfers = transfersHistoryMap[String(manager.id)] || [];
-      allTransfers.filter(t => t.event === gw).forEach(t => {
+      const gwTransfers = allTransfers.filter(t => t.event === gw);
+      const money = c => (c ? `£${(c / 10).toFixed(1)}m` : '');
+      const transferRows = gwTransfers.map(t => {
         const pIn = playersMap[t.element_in] || { web_name: 'Player #' + t.element_in, team: '' };
         const pOut = playersMap[t.element_out] || { web_name: 'Player #' + t.element_out, team: '' };
-        const cost = c => (c ? `£${(c / 10).toFixed(1)}m` : '');
-        activityItems.push(`
-          <li class="act-item">
-            <span class="act-icon act-transfer">${icon('arrowRight', 14)}</span>
-            <div class="act-body">
-              <div class="act-line">
-                <span class="pm-pos">In</span> <strong>${pIn.web_name}</strong> <span class="pm-muted">${pIn.team || ''} ${cost(t.element_in_cost)}</span>
-                <span class="act-sep">·</span>
-                <span class="pm-neg-soft">Out</span> <strong>${pOut.web_name}</strong> <span class="pm-muted">${pOut.team || ''} ${cost(t.element_out_cost)}</span>
-              </div>
-              <div class="act-meta">Transfer</div>
-            </div>
-          </li>`);
-      });
+        return `<div class="act-row">${actSide('out', 'Out', pOut, [pOut.team, money(t.element_out_cost)].filter(Boolean).join(' · '))}${arrow}${actSide('in', 'In', pIn, [pIn.team, money(t.element_in_cost)].filter(Boolean).join(' · '))}</div>`;
+      }).join('');
 
+      const isOfficialSubs = squadAutoSubs.length && squadAutoSubs[0].is_official;
       const activityHtml = `
         <div class="pm-section">
           <div class="pm-section-head">
-            <span class="modal-section-title">${icon('clock', 15)} Gameweek activity</span>
-            ${transferCost > 0 ? `<span class="pm-neg">−${transferCost} pts hit</span>` : ''}
+            <span class="modal-section-title">${icon('swap', 15)} Gameweek activity</span>
           </div>
-          ${activityItems.length
-            ? `<ul class="act-list">${activityItems.join('')}</ul>`
-            : `<div class="pm-card pm-empty">No transfers or automatic substitutions in Gameweek ${gw}.</div>`}
+          <div class="act-card">
+            <div class="act-group">
+              <div class="act-group-head">
+                <span>Automatic substitutions</span>
+                ${squadAutoSubs.length ? `<span class="${isOfficialSubs ? 'auto-sub-confirmed-tag' : 'auto-sub-live-tag'}">${isOfficialSubs ? 'Confirmed' : 'Live preview'}</span>` : ''}
+              </div>
+              ${subRows || '<div class="act-none">None</div>'}
+            </div>
+            <div class="act-group">
+              <div class="act-group-head">
+                <span>Transfers</span>
+                <span class="act-summary">${gwTransfers.length} made · ${transferCost > 0 ? `<span class="pm-neg">−${transferCost} pts hit</span>` : 'no hit'}</span>
+              </div>
+              ${transferRows || '<div class="act-none">None</div>'}
+            </div>
+          </div>
         </div>`;
 
       modalBody.innerHTML = `
