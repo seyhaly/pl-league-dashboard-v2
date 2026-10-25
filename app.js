@@ -3136,6 +3136,88 @@
     updatePerformanceChartTheme();
   }
 
+  // ===================== SQUAD PANEL HELPERS =====================
+  const FT_MAX = 5;
+
+  // Free transfers rebuilt from each gameweek's entry history:
+  // 1 free transfer from GW2, +1 per gameweek up to FT_MAX, minus transfers made.
+  // Wildcard / Free Hit weeks keep the banked transfers.
+  function computeFreeTransfers(mgrPicks, gw) {
+    if (!mgrPicks || gw < 1) return null;
+    const histFor = g => {
+      const sq = mgrPicks[String(g)] || mgrPicks[Number(g)];
+      return sq && sq.entry_history ? { hist: sq.entry_history, chip: sq.active_chip || '' } : null;
+    };
+    let ftAvail = 1; // available at the start of GW2
+    let atStart = gw === 1 ? 0 : 1;
+    let used = 0;
+    let chipName = '';
+    for (let g = 2; g <= gw; g++) {
+      const h = histFor(g);
+      if (!h) return null;
+      const n = Number(h.hist.event_transfers) || 0;
+      const chip = String(h.chip).toLowerCase();
+      const keepsBank = chip.includes('wildcard') || chip.includes('freehit') || chip.includes('free hit');
+      if (g === gw) { atStart = ftAvail; used = n; chipName = keepsBank ? getChipLabel(h.chip) : ''; }
+      if (!keepsBank) ftAvail = Math.max(0, ftAvail - n);
+      ftAvail = Math.min(FT_MAX, ftAvail + 1);
+    }
+    if (gw === 1) {
+      const h = histFor(1);
+      used = h ? Number(h.hist.event_transfers) || 0 : 0;
+    }
+    return { atStart, used, next: ftAvail, chip: chipName };
+  }
+
+  function ptsText(n) {
+    return `${n} ${Math.abs(Number(n)) === 1 ? 'pt' : 'pts'}`;
+  }
+
+  // Club colours for the shirt icons on the pitch view
+  const CLUB_COLORS = {
+    ARS: '#EF0107', AVL: '#670E36', BOU: '#DA291C', BRE: '#E30613', BHA: '#0057B8',
+    BUR: '#6C1D45', CHE: '#034694', COV: '#59CBE8', CRY: '#1B458F', EVE: '#003399',
+    FUL: '#1d1d1d', HUL: '#F5A12D', IPS: '#3A64A3', LEE: '#FFCD00', LEI: '#003090',
+    LIV: '#C8102E', MCI: '#6CABDD', MUN: '#DA291C', NEW: '#241F20', NFO: '#DD0000',
+    SHU: '#EE2737', SOU: '#D71920', SUN: '#EB172B', TOT: '#132257', WHU: '#7A263A',
+    WOL: '#FDB913', MID: '#E21A23', NOR: '#00A650', WAT: '#FBEE23', WBA: '#122F67'
+  };
+
+  function pitchCardHtml(c) {
+    const color = CLUB_COLORS[String(c.team).toUpperCase()] || '#8a8197';
+    const statusCls = c.status === 'yet_to_play' ? 'is-pending' : (c.status === 'live' ? 'is-live' : (c.status === 'dnp' ? 'is-dnp' : 'is-played'));
+    const role = c.isCaptain
+      ? `<span class="pc-role pc-c" title="Captain ×${c.multiplier}">C</span>`
+      : (c.isVice ? '<span class="pc-role pc-v" title="Vice-captain">V</span>' : '');
+    const subTag = c.subbedIn ? '<span class="pc-sub in" title="Auto-subbed in">↑</span>'
+      : (c.subbedOut ? '<span class="pc-sub out" title="Auto-subbed out">↓</span>' : '');
+    const live = c.status === 'live' ? `<span class="pc-live">${c.minutes || 0}'</span>` : '';
+    return `
+      <div class="pc ${statusCls}${c.subbedOut ? ' is-out' : ''}${c.subbedIn ? ' is-in' : ''}">
+        ${role}${subTag}
+        ${c.benchRole ? `<span class="pc-bench-role">${c.benchRole}</span>` : ''}
+        <svg class="pc-shirt" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.4 3.5 16 2a4 4 0 0 1-8 0L3.6 3.5a2 2 0 0 0-1.3 2.2l.6 3.5a1 1 0 0 0 1 .8H6v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V10h2.1a1 1 0 0 0 1-.8l.6-3.5a2 2 0 0 0-1.3-2.2z" fill="${color}" stroke="rgba(0,0,0,0.25)" stroke-width="0.8"/></svg>
+        <span class="pc-name">${c.name}</span>
+        <span class="pc-pts">${c.status === 'yet_to_play' ? '–' : c.pts}${live}</span>
+        <span class="pc-opp">${c.opp ? `<span class="pc-fdr fdr-${c.difficulty}"></span>${c.opp}` : c.team}</span>
+      </div>`;
+  }
+
+  function getSquadView() {
+    try { return localStorage.getItem('fpl_squad_view') === 'list' ? 'list' : 'pitch'; } catch (e) { return 'pitch'; }
+  }
+
+  function syncSquadViewButtons() {
+    const view = getSquadView();
+    document.querySelectorAll('[data-squad-view]').forEach(b => b.classList.toggle('active', b.dataset.squadView === view));
+    document.querySelectorAll('.squad-views').forEach(el => { el.dataset.view = view; });
+  }
+
+  window.setSquadView = function(view) {
+    try { localStorage.setItem('fpl_squad_view', view); } catch (e) {}
+    syncSquadViewButtons();
+  };
+
   // ===================== MANAGER SQUAD DETAIL MODAL =====================
   window.closeManagerModal = function() {
     const modal = document.getElementById('managerDetailModal');
@@ -3208,9 +3290,9 @@
       else modalAvatar.textContent = getManagerInitials(manager.name);
     }
     if (modalName) modalName.textContent = manager.name;
-    if (modalTeam) modalTeam.textContent = `— ${manager.teamName}`;
-    if (modalFplId) modalFplId.textContent = `(#${manager.id})`;
-    if (modalGwBadge) modalGwBadge.textContent = `Gameweek ${gw} Squad & Team Details`;
+    if (modalTeam) modalTeam.textContent = manager.teamName;
+    if (modalFplId) modalFplId.textContent = `#${manager.id}`;
+    if (modalGwBadge) modalGwBadge.textContent = `Gameweek ${gw}`;
     if (modalDirectLink) modalDirectLink.href = `https://fantasy.premierleague.com/entry/${manager.id}/event/${gw}`;
 
     modal.classList.add('open');
@@ -3256,6 +3338,7 @@
       let yetToPlayCount = 0;
       let isBenchBoostActive = false;
       let autoSubs = [];
+      const squadCards = [];
 
       if (squadData && squadData.picks && squadData.picks.length > 0) {
         hist = squadData.entry_history || {};
@@ -3364,6 +3447,24 @@
             }
           }
 
+          squadCards.push({
+            starter: p.position <= 11,
+            benchRole: p.position > 11 ? (p.original_bench_role || (p.position === 12 ? 'GK' : String(p.position - 12))) : '',
+            name: pl.web_name,
+            team: pl.team,
+            type: pl.element_type,
+            pts,
+            status: pl.match_status,
+            minutes: pl.minutes,
+            opp: pl.opponent && pl.opponent !== '-' ? String(pl.opponent_short || pl.opponent).replace(/\s*\([HAha]\)/g, '').trim() : '',
+            difficulty: pl.difficulty || 3,
+            isCaptain: Boolean(p.is_captain),
+            isVice: Boolean(p.is_vice_captain),
+            multiplier,
+            subbedIn: Boolean(p.was_subbed_in),
+            subbedOut: Boolean(p.was_subbed_out)
+          });
+
           if (p.position <= 11) {
             if (isYetToPlay) {
               yetToPlayCount++;
@@ -3392,7 +3493,7 @@
                 <td class="col-opp">${oppBadge}</td>
                 <td class="col-status">${statusPill}</td>
                 <td class="col-role">${roleTag} ${subInBadge}</td>
-                <td class="col-pts text-center"><span class="player-points-badge" style="${isYetToPlay ? 'color:var(--text-muted);' : (p.was_subbed_in ? 'color:var(--pl-cyan);font-weight:800;' : '')}">${pts} pts</span></td>
+                <td class="col-pts text-center"><span class="player-points-badge" style="${isYetToPlay ? 'color:var(--text-muted);' : (p.was_subbed_in ? 'color:var(--pl-cyan);font-weight:800;' : '')}">${ptsText(pts)}</span></td>
               </tr>
             `;
             startingPtsTotal += pts;
@@ -3428,7 +3529,7 @@
                 <td class="col-opp">${oppBadge}</td>
                 <td class="col-status">${statusPill}</td>
                 <td class="col-role">${benchOrderTag}</td>
-                <td class="col-pts text-center"><span class="player-points-badge" style="${isYetToPlay ? 'color:var(--text-muted);' : (isBenchBoostActive ? 'color:var(--pl-cyan);font-weight:800;' : 'color:var(--text-muted);')}">${pts} pts</span></td>
+                <td class="col-pts text-center"><span class="player-points-badge" style="${isYetToPlay ? 'color:var(--text-muted);' : (isBenchBoostActive ? 'color:var(--pl-cyan);font-weight:800;' : 'color:var(--text-muted);')}">${ptsText(pts)}</span></td>
               </tr>
             `;
             benchPtsTotal += pts;
@@ -3439,54 +3540,9 @@
       }
 
       const maxSquadCount = isBenchBoostActive ? 15 : 11;
-      const squadScopeLabel = isBenchBoostActive ? '15 players (Bench Boost)' : '11 players';
 
-      // ── Build Transfers This GW Section ─────────────────────
-      const allTransfers = transfersHistoryMap[String(manager.id)] || [];
-      const gwTransfers = allTransfers.filter(t => t.event === gw);
-      let transfersHtml = '';
-
-      if (gwTransfers.length > 0) {
-        const transferItems = gwTransfers.map(t => {
-          const pIn = playersMap[t.element_in] || { web_name: 'Player #' + t.element_in, team: '' };
-          const pOut = playersMap[t.element_out] || { web_name: 'Player #' + t.element_out, team: '' };
-          const costIn = t.element_in_cost ? `£${(t.element_in_cost / 10).toFixed(1)}M` : '';
-          const costOut = t.element_out_cost ? `£${(t.element_out_cost / 10).toFixed(1)}M` : '';
-
-          return `
-            <div class="transfer-item-row" style="padding:6px 0;border-bottom:1px dashed var(--border-subtle);">
-              <span class="transfer-pill-in">${icon('plus', 13)} In: <strong>${pIn.web_name}</strong> ${costIn ? `(${costIn})` : ''} <span class="player-team-pill">${pIn.team}</span></span>
-              <span class="transfer-arrow">${icon('swap', 13)}</span>
-              <span class="transfer-pill-out">${icon('minus', 13)} Out: <strong>${pOut.web_name}</strong> ${costOut ? `(${costOut})` : ''} <span class="player-team-pill">${pOut.team}</span></span>
-            </div>
-          `;
-        }).join('');
-
-        transfersHtml = `
-          <div>
-            <div class="modal-section-header">
-              <span class="modal-section-title">${icon('swap', 15)} Transfers this GW (${gwTransfers.length} transfer${gwTransfers.length > 1 ? 's' : ''}${transferHits !== '(0 hits)' ? ` · ${transferHits}` : ''})</span>
-            </div>
-            <div class="modal-transfers-box">
-              ${transferItems}
-            </div>
-          </div>
-        `;
-      } else {
-        transfersHtml = `
-          <div>
-            <div class="modal-section-header">
-              <span class="modal-section-title">${icon('swap', 15)} Transfers this GW</span>
-            </div>
-            <div class="modal-transfers-box" style="color:var(--text-muted);font-style:italic;">
-              None (0 transfers made in Gameweek ${gw})
-            </div>
-          </div>
-        `;
-      }
-
-      const transferCost = (hist.event_transfers_cost !== undefined) 
-        ? hist.event_transfers_cost 
+      const transferCost = (hist.event_transfers_cost !== undefined)
+        ? hist.event_transfers_cost
         : ((state.dataset.gameweeks && state.dataset.gameweeks[gw - 1] && state.dataset.gameweeks[gw - 1].hits && state.dataset.gameweeks[gw - 1].hits[manager.id]) || 0);
 
       if (isPastGw && hist.points_on_bench !== undefined && typeof hist.points_on_bench === 'number') {
@@ -3499,134 +3555,159 @@
         : (startingPtsTotal + (isBenchBoostActive ? benchPts : 0));
       const netGwPoints = grossPoints - transferCost;
 
-      // ── Build Auto-Substitutions Banner Section ──────────────
-      let autoSubBannerHtml = '';
-      const squadAutoSubs = (typeof autoSubs !== 'undefined') ? autoSubs : [];
-      if (squadAutoSubs.length > 0) {
-        const isOfficial = squadAutoSubs[0].is_official;
-        const subItems = squadAutoSubs.map(s => {
-          const pOut = playersMap[s.element_out] || { web_name: 'Starter' };
-          const pIn = playersMap[s.element_in] || { web_name: 'Bench' };
-          const inPts = pIn.event_points || 0;
-          return `
-            <div class="auto-sub-item">
-              <span class="auto-sub-pill-out">${icon('minus', 13)} Out: <strong>${pOut.web_name}</strong> (0 pts)</span>
-              <span class="transfer-arrow">${icon('arrowRight', 13)}</span>
-              <span class="auto-sub-pill-in">${icon('plus', 13)} In: <strong>${pIn.web_name}</strong> (+${inPts} pts)</span>
-            </div>
-          `;
-        }).join('');
+      // ── Summary strip ──────────────────────────────────────
+      const playedPct = maxSquadCount > 0 ? Math.round((playedCount / maxSquadCount) * 100) : 0;
+      const chipHtml = activeChip && activeChip !== 'None'
+        ? `<span class="chip-tag ${getChipColorClass(squadData && squadData.active_chip)}">${activeChip}</span>`
+        : '<span class="pm-fact-value">None</span>';
 
-        autoSubBannerHtml = `
-          <div class="modal-auto-sub-box">
-            <div class="auto-sub-box-header">
-              ${icon('swap', 15)}
-              <span>Automatic Substitution${squadAutoSubs.length > 1 ? 's' : ''}</span>
-              <span class="${isOfficial ? 'auto-sub-confirmed-tag' : 'auto-sub-live-tag'}">${isOfficial ? 'CONFIRMED' : 'LIVE PREVIEW'}</span>
+      const summaryHtml = `
+        <div class="pm-summary">
+          <div class="pm-hero">
+            <span class="pm-label">GW${gw} points</span>
+            <span class="pm-hero-value">${netGwPoints}</span>
+            <span class="pm-hero-sub">${grossPoints} gross${transferCost > 0 ? ` · <span class="pm-neg">−${transferCost} hit</span>` : ' · no hit'}</span>
+          </div>
+          <div class="pm-facts">
+            <div class="pm-fact">
+              <span class="pm-label">Played</span>
+              <span class="pm-fact-value">${playedCount}<span class="pm-of"> / ${maxSquadCount}</span></span>
+              <span class="pm-progress"><span style="width:${playedPct}%"></span></span>
             </div>
-            <div>
-              ${subItems}
+            <div class="pm-fact">
+              <span class="pm-label">Bank</span>
+              <span class="pm-fact-value">${bankVal.replace('M', 'm')}</span>
+            </div>
+            <div class="pm-fact">
+              <span class="pm-label">Bench</span>
+              <span class="pm-fact-value">${ptsText(benchPts)}</span>
+            </div>
+            <div class="pm-fact">
+              <span class="pm-label">Chip</span>
+              ${chipHtml}
             </div>
           </div>
-        `;
+        </div>`;
+
+      // ── Free transfers ─────────────────────────────────────
+      const ft = computeFreeTransfers(mgrPicks, gw);
+      let freeTransfersHtml = '';
+      if (ft) {
+        const dots = Array.from({ length: FT_MAX }, (_, i) => `<span class="ft-dot${i < ft.next ? ' on' : ''}"></span>`).join('');
+        freeTransfersHtml = `
+          <div class="pm-card ft-card">
+            <div class="ft-main">
+              <span class="ft-count">${ft.next}</span>
+              <div>
+                <div class="ft-title">Free transfer${ft.next === 1 ? '' : 's'} for GW${gw + 1}</div>
+                <div class="ft-dots" aria-label="${ft.next} of ${FT_MAX}">${dots}</div>
+              </div>
+            </div>
+            <div class="ft-detail">
+              <span>GW${gw}: had <strong>${ft.atStart}</strong></span>
+              <span>used <strong>${ft.used}</strong></span>
+              <span>${transferCost > 0 ? `<span class="pm-neg">−${transferCost} pts hit</span>` : 'no hit'}</span>
+              ${ft.chip ? `<span>${ft.chip} played</span>` : ''}
+            </div>
+          </div>`;
       }
 
+      // ── Squad: pitch view ──────────────────────────────────
+      const starters = squadCards.filter(c => c.starter);
+      const bench = squadCards.filter(c => !c.starter);
+      const pitchRows = [1, 2, 3, 4]
+        .map(type => starters.filter(c => c.type === type))
+        .filter(row => row.length)
+        .map(row => `<div class="pitch-row">${row.map(pitchCardHtml).join('')}</div>`)
+        .join('');
+
+      const squadHtml = squadCards.length ? `
+        <div class="pm-section">
+          <div class="pm-section-head">
+            <span class="modal-section-title">${icon('shirt', 15)} Squad <span class="pm-muted">${playedCount} played · ${yetToPlayCount} to play</span></span>
+            <div class="segmented segmented-sm" role="group" aria-label="Squad view">
+              <button class="segmented-btn" data-squad-view="pitch" onclick="setSquadView('pitch')">Pitch</button>
+              <button class="segmented-btn" data-squad-view="list" onclick="setSquadView('list')">List</button>
+            </div>
+          </div>
+          <div class="squad-views" data-view="${getSquadView()}">
+            <div class="squad-pitch">
+              <div class="pitch">${pitchRows}</div>
+              <div class="bench-row">
+                <span class="bench-label">Bench${isBenchBoostActive ? ' · Bench Boost' : ''}</span>
+                <div class="bench-cards">${bench.map(pitchCardHtml).join('')}</div>
+              </div>
+            </div>
+            <div class="squad-list">
+              <table class="modal-squad-table">
+                <thead><tr><th class="col-pos">Pos</th><th class="col-player">Player</th><th class="col-opp">Opponent</th><th class="col-status">Status</th><th class="col-role">Role</th><th class="col-pts text-center">Points</th></tr></thead>
+                <tbody>${startingRows}</tbody>
+              </table>
+              <div class="pm-subhead">Bench · ${ptsText(benchPts)}</div>
+              <table class="modal-squad-table">
+                <thead><tr><th class="col-pos">Pos</th><th class="col-player">Player</th><th class="col-opp">Opponent</th><th class="col-status">Status</th><th class="col-role">Role</th><th class="col-pts text-center">Points</th></tr></thead>
+                <tbody>${benchRows}</tbody>
+              </table>
+            </div>
+          </div>
+        </div>` : `
+        <div class="pm-card pm-empty">Squad not available for Gameweek ${gw} yet.</div>`;
+
+      // ── Gameweek activity: auto-subs + transfers ──────────
+      const activityItems = [];
+      const squadAutoSubs = (typeof autoSubs !== 'undefined') ? autoSubs : [];
+      squadAutoSubs.forEach(sub => {
+        const pOut = playersMap[sub.element_out] || { web_name: 'Starter' };
+        const pIn = playersMap[sub.element_in] || { web_name: 'Bench' };
+        activityItems.push(`
+          <li class="act-item">
+            <span class="act-icon act-sub">${icon('swap', 14)}</span>
+            <div class="act-body">
+              <div class="act-line"><strong>${pIn.web_name}</strong> came on for <strong>${pOut.web_name}</strong></div>
+              <div class="act-meta">Automatic substitution · +${pIn.event_points || 0} pts
+                <span class="${sub.is_official ? 'auto-sub-confirmed-tag' : 'auto-sub-live-tag'}">${sub.is_official ? 'Confirmed' : 'Live preview'}</span>
+              </div>
+            </div>
+          </li>`);
+      });
+
+      const allTransfers = transfersHistoryMap[String(manager.id)] || [];
+      allTransfers.filter(t => t.event === gw).forEach(t => {
+        const pIn = playersMap[t.element_in] || { web_name: 'Player #' + t.element_in, team: '' };
+        const pOut = playersMap[t.element_out] || { web_name: 'Player #' + t.element_out, team: '' };
+        const cost = c => (c ? `£${(c / 10).toFixed(1)}m` : '');
+        activityItems.push(`
+          <li class="act-item">
+            <span class="act-icon act-transfer">${icon('arrowRight', 14)}</span>
+            <div class="act-body">
+              <div class="act-line">
+                <span class="pm-pos">In</span> <strong>${pIn.web_name}</strong> <span class="pm-muted">${pIn.team || ''} ${cost(t.element_in_cost)}</span>
+                <span class="act-sep">·</span>
+                <span class="pm-neg-soft">Out</span> <strong>${pOut.web_name}</strong> <span class="pm-muted">${pOut.team || ''} ${cost(t.element_out_cost)}</span>
+              </div>
+              <div class="act-meta">Transfer</div>
+            </div>
+          </li>`);
+      });
+
+      const activityHtml = `
+        <div class="pm-section">
+          <div class="pm-section-head">
+            <span class="modal-section-title">${icon('clock', 15)} Gameweek activity</span>
+            ${transferCost > 0 ? `<span class="pm-neg">−${transferCost} pts hit</span>` : ''}
+          </div>
+          ${activityItems.length
+            ? `<ul class="act-list">${activityItems.join('')}</ul>`
+            : `<div class="pm-card pm-empty">No transfers or automatic substitutions in Gameweek ${gw}.</div>`}
+        </div>`;
+
       modalBody.innerHTML = `
-        <!-- Vital Stats Ribbon -->
-        <div class="modal-stats-grid">
-          <div class="modal-stat-card">
-            <span class="stat-label">${icon('target', 13)} GW${gw} net points</span>
-            <span class="stat-val" style="color:var(--pl-cyan);">${netGwPoints} pts ${transferCost > 0 ? `<span style="font-size:10.5px;color:#f87171;font-weight:700;">(-${transferCost})</span>` : ''}</span>
-          </div>
-          <div class="modal-stat-card">
-            <span class="stat-label">${icon('check', 13)} Played</span>
-            <span class="stat-val" style="color:#10b981;">${playedCount} <span style="font-size:11px;color:var(--text-muted);font-weight:600;">/ ${maxSquadCount}</span></span>
-          </div>
-          <div class="modal-stat-card">
-            <span class="stat-label">${icon('clock', 13)} Yet to play</span>
-            <span class="stat-val" style="color:#f59e0b;">${yetToPlayCount} <span style="font-size:11px;color:var(--text-muted);font-weight:600;">/ ${maxSquadCount}</span></span>
-          </div>
-          <div class="modal-stat-card">
-            <span class="stat-label">${icon('wallet', 13)} In the bank</span>
-            <span class="stat-val" style="color:var(--text-primary);">${bankVal}</span>
-          </div>
-          <div class="modal-stat-card">
-            <span class="stat-label">${icon('zap', 13)} Active chip</span>
-            <span class="stat-val" style="color:${activeChip !== 'None' ? '#a855f7' : 'var(--text-primary)'};">${activeChip}</span>
-          </div>
-          <div class="modal-stat-card">
-            <span class="stat-label">${icon('swap', 13)} Transfers</span>
-            <span class="stat-val">${transfersCount} <span style="font-size:11px;font-weight:700;${transferCost > 0 ? 'color:#f87171;' : 'color:var(--text-muted);'}">(${transferCost > 0 ? `-${transferCost} pts` : '0 pts'})</span></span>
-          </div>
-        </div>
-
-        ${autoSubBannerHtml}
-
-        <!-- Starting XI Table -->
-        <div>
-          <div class="modal-section-header">
-            <span class="modal-section-title">${icon('shirt', 15)} Starting XI (${startingPtsTotal} pts)</span>
-            <span style="font-size:11px;font-weight:600;color:var(--text-muted);">${squadScopeLabel} (${playedCount} Played · ${yetToPlayCount} Remaining)</span>
-          </div>
-          <table class="modal-squad-table">
-            <colgroup>
-              <col class="col-pos" style="width: 7%;">
-              <col class="col-player" style="width: 28%;">
-              <col class="col-opp" style="width: 15%;">
-              <col class="col-status" style="width: 18%;">
-              <col class="col-role" style="width: 20%;">
-              <col class="col-pts" style="width: 12%;">
-            </colgroup>
-            <thead>
-              <tr>
-                <th class="col-pos">Pos</th>
-                <th class="col-player">Player</th>
-                <th class="col-opp">Opponent</th>
-                <th class="col-status">Status</th>
-                <th class="col-role">Role</th>
-                <th class="col-pts text-center">Points</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${startingRows || '<tr><td colspan="6" style="text-align:center;padding:16px;color:var(--text-muted);">Squad data loading or not yet submitted for this Gameweek.</td></tr>'}
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Bench Table -->
-        <div>
-          <div class="modal-section-header">
-            <span class="modal-section-title">${icon('bench', 15)} Bench (${benchPts} pts)${isBenchBoostActive ? ' <span class="chip-tag chip-bench-boost">Bench Boost active</span>' : ''}</span>
-            <span style="font-size:11px;font-weight:600;color:var(--text-muted);">4 Players</span>
-          </div>
-          <table class="modal-squad-table">
-            <colgroup>
-              <col class="col-pos" style="width: 7%;">
-              <col class="col-player" style="width: 28%;">
-              <col class="col-opp" style="width: 15%;">
-              <col class="col-status" style="width: 18%;">
-              <col class="col-role" style="width: 20%;">
-              <col class="col-pts" style="width: 12%;">
-            </colgroup>
-            <thead>
-              <tr>
-                <th class="col-pos">Pos</th>
-                <th class="col-player">Player</th>
-                <th class="col-opp">Opponent</th>
-                <th class="col-status">Status</th>
-                <th class="col-role">Role</th>
-                <th class="col-pts text-center">Points</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${benchRows || '<tr><td colspan="6" style="text-align:center;padding:16px;color:var(--text-muted);">Bench data not available.</td></tr>'}
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Transfers This GW Breakdown -->
-        ${transfersHtml}
+        ${summaryHtml}
+        ${freeTransfersHtml}
+        ${squadHtml}
+        ${activityHtml}
       `;
+      syncSquadViewButtons();
     } catch (err) {
       console.error('Error rendering squad modal:', err);
       modalBody.innerHTML = `<div style="padding:24px;text-align:center;color:#ef4444;font-weight:600;">Failed to render squad details: ${err.message}</div>`;
