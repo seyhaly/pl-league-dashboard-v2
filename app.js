@@ -2469,35 +2469,46 @@
   // ===================== CHIP TRACKER =====================
   function renderChipTracker() {
     const managerData = getManagerSeasonSummary();
-    elements.chipTrackerContainer.innerHTML = '';
+    const container = elements.chipTrackerContainer;
+    if (!container) return;
 
-    managerData.forEach(m => {
-      const card = document.createElement('div');
-      card.className = 'chip-card';
+    // Columns: first-half set then second-half set, matched to each manager's chip list by label
+    const columns = ['WC 1', 'FH 1', 'BB 1', 'TC 1', 'WC 2', 'FH 2', 'BB 2', 'TC 2'];
+    const head = columns.map((c, i) => `<th class="text-center${i === 4 ? ' chip-half' : ''}">${c}</th>`).join('');
 
-      const chipListHtml = m.chipsStatus.map(c => {
-        const shortLabel = getChipLabel(c.chipName);
-        if (c.used) {
-           return `
-             <div class="chip-pill-compact used ${c.colorClass}">
-               <span class="cp-name">${shortLabel}</span>
-               <span class="cp-gw">GW${c.usedGw}</span>
-             </div>`;
-        } else {
-           return `
-             <div class="chip-pill-compact available">
-               <span class="cp-name">${shortLabel}</span>
-             </div>`;
-        }
+    const rows = managerData.map(m => {
+      const byLabel = {};
+      m.chipsStatus.forEach(c => { byLabel[getChipLabel(c.chipName)] = c; });
+      const left = m.chipsStatus.filter(c => !c.used).length;
+      const cells = columns.map((label, i) => {
+        const c = byLabel[label];
+        const cls = i === 4 ? ' class="text-center chip-half"' : ' class="text-center"';
+        return c && c.used
+          ? `<td${cls}><span class="chip-tag ${c.colorClass}">GW${c.usedGw}</span></td>`
+          : `<td${cls}><span class="chip-unused">·</span></td>`;
       }).join('');
+      return `
+        <tr>
+          <td>
+            <div class="manager-info">
+              <span class="manager-name">${m.name}</span>
+              <span class="team-name">${m.teamName}</span>
+            </div>
+          </td>
+          ${cells}
+          <td class="text-center"><span class="chip-left">${left}</span></td>
+        </tr>`;
+    }).join('');
 
-      card.innerHTML = `
-        <div class="chip-card-header">${managerCellHtml(m)}</div>
-        <div class="chip-pills-row">${chipListHtml}</div>
-      `;
-
-      elements.chipTrackerContainer.appendChild(card);
-    });
+    container.innerHTML = `
+      <div class="table-wrap">
+        <table class="custom-table chip-matrix">
+          <thead><tr><th>Manager</th>${head}<th class="text-center">Left</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+      <p class="chip-matrix-note">First-half chips (1) expire after GW19 · second-half chips (2) unlock at GW20</p>
+    `;
   }
 
   function populateStatusGwDropdown(activeGw) {

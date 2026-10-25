@@ -711,20 +711,12 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 .stat-pill.loss { background: var(--neg-soft); color: var(--neg); }
 .stat-pill.neu { background: var(--neutral-soft); color: var(--muted); }
 
-.chip-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
-.chip-card { padding: 14px; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); }
-.chip-card-header { margin-bottom: 10px; }
-.chip-pills-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
-.chip-pill-compact {
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  min-height: 40px;
-  padding: 4px;
-  border-radius: var(--radius-md);
-  font-size: 11px; font-weight: 700;
-  text-align: center;
-}
-.chip-pill-compact.available { border: 1px dashed var(--border-strong); color: var(--faint); }
-.chip-pill-compact .cp-gw { font-size: 10px; font-weight: 600; opacity: 0.8; }
+.chip-matrix th:first-child, .chip-matrix td:first-child { width: 24%; }
+.chip-matrix .chip-half { border-left: 1px solid var(--border-strong); }
+.chip-matrix .chip-tag { font-variant-numeric: tabular-nums; }
+.chip-unused { color: var(--faint); font-weight: 700; }
+.chip-left { font-weight: 700; font-variant-numeric: tabular-nums; }
+.chip-matrix-note { margin: 8px 2px 0; font-size: 12px; color: var(--muted); }
 
 /* ---------- Manager squad side panel ---------- */
 .manager-modal-backdrop {
