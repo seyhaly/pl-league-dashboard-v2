@@ -3320,6 +3320,8 @@
     let body;
     if (c.status === 'yet_to_play') {
       body = `<div class="bd-empty">${icon('clock', 16)} Yet to play${fixture ? ` · ${fixture}` : ''}</div>`;
+    } else if (c.status === 'dnp' && (!rows || !rows.length)) {
+      body = `<div class="bd-empty">${icon('x', 16)} Didn't play in GW${gw} · 0 pts</div>`;
     } else if (!rows || !rows.length) {
       body = `<div class="bd-empty">Breakdown not available yet for GW${gw}.</div>`;
     } else {
