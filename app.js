@@ -724,7 +724,7 @@
   // ===================== LIVE FPL SYNC =====================
   // Our own Cloudflare Worker relay (cloudflare/fpl-proxy-worker.js), tried first.
   // Leave empty to use only the public proxies.
-  const FPL_PROXY_BASE = '';
+  const FPL_PROXY_BASE = 'https://fpl-proxy.lyseyha.workers.dev';
 
   function fplProxyBase() {
     try { return (localStorage.getItem('fpl_proxy_base') || FPL_PROXY_BASE).replace(/\/+$/, ''); } catch (e) { return FPL_PROXY_BASE; }
@@ -1296,6 +1296,8 @@
         changeGw(state.currentGw);
         updateMemberCountBadge();
         renderAll();
+        elements.syncStatusTag.className = 'sync-status-tag live';
+        elements.syncStatusTag.textContent = `LIVE (${state.dataset.managers.length} Members)`; markSynced();
       } else {
         throw new Error('No live standings found');
       }
