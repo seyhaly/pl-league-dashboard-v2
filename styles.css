@@ -863,6 +863,21 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 .auto-sub-pill-in, .transfer-pill-in { color: var(--pos); }
 .auto-sub-pill-out, .transfer-pill-out { color: var(--neg); }
 
+/* ---------- Collapsible sidebar ---------- */
+.app-shell.sidebar-collapsed { grid-template-columns: minmax(0, 1fr); }
+.app-shell.sidebar-collapsed .sidebar { display: none; }
+#sidebarToggle[aria-expanded="true"] { background: var(--accent-soft); color: var(--accent-text); border-color: transparent; }
+.topbar-league {
+  display: none;
+  max-width: 220px;
+  padding-right: 6px;
+  margin-right: 2px;
+  border-right: 1px solid var(--border);
+  font-size: 13px; font-weight: 600; color: var(--text-2);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.sidebar-collapsed .topbar-league { display: inline-block; }
+
 /* ---------- Icons ---------- */
 .ico { flex: none; vertical-align: -2px; }
 .btn .ico-loader, .btn-secondary .ico-loader { animation: spin 0.9s linear infinite; }

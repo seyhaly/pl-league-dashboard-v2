@@ -10,7 +10,7 @@
     showMotmBadge: false,
     showMotsBadge: false,
     theme: localStorage.getItem('fpl_admin_theme') || 'light',
-    showAba: (() => { try { return localStorage.getItem('fpl_show_aba') === '1'; } catch (e) { return false; } })(),
+    showAba: (() => { try { return localStorage.getItem('fpl_show_aba') !== '0'; } catch (e) { return true; } })(),
     lastSyncedAt: null,
     renderedLeagueId: null,
     motsPrizePool: 50,
@@ -2121,6 +2121,7 @@
             <th class="text-center">Pos</th>
             <th>Manager</th>
             ${abaTh}
+            <th class="text-center">Transfers</th>
             <th class="text-center" title="Net points = gross points minus transfer hits">Net Pts</th>
             <th class="text-center sortable-header${activeSortClass}" id="thSeasonPts" title="Click to sort by season points. Arrows show movement in the season table since last gameweek.">Season <span id="seasonPtsSortIcon" class="sort-icon">${sortIconText}</span></th>
             <th class="text-center">Chip</th>
@@ -2256,7 +2257,7 @@
 
       // Net points with its gross / transfers breakdown underneath
       const hitText = m.hitCost > 0 ? ` <span class="hit-tag has-hit">−${m.hitCost}</span>` : '';
-      const netBreakdown = `${m.grossScore} gross · ${m.transfers} tr${hitText}`;
+      const netBreakdown = `${m.grossScore} gross${hitText}`;
 
       // =========== DESKTOP TABLE ROW ===========
       const tr = document.createElement('tr');
@@ -2299,6 +2300,7 @@
           <td class="text-center"><div class="rank-num ${rankClass}">${m.rank}</div></td>
           <td>${managerCellHtml(m, tiedPill, tiebreakerDetail)}</td>
           ${abaTd}
+          <td class="text-center">${transferDisplay}</td>
           <td class="text-center">
             <div class="net-cell">
               <span class="gw-score" data-cur-val="${m.netScore}">${m.netScore}</span>
