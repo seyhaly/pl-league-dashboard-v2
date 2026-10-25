@@ -1129,6 +1129,7 @@
         elements.syncStatusTag.className = 'sync-status-tag live';
         elements.syncStatusTag.textContent = `LIVE (${state.dataset.managers.length} Members)`; markSynced();
         refreshOpenManagerModal();
+        refreshMatchCentre();
       } else {
         throw new Error('No live standings found');
       }
@@ -2734,78 +2735,445 @@
     return items.length ? `<ul class="md-events md-${side === 'h' ? 'home' : 'away'}">${items.join('')}</ul>` : '<div class="md-none">No events</div>';
   }
 
+  // ===================== PREMIER LEAGUE MATCH-CENTRE DATA =====================
+  // Line-ups, events with minutes and team stats come from the Premier League's
+  // own data service through the relay's /pl routes; FPL fixtures are paired
+  // with Premier League fixtures by their home and away club codes.
+  function plBase() {
+    try {
+      const override = localStorage.getItem('fpl_pl_base');
+      if (override) return override.replace(/\/+$/, '');
+    } catch (e) {}
+    return `${fplProxyBase()}/pl`;
+  }
+
+  async function plFetch(path, timeoutMs = 10000) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const res = await fetch(`${plBase()}${path}`, { signal: controller.signal, headers: { Accept: 'application/json' } });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.json();
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  let plSeasonIndexPromise = null;
+  function plSeasonIndex() {
+    if (!plSeasonIndexPromise) {
+      plSeasonIndexPromise = (async () => {
+        const seasons = await plFetch('/compseasons');
+        const seasonId = Math.round(seasons.content[0].id);
+        const season = await plFetch(`/season/${seasonId}`);
+        const index = {};
+        season.content.forEach(f => {
+          const [home, away] = f.teams.map(t => t.team.club.abbr);
+          index[`${home}-${away}`] = Math.round(f.id);
+        });
+        return index;
+      })().catch(err => { plSeasonIndexPromise = null; throw err; });
+    }
+    return plSeasonIndexPromise;
+  }
+
+  async function plMatchFor(f) {
+    const index = await plSeasonIndex();
+    const id = index[`${teamById(f.team_h).short_name}-${teamById(f.team_a).short_name}`];
+    if (!id) throw new Error('Match not found');
+    const [fixture, stats] = await Promise.all([
+      plFetch(`/fixture/${id}`),
+      plFetch(`/stats/${id}`).catch(() => null)
+    ]);
+    return { id, fixture, stats };
+  }
+
+  // Every FPL fixture of the season, for the league table (refreshed each minute)
+  let allFixturesCache = { at: 0, data: null, promise: null };
+  function loadAllFixtures() {
+    if (allFixturesCache.data && Date.now() - allFixturesCache.at < 60000) return Promise.resolve(allFixturesCache.data);
+    if (!allFixturesCache.promise) {
+      allFixturesCache.promise = fetchFplWithTimeout('https://fantasy.premierleague.com/api/fixtures/', 12000)
+        .then(data => {
+          allFixturesCache.promise = null;
+          if (!Array.isArray(data)) throw new Error('No fixtures');
+          allFixturesCache = { at: Date.now(), data, promise: null };
+          return data;
+        })
+        .catch(err => { allFixturesCache.promise = null; throw err; });
+    }
+    return allFixturesCache.promise;
+  }
+
+  // ===================== MATCH CENTRE POP-UP =====================
+  const MATCH_TABS = [['events', 'Events'], ['lineups', 'Line-ups'], ['stats', 'Stats'], ['table', 'Table']];
+  let matchCentre = null; // { fixtureId, tab, pl, plError, fixtures, tableError }
+
   window.closeMatchDetail = function() {
     const el = document.getElementById('matchDetail');
     if (el) el.remove();
+    matchCentre = null;
+  };
+
+  window.setMatchTab = function(tab) {
+    if (!matchCentre) return;
+    matchCentre.tab = tab;
+    renderMatchCentre();
   };
 
   window.showMatchDetail = function(fixtureId) {
-    closeMatchDetail();
-    const f = (fixturesForGw(state.currentGw) || []).find(x => x.id === fixtureId);
-    if (!f) return;
-    const h = teamById(f.team_h), a = teamById(f.team_a);
-    const st = fixtureState(f);
-    const stat = key => (f.stats || []).find(x => x.identifier === key) || { h: [], a: [] };
-    const kickoff = new Date(f.kickoff_time);
-    const when = kickoff.toLocaleString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-
-    const statusText = st === 'live' ? `<span class="gs-mstate is-live"><span class="live-dot"></span>Live ${f.minutes || 0}'</span>`
-      : st === 'ft' ? '<span class="gs-mstate is-active">Full time · bonus pending</span>'
-      : st === 'final' ? '<span class="gs-mstate is-done">Full time</span>'
-      : '<span class="gs-mstate is-wait">Not started</span>';
-
-    let body;
-    if (st === 'upcoming') {
-      body = `<div class="md-empty">${icon('clock', 16)} Kick-off ${when}. Match events appear once it starts.</div>`;
-    } else {
-      const stat = key => (f.stats || []).find(x => x.identifier === key) || { h: [], a: [] };
-      const saves = list => list.length ? list.map(x => `${playerName(x.element)} <b>${x.value}</b>`).join(', ') : '–';
-      const bonus = [...stat('bonus').h.map(x => ({ ...x, team: h })), ...stat('bonus').a.map(x => ({ ...x, team: a }))]
-        .sort((x, y) => y.value - x.value);
-      body = `
-        <div class="md-events-grid">
-          ${sideEventsHtml(f, 'h')}
-          <div class="md-divider"></div>
-          ${sideEventsHtml(f, 'a')}
-        </div>
-        <div class="md-saves">
-          <span class="md-saves-side">${saves(stat('saves').h)}</span>
-          <span class="md-saves-label">Saves</span>
-          <span class="md-saves-side md-saves-away">${saves(stat('saves').a)}</span>
-        </div>
-        <div class="md-bonus">
-          <div class="md-bonus-title">Bonus points${st === 'final' ? '' : ' <span>· provisional</span>'}</div>
-          <div class="md-bonus-list">
-            ${bonus.length ? bonus.map(x => `
-              <span class="md-bonus-chip b${x.value}">
-                <b>${x.value}</b>${crestHtml(x.team)}<span>${playerName(x.element)}</span>
-              </span>`).join('') : '<span class="md-none">Not available yet</span>'}
-          </div>
-        </div>`;
-    }
+    const el = document.getElementById('matchDetail');
+    if (el) el.remove();
+    matchCentre = { fixtureId, tab: 'events', pl: null, plError: false, fixtures: null, tableError: false };
 
     const overlay = document.createElement('div');
     overlay.id = 'matchDetail';
     overlay.className = 'md-overlay';
-    overlay.innerHTML = `
-      <div class="md-card" role="dialog" aria-label="${h.name || h.short_name} v ${a.name || a.short_name}">
-        <button class="icon-btn md-close" aria-label="Close match details" onclick="closeMatchDetail()">${icon('x', 14)}</button>
-        <div class="md-head">
-          <div class="md-team">${crestHtml(h)}<strong>${h.name || h.short_name}</strong></div>
-          <div class="md-centre">
-            ${st === 'upcoming'
-              ? `<div class="md-kickoff">${kickoff.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</div>`
-              : `<div class="md-score">${f.team_h_score ?? 0}<i>–</i>${f.team_a_score ?? 0}</div>`}
-            ${statusText}
-            <div class="md-when">Gameweek ${f.event} · ${when}</div>
-          </div>
-          <div class="md-team">${crestHtml(a)}<strong>${a.name || a.short_name}</strong></div>
-        </div>
-        ${body}
-      </div>`;
+    overlay.innerHTML = '<div class="md-card" role="dialog"></div>';
     overlay.addEventListener('click', e => { if (e.target === overlay) closeMatchDetail(); });
     document.body.appendChild(overlay);
+    renderMatchCentre();
+
+    const f = currentMatchFixture();
+    if (!f) return;
+    plMatchFor(f)
+      .then(pl => { if (matchCentre && matchCentre.fixtureId === fixtureId) { matchCentre.pl = pl; renderMatchCentre(); } })
+      .catch(() => { if (matchCentre && matchCentre.fixtureId === fixtureId) { matchCentre.plError = true; renderMatchCentre(); } });
+    loadAllFixtures()
+      .then(data => { if (matchCentre && matchCentre.fixtureId === fixtureId) { matchCentre.fixtures = data; if (matchCentre.tab === 'table') renderMatchCentre(); } })
+      .catch(() => { if (matchCentre && matchCentre.fixtureId === fixtureId) { matchCentre.tableError = true; if (matchCentre.tab === 'table') renderMatchCentre(); } });
   };
+
+  // Live sync: pull fresh Premier League data for an open match centre
+  function refreshMatchCentre() {
+    const f = currentMatchFixture();
+    if (!f) return;
+    const id = matchCentre.fixtureId;
+    renderMatchCentre();
+    if (fixtureState(f) === 'live' || fixtureState(f) === 'ft') {
+      plMatchFor(f).then(pl => { if (matchCentre && matchCentre.fixtureId === id) { matchCentre.pl = pl; renderMatchCentre(); } }).catch(() => {});
+    }
+  }
+
+  function currentMatchFixture() {
+    return matchCentre ? (fixturesForGw(state.currentGw) || []).find(x => x.id === matchCentre.fixtureId) : null;
+  }
+
+  function renderMatchCentre() {
+    const card = document.querySelector('#matchDetail .md-card');
+    const f = currentMatchFixture();
+    if (!card || !f) return;
+    const h = teamById(f.team_h), a = teamById(f.team_a);
+    const st = fixtureState(f);
+    const kickoff = new Date(f.kickoff_time);
+    const when = kickoff.toLocaleString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+    const plFix = matchCentre.pl && matchCentre.pl.fixture;
+    const statusText = st === 'live' ? `<span class="gs-mstate is-live"><span class="live-dot"></span>Live ${plFix && plFix.clock ? plFix.clock.label.replace(/'00$/, "'") : `${f.minutes || 0}'`}</span>`
+      : st === 'ft' ? '<span class="gs-mstate is-active">Full time · bonus pending</span>'
+      : st === 'final' ? '<span class="gs-mstate is-done">Full time</span>'
+      : '<span class="gs-mstate is-wait">Not started</span>';
+    const venue = plFix && plFix.ground ? ` · ${plFix.ground.name}` : '';
+
+    card.setAttribute('aria-label', `${h.name || h.short_name} v ${a.name || a.short_name}`);
+    card.innerHTML = `
+      <button class="icon-btn md-close" aria-label="Close match details" onclick="closeMatchDetail()">${icon('x', 14)}</button>
+      <div class="md-head">
+        <div class="md-team">${crestHtml(h)}<strong>${h.name || h.short_name}</strong></div>
+        <div class="md-centre">
+          ${st === 'upcoming'
+            ? `<div class="md-kickoff">${kickoff.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</div>`
+            : `<div class="md-score">${f.team_h_score ?? 0}<i>–</i>${f.team_a_score ?? 0}</div>`}
+          ${statusText}
+          <div class="md-when">Gameweek ${f.event} · ${when}${venue}</div>
+        </div>
+        <div class="md-team">${crestHtml(a)}<strong>${a.name || a.short_name}</strong></div>
+      </div>
+      <nav class="md-tabs" role="tablist">
+        ${MATCH_TABS.map(([key, label]) => `<button role="tab" class="md-tab${matchCentre.tab === key ? ' is-on' : ''}" aria-selected="${matchCentre.tab === key}" onclick="setMatchTab('${key}')">${label}</button>`).join('')}
+      </nav>
+      <div class="md-body">${matchTabHtml(f, h, a, st, when)}</div>`;
+  }
+
+  function matchTabHtml(f, h, a, st, when) {
+    const tab = matchCentre.tab;
+    if (tab === 'table') return tableTabHtml(f);
+    if (st === 'upcoming' && tab !== 'lineups') {
+      return `<div class="md-empty">${icon('clock', 16)} Kick-off ${when}. ${tab === 'stats' ? 'Stats' : 'Match events'} appear once it starts.</div>`;
+    }
+    const pl = matchCentre.pl;
+    if (!pl) {
+      if (matchCentre.plError) {
+        return tab === 'events'
+          ? `${fplEventsHtml(f, h, a, st)}<div class="md-note">Minute-by-minute details are unavailable right now.</div>`
+          : '<div class="md-empty">These details are unavailable right now. Try again in a minute.</div>';
+      }
+      return '<div class="md-empty"><span class="gs-spinner"></span> Loading match centre…</div>';
+    }
+    if (tab === 'events') return plEventsHtml(pl.fixture, f, h, a, st);
+    if (tab === 'lineups') return lineupsTabHtml(pl.fixture);
+    if (tab === 'stats') return statsTabHtml(pl);
+    return '';
+  }
+
+  // ---- Events tab ----
+  function clockLabel(e) {
+    return e.clock && e.clock.label ? e.clock.label.replace(/'00$/, "'").replace(/^0(\d)/, '$1') : '';
+  }
+
+  function plPeople(fixture) {
+    const people = {};
+    (fixture.teamLists || []).forEach(tl => [...(tl.lineup || []), ...(tl.substitutes || [])].forEach(p => {
+      people[p.id] = p;
+    }));
+    return people;
+  }
+
+  const SUB_ICON = '<svg class="md-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 20V6M4 10l4-4 4 4" stroke="#0a7a3e" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 4v14M12 14l4 4 4-4" stroke="#c4003f" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const SECOND_YELLOW_ICON = '<svg class="md-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="3.5" width="10" height="14.5" rx="1.6" fill="#ffd21f" transform="rotate(-8 9.5 10.75)"/><rect x="9.5" y="6" width="10" height="14.5" rx="1.6" fill="#e8202a" transform="rotate(8 14.5 13.25)"/></svg>';
+
+  function plEventsHtml(fixture, f, h, a, st) {
+    const people = plPeople(fixture);
+    const name = id => (people[id] && people[id].name && people[id].name.display) || '';
+    const homeTeamId = fixture.teams && fixture.teams[0] && fixture.teams[0].team.id;
+    const events = [...(fixture.events || [])].sort((x, y) => ((x.time && x.time.millis) || 0) - ((y.time && y.time.millis) || 0));
+
+    const rows = [];
+    let prev = { homeScore: 0, awayScore: 0 };
+    for (let i = 0; i < events.length; i++) {
+      const e = events[i];
+      const side = e.teamId === homeTeamId ? 'home' : 'away';
+      if (e.type === 'G' || e.type === 'P' || e.type === 'O') {
+        const sc = e.score || prev;
+        const scoringSide = sc.homeScore > prev.homeScore ? 'home' : (sc.awayScore > prev.awayScore ? 'away' : side);
+        prev = sc;
+        const tag = e.type === 'P' ? ' <span class="md-ev-tag">pen</span>' : (e.type === 'O' ? ' <span class="md-ev-tag">og</span>' : '');
+        rows.push({ side: scoringSide, clock: clockLabel(e), icon: e.type === 'O' ? MATCH_ICONS.ownGoal : MATCH_ICONS.goal, main: `${name(e.personId)}${tag}`, sub: e.assistId ? `Assist: ${name(e.assistId)}` : '', score: `${sc.homeScore}–${sc.awayScore}`, strong: true });
+      } else if (e.type === 'B') {
+        const ic = e.description === 'R' ? MATCH_ICONS.red : (e.description === 'YR' ? SECOND_YELLOW_ICON : MATCH_ICONS.yellow);
+        rows.push({ side, clock: clockLabel(e), icon: ic, main: name(e.personId), sub: e.description === 'YR' ? 'Second yellow' : '' });
+      } else if (e.type === 'S' && e.description === 'ON') {
+        const off = events.find((x, j) => j !== i && x.type === 'S' && x.description === 'OFF' && x.teamId === e.teamId && clockLabel(x) === clockLabel(e) && !x._paired);
+        if (off) off._paired = true;
+        rows.push({ side, clock: clockLabel(e), icon: SUB_ICON, main: `<span class="md-in">${name(e.personId)}</span>`, sub: off ? `<span class="md-out">${name(off.personId)}</span>` : '' });
+      } else if (e.type === 'MP' || e.type === 'SP') {
+        rows.push({ side, clock: clockLabel(e), icon: e.type === 'SP' ? MATCH_ICONS.penSaved : MATCH_ICONS.penMissed, main: name(e.personId) || (e.type === 'SP' ? 'Penalty saved' : 'Penalty missed'), sub: e.type === 'SP' ? 'Penalty saved' : 'Penalty missed' });
+      } else if (e.type === 'PE') {
+        const sc = e.score || prev;
+        rows.push({ divider: e.phase === '1' ? `Half-time ${sc.homeScore}–${sc.awayScore}` : `Full-time ${sc.homeScore}–${sc.awayScore}` });
+      }
+    }
+    events.forEach(x => { delete x._paired; });
+
+    if (!rows.length) return `<div class="md-empty">No events yet.</div>${bonusHtml(f, h, a, st)}`;
+    const html = rows.map(r => r.divider
+      ? `<li class="md-tl-divider"><span>${r.divider}</span></li>`
+      : `<li class="md-tl-row is-${r.side}${r.strong ? ' is-goal' : ''}">
+          <div class="md-tl-side md-tl-home">${r.side === 'home' ? `<div class="md-tl-ev">${r.icon}<div><div class="md-tl-main">${r.main}</div>${r.sub ? `<div class="md-tl-sub">${r.sub}</div>` : ''}</div></div>` : ''}</div>
+          <div class="md-tl-min">${r.clock}${r.score ? `<span>${r.score}</span>` : ''}</div>
+          <div class="md-tl-side md-tl-away">${r.side === 'away' ? `<div class="md-tl-ev">${r.icon}<div><div class="md-tl-main">${r.main}</div>${r.sub ? `<div class="md-tl-sub">${r.sub}</div>` : ''}</div></div>` : ''}</div>
+        </li>`).join('');
+    return `<ol class="md-timeline">${html}</ol>${bonusHtml(f, h, a, st)}`;
+  }
+
+  // Fallback events (FPL data, no minutes) when the Premier League data is unavailable
+  function fplEventsHtml(f, h, a, st) {
+    return `
+      <div class="md-events-grid">
+        ${sideEventsHtml(f, 'h')}
+        <div class="md-divider"></div>
+        ${sideEventsHtml(f, 'a')}
+      </div>${bonusHtml(f, h, a, st)}`;
+  }
+
+  function bonusHtml(f, h, a, st) {
+    const stat = key => (f.stats || []).find(x => x.identifier === key) || { h: [], a: [] };
+    const bonus = [...stat('bonus').h.map(x => ({ ...x, team: h })), ...stat('bonus').a.map(x => ({ ...x, team: a }))]
+      .sort((x, y) => y.value - x.value);
+    return `
+      <div class="md-bonus">
+        <div class="md-bonus-title">FPL bonus points${st === 'final' ? '' : ' <span>· provisional</span>'}</div>
+        <div class="md-bonus-list">
+          ${bonus.length ? bonus.map(x => `
+            <span class="md-bonus-chip b${x.value}">
+              <b>${x.value}</b>${crestHtml(x.team)}<span>${playerName(x.element)}</span>
+            </span>`).join('') : '<span class="md-none">Not available yet</span>'}
+        </div>
+      </div>`;
+  }
+
+  // ---- Line-ups tab ----
+  function playerPhotoUrl(p) {
+    const opta = p.altIds && p.altIds.opta ? String(p.altIds.opta).replace(/^p/, '') : '';
+    return opta ? `https://resources.premierleague.com/premierleague25/photos/players/110x140/${opta}.png` : '';
+  }
+
+  function lineupsTabHtml(fixture) {
+    const lists = fixture.teamLists || [];
+    if (lists.length < 2 || !lists[0].lineup || !lists[0].lineup.length) {
+      return '<div class="md-empty">Line-ups are usually announced about an hour before kick-off.</div>';
+    }
+    const homeTeamId = fixture.teams[0].team.id;
+    const ordered = [lists.find(t => t.teamId === homeTeamId) || lists[0], lists.find(t => t.teamId !== homeTeamId) || lists[1]];
+
+    // What each player did, for small markers on the pitch
+    const marks = {};
+    const add = (id, html) => { if (id) (marks[id] = marks[id] || []).push(html); };
+    const subOn = {};
+    (fixture.events || []).forEach(e => {
+      if (e.type === 'G' || e.type === 'P') add(e.personId, MATCH_ICONS.goal);
+      else if (e.type === 'O') add(e.personId, MATCH_ICONS.ownGoal);
+      else if (e.type === 'B') add(e.personId, e.description === 'R' ? MATCH_ICONS.red : (e.description === 'YR' ? SECOND_YELLOW_ICON : MATCH_ICONS.yellow));
+      else if (e.type === 'S' && e.description === 'OFF') add(e.personId, `<span class="lu-off" title="Subbed off ${clockLabel(e)}">${clockLabel(e)}<i>▼</i></span>`);
+      else if (e.type === 'S' && e.description === 'ON') subOn[e.personId] = clockLabel(e);
+    });
+
+    const playerCard = p => {
+      const photo = playerPhotoUrl(p);
+      return `
+        <div class="lu-player">
+          <div class="lu-photo"><span class="lu-initials">${getManagerInitials(p.name ? p.name.display : '')}</span>${photo ? `<img src="${photo}" alt="" loading="lazy" onerror="this.remove()">` : ''}${p.captain ? '<span class="lu-captain">C</span>' : ''}</div>
+          <div class="lu-name"><b>${p.matchShirtNumber ?? ''}</b>${p.name ? p.name.last || p.name.display : ''}</div>
+          ${marks[p.id] ? `<div class="lu-marks">${marks[p.id].join('')}</div>` : ''}
+        </div>`;
+    };
+
+    // Formation rows go goalkeeper first; home attacks left-to-right, away the other way
+    const halfHtml = (tl, side) => {
+      const byId = {};
+      (tl.lineup || []).forEach(p => { byId[p.id] = p; });
+      const rows = (tl.formation && tl.formation.players) || [];
+      const n = rows.length;
+      return rows.map((ids, i) => {
+        const pos = n > 1 ? i / (n - 1) : 0;
+        const x = side === 'home' ? 5 + pos * 38 : 95 - pos * 38;
+        return ids.map((id, j) => {
+          const y = ((j + 1) / (ids.length + 1)) * 100;
+          const p = byId[id];
+          return p ? `<div class="lu-slot" style="left:${x}%;top:${y}%">${playerCard(p)}</div>` : '';
+        }).join('');
+      }).join('');
+    };
+
+    const benchHtml = (tl, team) => `
+      <div class="lu-bench">
+        <div class="lu-bench-head">${crestHtml(team)}<strong>${team.name || team.short_name}</strong><span>${(tl.formation && tl.formation.label) || ''}</span></div>
+        <ul>
+          ${(tl.substitutes || []).map(p => `
+            <li class="${subOn[p.id] ? 'is-on' : ''}">
+              <b>${p.matchShirtNumber ?? ''}</b><span>${p.name ? p.name.display : ''}</span>
+              ${subOn[p.id] ? `<em title="Came on">▲ ${subOn[p.id]}</em>` : ''}
+              ${marks[p.id] ? `<span class="lu-bench-marks">${marks[p.id].filter(m => !m.includes('lu-off')).join('')}</span>` : ''}
+            </li>`).join('')}
+        </ul>
+      </div>`;
+
+    const homeTeam = teamById(currentMatchFixture().team_h), awayTeam = teamById(currentMatchFixture().team_a);
+    return `
+      <div class="lu-formations">
+        <span>${crestHtml(homeTeam)}${(ordered[0].formation && ordered[0].formation.label) || ''}</span>
+        <span>${(ordered[1].formation && ordered[1].formation.label) || ''}${crestHtml(awayTeam)}</span>
+      </div>
+      <div class="lu-pitch">
+        <div class="lu-lines"></div>
+        ${halfHtml(ordered[0], 'home')}
+        ${halfHtml(ordered[1], 'away')}
+      </div>
+      <div class="lu-benches">
+        ${benchHtml(ordered[0], homeTeam)}
+        ${benchHtml(ordered[1], awayTeam)}
+      </div>`;
+  }
+
+  // ---- Stats tab ----
+  const MATCH_STATS = [
+    ['possession_percentage', 'Possession', v => `${Math.round(v)}%`],
+    ['total_scoring_att', 'Shots'],
+    ['ontarget_scoring_att', 'Shots on target'],
+    ['big_chance_created', 'Big chances'],
+    ['total_pass', 'Passes'],
+    ['pass_accuracy', 'Pass accuracy', v => `${Math.round(v)}%`],
+    ['won_corners', 'Corners'],
+    ['fk_foul_lost', 'Fouls'],
+    ['total_offside', 'Offsides'],
+    ['total_tackle', 'Tackles'],
+    ['interception', 'Interceptions'],
+    ['total_clearance', 'Clearances'],
+    ['saves', 'Saves'],
+    ['total_yel_card', 'Yellow cards'],
+    ['total_red_card', 'Red cards']
+  ];
+
+  function statsTabHtml(pl) {
+    const data = pl.stats && pl.stats.data;
+    if (!data) return '<div class="md-empty">Stats appear once the match starts.</div>';
+    const ids = pl.fixture.teams.map(t => String(Math.round(t.team.id)));
+    const statMap = id => {
+      const m = {};
+      ((data[id] && data[id].M) || []).forEach(x => { m[x.name] = x.value; });
+      m.pass_accuracy = m.total_pass ? ((m.accurate_pass || 0) / m.total_pass) * 100 : 0;
+      return m;
+    };
+    const home = statMap(ids[0]), away = statMap(ids[1]);
+    if (!Object.keys(home).length && !Object.keys(away).length) return '<div class="md-empty">Stats appear once the match starts.</div>';
+    const rows = MATCH_STATS.map(([key, label, fmt]) => {
+      const hv = home[key] || 0, av = away[key] || 0;
+      const total = hv + av;
+      const hp = total ? (hv / total) * 100 : 50, ap = total ? (av / total) * 100 : 50;
+      const show = v => (fmt ? fmt(v) : Math.round(v));
+      return `
+        <div class="ms-row">
+          <div class="ms-vals"><b class="${hv > av ? 'is-lead' : ''}">${show(hv)}</b><span>${label}</span><b class="${av > hv ? 'is-lead' : ''}">${show(av)}</b></div>
+          <div class="ms-bars"><span class="ms-home" style="width:${hp}%"></span><span class="ms-away" style="width:${ap}%"></span></div>
+        </div>`;
+    }).join('');
+    return `<div class="ms-list">${rows}</div>`;
+  }
+
+  // ---- Table tab ----
+  function tableTabHtml(f) {
+    const all = matchCentre.fixtures;
+    if (!all) {
+      return matchCentre.tableError
+        ? '<div class="md-empty">The table is unavailable right now. Try again in a minute.</div>'
+        : '<div class="md-empty"><span class="gs-spinner"></span> Loading table…</div>';
+    }
+    const rows = {};
+    Object.values(getTeamsMap()).forEach(t => {
+      rows[t.id] = { team: t, p: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0, form: [] };
+    });
+    all.filter(x => (x.finished || x.finished_provisional) && x.team_h_score !== null && x.team_a_score !== null)
+      .sort((x, y) => x.kickoff_time.localeCompare(y.kickoff_time))
+      .forEach(x => {
+        const hr = rows[x.team_h], ar = rows[x.team_a];
+        if (!hr || !ar) return;
+        const hs = x.team_h_score, as = x.team_a_score;
+        [[hr, hs, as], [ar, as, hs]].forEach(([r, gf, ga]) => {
+          r.p++; r.gf += gf; r.ga += ga;
+          if (gf > ga) { r.w++; r.pts += 3; r.form.push('W'); }
+          else if (gf === ga) { r.d++; r.pts += 1; r.form.push('D'); }
+          else { r.l++; r.form.push('L'); }
+        });
+      });
+    const table = Object.values(rows).sort((x, y) => y.pts - x.pts || (y.gf - y.ga) - (x.gf - x.ga) || y.gf - x.gf || String(x.team.name).localeCompare(String(y.team.name)));
+    const highlight = [f.team_h, f.team_a];
+    const formPill = r => `<span class="form-pill ${r === 'W' ? 'form-w' : r === 'L' ? 'form-l' : 'form-n'}">${r}</span>`;
+    return `
+      <table class="lt">
+        <thead><tr><th>#</th><th class="lt-club">Club</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GD</th><th>Pts</th><th class="lt-form">Form</th></tr></thead>
+        <tbody>
+          ${table.map((r, i) => `
+            <tr class="${highlight.includes(r.team.id) ? 'is-match' : ''}${i < 4 ? ' is-ucl' : ''}${i >= table.length - 3 ? ' is-releg' : ''}">
+              <td class="lt-pos">${i + 1}</td>
+              <td class="lt-club">${crestHtml(r.team)}<span>${r.team.name}</span></td>
+              <td>${r.p}</td><td>${r.w}</td><td>${r.d}</td><td>${r.l}</td>
+              <td>${r.gf - r.ga > 0 ? '+' : ''}${r.gf - r.ga}</td>
+              <td class="lt-pts">${r.pts}</td>
+              <td class="lt-form"><span class="form-pill-container">${r.form.slice(-5).map(formPill).join('')}</span></td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+      <div class="md-note">Includes provisional results from matches that have just finished.</div>`;
+  }
 
   // ===================== CHART =====================
   const CHART_COLORS = MANAGER_COLORS;
