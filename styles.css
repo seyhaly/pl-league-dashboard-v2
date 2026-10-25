@@ -469,6 +469,10 @@ button:disabled { cursor: not-allowed; opacity: 0.4; }
 .tr-tied td { background: color-mix(in srgb, var(--warn-soft) 60%, transparent); }
 
 .sortable-header { cursor: pointer; user-select: none; }
+.aba-th { cursor: pointer; user-select: none; }
+.aba-th:hover { color: var(--text); }
+.aba-th.is-hidden, .aba-td-hidden { width: 22px; min-width: 22px; padding-left: 0 !important; padding-right: 0 !important; }
+.aba-th.is-hidden:hover { background: var(--surface-3) !important; }
 .sortable-header:hover { color: var(--text); }
 .sortable-header.active-sort { color: var(--accent-text); }
 .sort-icon { margin-left: 2px; opacity: 0.7; }

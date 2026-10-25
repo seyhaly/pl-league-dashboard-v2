@@ -25,7 +25,7 @@
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     if (location.hash) history.replaceState(null, '', location.pathname + location.search);
   </script>
-  <link rel="stylesheet" href="styles.css?v=371.0">
+  <link rel="stylesheet" href="styles.css?v=390.0">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
@@ -157,7 +157,6 @@
             <h3 id="standingsSectionHeading">Gameweek Standings &amp; Weekly Payouts — <span id="leagueNameDisplay">Clash of Elite 2026-2027</span></h3>
           </div>
           <div class="card-header-actions">
-            <button id="toggleAbaBtn" class="chip-toggle chip-toggle-sm" aria-pressed="false" title="Show or hide ABA bank account numbers">ABA accounts</button>
             <span id="standingsGwBadge" class="badge badge-accent">Gameweek 1</span>
           </div>
         </div>
@@ -312,7 +311,7 @@
 
 <script src="demoData.js"></script>
 <script src="squadData.js?v=300.0"></script>
-<script src="app.js?v=380.0"></script>
+<script src="app.js?v=390.0"></script>
 <script>
   // Installable app: offline support via the service worker
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {

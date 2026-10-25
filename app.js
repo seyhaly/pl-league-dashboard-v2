@@ -469,19 +469,6 @@
       btn.addEventListener('click', () => applyTheme(btn.dataset.themeBtn));
     });
 
-    const abaBtn = document.getElementById('toggleAbaBtn');
-    if (abaBtn) {
-      abaBtn.classList.toggle('active', state.showAba);
-      abaBtn.setAttribute('aria-pressed', String(state.showAba));
-      abaBtn.addEventListener('click', () => {
-        state.showAba = !state.showAba;
-        try { localStorage.setItem('fpl_show_aba', state.showAba ? '1' : '0'); } catch (e) {}
-        abaBtn.classList.toggle('active', state.showAba);
-        abaBtn.setAttribute('aria-pressed', String(state.showAba));
-        renderStandingsTable();
-      });
-    }
-
     // Saved League Pills — quick switch
     document.querySelectorAll('.league-pill').forEach(pill => {
       pill.addEventListener('click', () => {
@@ -1977,7 +1964,9 @@
     if (colgroupEl) colgroupEl.innerHTML = '';
     if (standingsTable) standingsTable.classList.toggle('show-aba', state.showAba);
 
-    const abaTh = state.showAba ? '<th class="text-center">ABA</th>' : '';
+    const abaTh = state.showAba
+      ? '<th class="text-center aba-th" id="thAba" title="Click to hide ABA accounts">ABA</th>'
+      : '<th class="aba-th is-hidden" id="thAba" title="Click to show ABA accounts" aria-label="Show ABA accounts"></th>';
 
     if (isMonthlyView) {
       if (theadEl) {
@@ -2033,6 +2022,15 @@
           };
         }
       }
+    }
+
+    const thAba = document.getElementById('thAba');
+    if (thAba) {
+      thAba.onclick = () => {
+        state.showAba = !state.showAba;
+        try { localStorage.setItem('fpl_show_aba', state.showAba ? '1' : '0'); } catch (e) {}
+        renderStandingsTable();
+      };
     }
 
     elements.standingsBody.innerHTML = '';
@@ -2146,7 +2144,7 @@
       const abaAccount = ABA_ACCOUNTS[m.id] || '';
       const abaTd = state.showAba
         ? `<td class="text-center">${abaAccount ? `<span class="aba-account-pill">${abaAccount}</span>` : '<span class="cell-empty">–</span>'}</td>`
-        : '';
+        : '<td class="aba-td-hidden"></td>';
 
       const moveHtml = isMonthlyView ? '' : seasonMoveHtml(m.id, seasonRankNow, seasonRankPrev);
 
