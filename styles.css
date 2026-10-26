@@ -1749,3 +1749,8 @@ html.touch-ui .manager-detail-modal { z-index: 64; padding-top: env(safe-area-in
 .md-bonus { padding: 14px 16px 16px; }
 .md-timeline + .md-bonus, .md-events-grid + .md-saves { margin-top: 0; }
 .md-saves { margin-bottom: 16px; }
+
+/* Stats: fewer lines — no dividers between rows, fainter empty bar tracks */
+.ms-row { padding: 9px 0; }
+.ms-row + .ms-row { border-top: 0; }
+.ms-half { background: color-mix(in srgb, var(--border) 45%, transparent); }
