@@ -1754,3 +1754,93 @@ html.touch-ui .manager-detail-modal { z-index: 64; padding-top: env(safe-area-in
 .ms-row { padding: 9px 0; }
 .ms-row + .ms-row { border-top: 0; }
 .ms-half { background: color-mix(in srgb, var(--border) 45%, transparent); }
+
+/* =====================================================================
+   Liquid glass (subtle) — whole app
+   Neutral soft background; frosted, slightly see-through surfaces with a
+   fine light edge. Blur only on floating layers (bars, panels, pop-ups)
+   to keep scrolling smooth. Pinned table columns stay solid.
+   ===================================================================== */
+:root, [data-theme="light"] {
+  --glass: rgba(255, 255, 255, 0.6);
+  --glass-2: rgba(255, 255, 255, 0.42);
+  --glass-float: rgba(255, 255, 255, 0.72);
+  --glass-edge: rgba(255, 255, 255, 0.8);
+  --glass-hi: inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  --glass-shadow: 0 10px 28px -16px rgba(29, 16, 34, 0.28);
+  --glass-blur: blur(22px) saturate(150%);
+  --page-glow-a: rgba(255, 255, 255, 0.95);
+  --page-glow-b: rgba(222, 224, 232, 0.9);
+  --page-base: #eceef3;
+}
+[data-theme="dark"] {
+  --glass: rgba(255, 255, 255, 0.045);
+  --glass-2: rgba(255, 255, 255, 0.03);
+  --glass-float: rgba(28, 24, 34, 0.72);
+  --glass-edge: rgba(255, 255, 255, 0.09);
+  --glass-hi: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  --glass-shadow: 0 12px 30px -16px rgba(0, 0, 0, 0.7);
+  --page-glow-a: rgba(58, 54, 66, 0.55);
+  --page-glow-b: rgba(36, 34, 44, 0.7);
+  --page-base: #0d0c11;
+}
+
+/* Neutral backdrop for the glass to sit on */
+html { background: var(--page-base); }
+body { background: transparent; }
+body::after {
+  content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(55% 45% at 12% 0%, var(--page-glow-a), transparent 70%),
+    radial-gradient(45% 50% at 100% 35%, var(--page-glow-b), transparent 70%),
+    radial-gradient(60% 55% at 25% 100%, var(--page-glow-b), transparent 72%),
+    var(--page-base);
+}
+
+/* Cards and boxes: frosted, light edge, soft depth */
+.card, .pm-card, .sl, .act-card, .modal-stat-card, .modal-auto-sub-box, .modal-transfers-box,
+.gs-step, .ms-possession, .ms-group, .lu-bench, .md-timeline, .md-events-grid, .md-bonus, .md-saves,
+.chart-panel, .table-wrap, .bd-table, .bd-empty, .bd-note {
+  background: var(--glass);
+  border-color: var(--glass-edge);
+  box-shadow: var(--glass-hi), var(--glass-shadow);
+}
+.table-wrap, .ms-possession, .ms-group, .lu-bench { box-shadow: var(--glass-hi); }
+.custom-table th, .sl-head, .act-group-head, .gs-day-head, .lu-bench-head, .modal-squad-table th, .md-head {
+  background: var(--glass-2);
+}
+.custom-table tbody tr:hover td:not(.sticky-col-pos):not(.sticky-col-manager), .sl-row:hover, .gs-match:hover { background: var(--glass-2); }
+
+/* Floating layers: real frosted glass */
+.topbar, .sidebar, html.touch-ui .tabbar, .manager-detail-modal, .manager-modal-header, .md-card, .md-tabs, .bd-card, .ptr {
+  background: var(--glass-float);
+  -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
+}
+.topbar { border-bottom-color: var(--glass-edge); box-shadow: var(--glass-hi); }
+.sidebar { border-right-color: var(--glass-edge); }
+html.touch-ui .tabbar { border-top-color: var(--glass-edge); box-shadow: var(--glass-hi); }
+.manager-detail-modal { border-left-color: var(--glass-edge); }
+.manager-modal-header { border-bottom-color: var(--glass-edge); }
+.manager-modal-body { background: transparent; }
+.md-card, .bd-card { border-color: var(--glass-edge); box-shadow: var(--glass-hi), 0 30px 70px -24px rgba(20, 10, 30, 0.45); }
+.md-head { border-bottom-color: var(--glass-edge); }
+.md-tabs { border-bottom-color: var(--glass-edge); }
+
+/* Controls: glass pills */
+.select, .icon-btn, .btn-secondary, .collapse-btn, .gw-strip, .sync-input, .chip-toggle, .rank-chip, .segmented, .panel-edge-nav {
+  background-color: var(--glass);
+  border-color: var(--glass-edge);
+  box-shadow: var(--glass-hi);
+}
+.select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); }
+.segmented-btn.active { background: var(--glass-float); box-shadow: var(--glass-hi), 0 2px 8px -3px rgba(29, 16, 34, 0.25); }
+.mh-mini { background: var(--glass); border-color: var(--glass-edge); box-shadow: var(--glass-hi); }
+
+/* Bars: soft sheen on the fills, a faint inset on the tracks */
+.pm-progress span, .ms-half span, .ms-pos-bar span, .gs-progress span { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35); }
+.pm-progress, .ms-half, .gs-progress { box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08); }
+/* Big panels and pop-ups: more solid glass so the page behind never competes with the text */
+:root, [data-theme="light"] { --glass-panel: rgba(250, 250, 252, 0.88); }
+[data-theme="dark"] { --glass-panel: rgba(22, 19, 28, 0.92); }
+.manager-detail-modal, .md-card, .bd-card { background: var(--glass-panel); -webkit-backdrop-filter: blur(30px) saturate(150%); backdrop-filter: blur(30px) saturate(150%); }
+.md-tabs, .manager-modal-header { background: color-mix(in srgb, var(--glass-panel) 80%, transparent); }
