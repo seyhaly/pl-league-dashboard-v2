@@ -879,7 +879,7 @@ html.md-open { overflow: hidden; scrollbar-gutter: stable; }
 .matrix-th-future { color: var(--faint) !important; }
 .matrix-gw-td { text-align: center; }
 .matrix-td-current { background: color-mix(in srgb, var(--accent-soft) 70%, transparent); }
-.matrix-row { cursor: pointer; }
+.matrix-row { cursor: default; }
 .matrix-score-tile {
   display: inline-grid; place-items: center;
   min-width: 32px; height: 26px;

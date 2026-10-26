@@ -2504,7 +2504,7 @@
       }
 
       tbodyRows += `
-        <tr class="matrix-row" onclick="openManagerModal(${m.id})">
+        <tr class="matrix-row">
           <td class="sticky-col-pos text-center"><div class="rank-num ${rankClass}">${pos}</div></td>
           <td class="sticky-col-manager">${managerCellHtml(m)}</td>
           ${gwCells}
