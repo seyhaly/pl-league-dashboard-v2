@@ -3026,12 +3026,6 @@
     const venue = plFix && plFix.ground ? ` · ${plFix.ground.name}` : '';
 
     card.setAttribute('aria-label', `${h.name || h.short_name} v ${a.name || a.short_name}`);
-    // Club colours glow behind the glass
-    card.style.setProperty('--home-c', CLUB_COLORS[h.short_name] || '#8a8197');
-    card.style.setProperty('--away-c', CLUB_COLORS[a.short_name] || '#8a8197');
-    const tabIndex = Math.max(0, MATCH_TABS.findIndex(([key]) => key === matchCentre.tab));
-    const fromIndex = matchCentre.glideFrom ?? tabIndex;
-    matchCentre.glideFrom = tabIndex;
     card.innerHTML = `
       <button class="icon-btn md-close" aria-label="Close match details" onclick="closeMatchDetail()">${icon('x', 14)}</button>
       <div class="md-head">
@@ -3046,13 +3040,9 @@
         <div class="md-team">${crestHtml(a)}<strong>${a.name || a.short_name}</strong></div>
       </div>
       <nav class="md-tabs" role="tablist">
-        <span class="md-glider" style="--i:${fromIndex}" aria-hidden="true"></span>
         ${MATCH_TABS.map(([key, label]) => `<button role="tab" class="md-tab${matchCentre.tab === key ? ' is-on' : ''}" aria-selected="${matchCentre.tab === key}" onclick="setMatchTab('${key}')">${label}</button>`).join('')}
       </nav>
       <div class="md-body">${matchTabHtml(f, h, a, st, when)}</div>`;
-    // Slide the glass highlight from the previous tab to the new one
-    const glider = card.querySelector('.md-glider');
-    if (glider && fromIndex !== tabIndex) requestAnimationFrame(() => requestAnimationFrame(() => glider.style.setProperty('--i', tabIndex)));
   }
 
   function matchTabHtml(f, h, a, st, when) {
