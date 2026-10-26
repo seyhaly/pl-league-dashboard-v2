@@ -1844,3 +1844,7 @@ html.touch-ui .tabbar { border-top-color: var(--glass-edge); box-shadow: var(--g
 [data-theme="dark"] { --glass-panel: rgba(22, 19, 28, 0.92); }
 .manager-detail-modal, .md-card, .bd-card { background: var(--glass-panel); -webkit-backdrop-filter: blur(30px) saturate(150%); backdrop-filter: blur(30px) saturate(150%); }
 .md-tabs, .manager-modal-header { background: color-mix(in srgb, var(--glass-panel) 80%, transparent); }
+
+/* League table form: draws get a solid grey pill like wins and losses */
+.lt .form-pill.form-n { background: #c4bfcc; color: #2f2838; }
+[data-theme="dark"] .lt .form-pill.form-n { background: #5e566a; color: #f2edf5; }
