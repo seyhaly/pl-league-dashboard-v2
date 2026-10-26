@@ -1686,7 +1686,8 @@ html.touch-ui .manager-detail-modal { z-index: 64; padding-top: env(safe-area-in
 .manager-detail-modal { container: panel / inline-size; }
 .manager-detail-modal .manager-modal-header {
   display: grid;
-  grid-template-columns: minmax(110px, 1fr) auto auto;
+  /* Name takes what it needs; the stats band stretches into the rest */
+  grid-template-columns: minmax(110px, max-content) minmax(max-content, 1fr) auto;
   grid-template-areas: "info stats actions";
   align-items: center; gap: 12px 10px;
   padding: 14px 18px 14px 20px;
@@ -1705,7 +1706,7 @@ html.touch-ui .manager-detail-modal { z-index: 64; padding-top: env(safe-area-in
 .mh-mini {
   grid-area: stats;
   display: flex; align-items: center; justify-content: space-between; gap: 11px;
-  padding: 10px 14px;
+  padding: 10px 18px;
   background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px;
   white-space: nowrap;
 }
