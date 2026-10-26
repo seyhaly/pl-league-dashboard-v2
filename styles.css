@@ -1725,7 +1725,12 @@ html.touch-ui .manager-detail-modal { z-index: 64; padding-top: env(safe-area-in
 .mh-played .mh-value { flex-wrap: wrap; }
 /* Played bar sits under 11/11 to save width */
 .mh-played .pm-progress { flex-basis: 100%; width: 0; min-width: 0; margin-top: 4px; }
-.mh-ytp .mh-value b { color: var(--warn); }
 .mh-stat .chip-tag { font-size: 11px; padding: 2px 7px; }
 .mh-pts { padding-right: 16px; border-right: 1px solid var(--border); }
 .mh-pts .mh-label { font-size: 10px; }
+.mh-pts .mh-value { align-items: flex-end; gap: 10px; }
+.mh-net, .mh-gross { display: inline-flex; align-items: baseline; gap: 3px; }
+.mh-unit { font-size: 10.5px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.mh-gross b { font-size: 17px; color: var(--text-2); }
+.mh-played .mh-value { gap: 0; }
+.mh-ytp-n { margin-left: 1px; font-weight: 700; color: var(--warn); font-variant-numeric: tabular-nums; }

@@ -4514,9 +4514,8 @@
         // The gameweek summary lives in the panel header
         const stat = (label, value, cls = '') => `<span class="mh-stat${cls}"><span class="mh-label">${label}</span><span class="mh-value">${value}</span></span>`;
         mini.innerHTML = `
-          ${stat(`GW${gw} points`, `<b class="mh-big">${netGwPoints}</b>${transferCost > 0 ? `<span class="pm-neg">−${transferCost} hit</span>` : ''}`, ' mh-pts')}
-          ${stat('Played', `<b>${playedCount}</b>/${maxSquadCount}<span class="pm-progress"><span style="width:${playedPct}%"></span>${ytpPct > 0 ? `<span class="pm-progress-ytp" style="width:${ytpPct}%"></span>` : ''}</span>`, ' mh-played')}
-          ${stat('Yet to play', `<b>${yetToPlayCount}</b>`, yetToPlayCount > 0 ? ' mh-ytp' : '')}
+          ${stat(`GW${gw} points`, `<span class="mh-net"><b class="mh-big">${netGwPoints}</b><span class="mh-unit">net</span></span><span class="mh-gross"><b>${grossPoints}</b><span class="mh-unit">gross</span></span>`, ' mh-pts')}
+          ${stat('Played', `<b>${playedCount}</b>${yetToPlayCount > 0 ? `<span class="mh-ytp-n" title="${yetToPlayCount} yet to play">(${yetToPlayCount})</span>` : ''}/${maxSquadCount}<span class="pm-progress"><span style="width:${playedPct}%"></span>${ytpPct > 0 ? `<span class="pm-progress-ytp" style="width:${ytpPct}%"></span>` : ''}</span>`, ' mh-played')}
           ${stat('Transfers', `<b>${transfersCount}</b>${transferCost > 0 ? ` <span class="pm-neg">−${transferCost}</span>` : ''}`)}
           ${stat('Bank', `<b>${bankVal.replace('M', 'm')}</b>`)}
           ${stat('Bench', `<b>${benchPts}</b>`)}
