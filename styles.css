@@ -1851,3 +1851,21 @@ html.touch-ui .tabbar { border-top-color: var(--glass-edge); box-shadow: var(--g
 /* Points breakdown keeps its own see-through header (the pitch shows blurred behind it) */
 .bd-card { background: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; border-color: var(--border); box-shadow: var(--shadow-lg); }
 .bd-table, .bd-empty, .bd-note { background: var(--surface); border-color: transparent; box-shadow: none; }
+
+/* App title: gradient league name with a small season pill */
+.topbar-league { overflow: visible; max-width: none; }
+.sidebar-collapsed .topbar-league { display: inline-flex; align-items: center; gap: 10px; }
+.tl-name {
+  font-family: var(--font-display); font-size: 26px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.15;
+  background: linear-gradient(90deg, #37003c 0%, #7b1fa2 48%, #05b866 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  white-space: nowrap;
+}
+[data-theme="dark"] .tl-name { background-image: linear-gradient(90deg, #e2bff6 0%, #c58df0 45%, #00ff85 100%); }
+.tl-season {
+  padding: 3px 9px; border-radius: 999px;
+  background: var(--accent-soft); color: var(--accent-text);
+  border: 1px solid color-mix(in srgb, var(--accent) 18%, transparent);
+  font-size: 12px; font-weight: 700; letter-spacing: 0.02em; font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}

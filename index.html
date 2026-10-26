@@ -61,7 +61,7 @@
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     if (location.hash) history.replaceState(null, '', location.pathname + location.search);
   </script>
-  <link rel="stylesheet" href="styles.css?v=562.0">
+  <link rel="stylesheet" href="styles.css?v=563.0">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
@@ -390,7 +390,23 @@
     // Mirror the league name into the top bar for when the sidebar is hidden
     const source = document.getElementById('leagueNameHeader');
     const target = document.getElementById('topbarLeagueName');
-    const copy = () => { target.textContent = source.textContent; };
+    // "Clash of Elite 2026-2027" -> gradient name + "2026–27" season pill
+    const copy = () => {
+      const text = (source.textContent || '').trim();
+      const m = text.match(/^(.*?)\s*(\d{4})\s*[-–\/]\s*(\d{2,4})$/);
+      target.textContent = '';
+      const name = document.createElement('span');
+      name.className = 'tl-name';
+      name.textContent = m ? m[1] : text;
+      target.appendChild(name);
+      if (m) {
+        const season = document.createElement('span');
+        season.className = 'tl-season';
+        season.textContent = `${m[2]}–${m[3].slice(-2)}`;
+        target.appendChild(season);
+      }
+      target.title = text;
+    };
     copy();
     new MutationObserver(copy).observe(source, { childList: true, characterData: true, subtree: true });
   })();
