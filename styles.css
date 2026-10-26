@@ -1821,3 +1821,66 @@ html.touch-ui .manager-detail-modal { z-index: 64; padding-top: env(safe-area-in
 .lt { width: calc(100% - 32px); margin: 4px 16px 16px; border-collapse: separate; border-spacing: 0; border-radius: 18px; overflow: hidden; }
 .lt th { background: transparent; }
 .lt tr:last-child td { border-bottom: 0; }
+
+/* ---- Liquid glass, round two: more colour behind, clearer glass, glossy bars ---- */
+.md-card {
+  --glass-fill: linear-gradient(160deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.24));
+  --glass-edge: rgba(255, 255, 255, 0.85);
+  --glass-depth: inset 0 1px 0 rgba(255, 255, 255, 0.95), inset 0 -1px 0 rgba(255, 255, 255, 0.35), 0 12px 30px -16px rgba(55, 0, 60, 0.4);
+  background:
+    radial-gradient(55% 38% at 6% 0%, var(--glow-home), transparent 72%),
+    radial-gradient(55% 38% at 94% 0%, var(--glow-away), transparent 72%),
+    radial-gradient(45% 40% at 0% 60%, var(--glow-home), transparent 70%),
+    radial-gradient(45% 40% at 100% 80%, var(--glow-away), transparent 70%),
+    radial-gradient(60% 45% at 50% 108%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 70%),
+    color-mix(in srgb, var(--surface) 86%, transparent);
+}
+[data-theme="dark"] .md-card {
+  --glass-fill: linear-gradient(160deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.03));
+  --glass-edge: rgba(255, 255, 255, 0.14);
+  --glass-depth: inset 0 1px 0 rgba(255, 255, 255, 0.18), inset 0 -1px 0 rgba(255, 255, 255, 0.04), 0 14px 32px -16px rgba(0, 0, 0, 0.7);
+}
+.md-events-grid, .md-saves, .md-bonus, .lu-bench, .ms-possession, .ms-group, .lt,
+.md-tabs, .md-close {
+  background: var(--glass-fill);
+  border-color: var(--glass-edge);
+  box-shadow: var(--glass-depth);
+}
+.md-glider { background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.7)); box-shadow: inset 0 1px 0 #fff, 0 6px 16px -6px rgba(55, 0, 60, 0.35); }
+[data-theme="dark"] .md-glider { background: linear-gradient(180deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.08)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 6px 16px -6px rgba(0, 0, 0, 0.6); }
+
+/* Events: each one is its own floating glass chip */
+.md-timeline { background: none; border: 0; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; margin: 0 12px 16px; padding: 4px 0; overflow: visible; }
+.md-tl-row, .md-tl-row.is-goal { margin: 0; padding: 5px 8px; background: none; box-shadow: none; border-radius: 0; }
+.md-tl-ev {
+  padding: 8px 14px; border-radius: 18px;
+  background: var(--glass-fill); border: 1px solid var(--glass-edge); box-shadow: var(--glass-depth);
+  backdrop-filter: blur(16px) saturate(170%); -webkit-backdrop-filter: blur(16px) saturate(170%);
+}
+.md-tl-row.is-goal .md-tl-ev {
+  background: linear-gradient(160deg, color-mix(in srgb, var(--pos) 34%, transparent), color-mix(in srgb, var(--pos) 12%, transparent));
+  border-color: color-mix(in srgb, var(--pos) 50%, transparent);
+  box-shadow: var(--glass-depth), 0 0 22px -6px color-mix(in srgb, var(--pos) 70%, transparent);
+}
+.md-tl-min {
+  justify-self: center; justify-content: center;
+  width: 50px; min-height: 50px; border-radius: 999px;
+  background: var(--glass-fill); border: 1px solid var(--glass-edge); box-shadow: var(--glass-depth);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+}
+.md-tl-divider span { background: var(--glass-fill); border-color: var(--glass-edge); box-shadow: var(--glass-depth); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); padding: 5px 14px; }
+
+/* Glossy glass bars: a frosted tube with a shiny coloured fill */
+.ms-half, .ms-pos-bar { background: rgba(127, 127, 127, 0.16); box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.18), inset 0 -1px 0 rgba(255, 255, 255, 0.35); border-radius: 999px; }
+.ms-half { height: 9px; }
+.ms-pos-bar { height: 14px; padding: 2px; gap: 3px; }
+.ms-pos-bar span { border-radius: 999px !important; }
+.ms-wrap .ms-home, .ms-lead-home {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 55%, #ffffff), var(--accent) 55%, color-mix(in srgb, var(--accent) 85%, #000000));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), 0 0 12px -3px color-mix(in srgb, var(--accent) 75%, transparent);
+}
+.ms-wrap .ms-away, .ms-lead-away {
+  background: linear-gradient(180deg, #7fe3ef, #00b4c8 55%, #0091a3);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), 0 0 12px -3px rgba(0, 180, 200, 0.75);
+}
+.ms-row + .ms-row { border-top-color: color-mix(in srgb, var(--glass-edge) 60%, transparent); }
