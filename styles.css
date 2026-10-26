@@ -1738,3 +1738,14 @@ html.touch-ui .manager-detail-modal { z-index: 64; padding-top: env(safe-area-in
 .mh-gross { font-size: 11.5px; font-weight: 500; color: var(--muted); font-variant-numeric: tabular-nums; }
 .mh-played .mh-value { gap: 0; }
 .mh-ytp-n { margin-left: 1px; font-weight: 700; color: var(--warn); font-variant-numeric: tabular-nums; }
+
+/* Events tab: the timeline, fallback event list and bonus sit in bordered cards like the Stats groups */
+.md-timeline, .md-events-grid, .md-bonus {
+  margin: 16px 20px; border: 1px solid var(--border); border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+.md-timeline { padding: 8px 0; overflow: hidden; }
+.md-events-grid { padding: 16px; }
+.md-bonus { padding: 14px 16px 16px; }
+.md-timeline + .md-bonus, .md-events-grid + .md-saves { margin-top: 0; }
+.md-saves { margin-bottom: 16px; }
