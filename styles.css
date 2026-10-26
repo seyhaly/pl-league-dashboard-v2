@@ -741,6 +741,11 @@ html.md-open { overflow: hidden; scrollbar-gutter: stable; }
 .md-tab.is-on { color: var(--text); }
 .md-tab.is-on::after { content: ''; position: absolute; left: 10px; right: 10px; bottom: -1px; height: 3px; border-radius: 3px 3px 0 0; background: var(--accent); }
 .md-body { min-height: 220px; }
+.md-card { touch-action: pan-y; }
+.md-body.md-in-right { animation: md-in-right 0.22s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.md-body.md-in-left { animation: md-in-left 0.22s cubic-bezier(0.2, 0.8, 0.2, 1); }
+@keyframes md-in-right { from { transform: translateX(40px); } to { transform: none; } }
+@keyframes md-in-left { from { transform: translateX(-40px); } to { transform: none; } }
 .md-note { padding: 0 20px 16px; font-size: 12px; color: var(--muted); }
 .md-empty .gs-spinner { color: var(--accent); }
 

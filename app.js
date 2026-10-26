@@ -2942,6 +2942,33 @@
     renderMatchCentre();
   };
 
+  // Swipe left/right on the pop-up (touch) to move between Events, Line-ups, Stats and Table
+  function initMatchSwipe(card) {
+    let pointerId = null, startX = 0, startY = 0, horizontal = null;
+    card.addEventListener('pointerdown', e => {
+      if (e.pointerType === 'mouse') return;
+      pointerId = e.pointerId; startX = e.clientX; startY = e.clientY; horizontal = null;
+    });
+    card.addEventListener('pointermove', e => {
+      if (e.pointerId !== pointerId || horizontal !== null) return;
+      const dx = e.clientX - startX, dy = e.clientY - startY;
+      if (Math.abs(dx) > 10 || Math.abs(dy) > 10) horizontal = Math.abs(dx) > Math.abs(dy) * 1.3;
+    });
+    card.addEventListener('pointerup', e => {
+      if (e.pointerId !== pointerId) return;
+      pointerId = null;
+      const dx = e.clientX - startX;
+      if (!horizontal || Math.abs(dx) < 60 || !matchCentre) return;
+      const index = MATCH_TABS.findIndex(([key]) => key === matchCentre.tab) + (dx < 0 ? 1 : -1);
+      if (index < 0 || index >= MATCH_TABS.length) return;
+      matchCentre.tab = MATCH_TABS[index][0];
+      renderMatchCentre();
+      const body = card.querySelector('.md-body');
+      if (body) body.classList.add(dx < 0 ? 'md-in-right' : 'md-in-left');
+    });
+    card.addEventListener('pointercancel', () => { pointerId = null; });
+  }
+
   window.showMatchDetail = function(fixtureId) {
     const el = document.getElementById('matchDetail');
     if (el) el.remove();
@@ -2955,6 +2982,7 @@
     document.body.appendChild(overlay);
     // Keep the page behind still so scrolling only moves the pop-up
     document.documentElement.classList.add('md-open');
+    initMatchSwipe(overlay.querySelector('.md-card'));
     renderMatchCentre();
 
     const f = currentMatchFixture();
