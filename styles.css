@@ -1738,3 +1738,86 @@ html.touch-ui .manager-detail-modal { z-index: 64; padding-top: env(safe-area-in
 .mh-gross { font-size: 11.5px; font-weight: 500; color: var(--muted); font-variant-numeric: tabular-nums; }
 .mh-played .mh-value { gap: 0; }
 .mh-ytp-n { margin-left: 1px; font-weight: 700; color: var(--warn); font-variant-numeric: tabular-nums; }
+
+/* ================= Match pop-up: liquid glass ================= */
+.md-overlay { background: rgba(20, 10, 26, 0.38); backdrop-filter: blur(10px) saturate(140%); -webkit-backdrop-filter: blur(10px) saturate(140%); }
+.md-card {
+  --glass-bg: rgba(255, 255, 255, 0.52);
+  --glass-border: rgba(255, 255, 255, 0.8);
+  --glass-hi: rgba(255, 255, 255, 0.95);
+  --glass-shadow: 0 10px 28px -12px rgba(55, 0, 60, 0.22);
+  --glass-on: rgba(255, 255, 255, 0.92);
+  --glow-home: color-mix(in srgb, var(--home-c, #8a8197) 34%, transparent);
+  --glow-away: color-mix(in srgb, var(--away-c, #8a8197) 34%, transparent);
+  background:
+    radial-gradient(55% 40% at 8% 0%, var(--glow-home), transparent 72%),
+    radial-gradient(55% 40% at 92% 0%, var(--glow-away), transparent 72%),
+    radial-gradient(70% 55% at 50% 105%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 70%),
+    color-mix(in srgb, var(--surface) 90%, transparent);
+  backdrop-filter: blur(30px) saturate(160%); -webkit-backdrop-filter: blur(30px) saturate(160%);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  box-shadow: 0 30px 80px -20px rgba(20, 0, 30, 0.45), inset 0 1px 0 var(--glass-hi);
+}
+[data-theme="dark"] .md-card {
+  --glass-bg: rgba(255, 255, 255, 0.055);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-hi: rgba(255, 255, 255, 0.16);
+  --glass-shadow: 0 12px 30px -12px rgba(0, 0, 0, 0.55);
+  --glass-on: rgba(255, 255, 255, 0.14);
+  /* Lift dark club colours (navy, black) so their glow still shows */
+  --glow-home: color-mix(in srgb, color-mix(in srgb, var(--home-c, #8a8197) 70%, #ffffff) 26%, transparent);
+  --glow-away: color-mix(in srgb, color-mix(in srgb, var(--away-c, #8a8197) 70%, #ffffff) 26%, transparent);
+}
+.md-close { z-index: 4; border-radius: 999px; background: var(--glass-bg); border: 1px solid var(--glass-border); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+
+/* Header floats on the glow */
+.md-head { background: transparent; border-bottom: 0; padding: 30px 20px 14px; }
+.md-team .gs-crest { filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25)); }
+
+/* Glass pill tabs with a sliding highlight */
+.md-tabs {
+  position: sticky; top: 10px; z-index: 3;
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0;
+  width: min(460px, calc(100% - 32px)); margin: 4px auto 12px; padding: 4px;
+  border: 1px solid var(--glass-border); border-radius: 999px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(22px) saturate(180%); -webkit-backdrop-filter: blur(22px) saturate(180%);
+  box-shadow: var(--glass-shadow), inset 0 1px 0 var(--glass-hi);
+}
+.md-tab { position: relative; z-index: 1; height: 36px; padding: 0 10px; border-radius: 999px; color: var(--muted); font-size: 13.5px; transition: color 0.2s; }
+.md-tab.is-on { color: var(--text); }
+.md-tab.is-on::after { content: none; }
+.md-glider {
+  position: absolute; top: 4px; bottom: 4px; left: 4px;
+  width: calc((100% - 8px) / 4);
+  border-radius: 999px;
+  background: var(--glass-on);
+  border: 1px solid var(--glass-border);
+  box-shadow: inset 0 1px 0 var(--glass-hi), 0 4px 12px -4px rgba(0, 0, 0, 0.3);
+  transform: translateX(calc(var(--i, 0) * 100%));
+  transition: transform 0.38s cubic-bezier(0.3, 1.25, 0.5, 1);
+}
+
+/* Glass cards */
+.md-timeline, .md-events-grid, .md-saves, .md-bonus, .lu-bench, .ms-possession, .ms-group, .lt {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(18px) saturate(160%); -webkit-backdrop-filter: blur(18px) saturate(160%);
+  box-shadow: var(--glass-shadow), inset 0 1px 0 var(--glass-hi);
+}
+.md-timeline { margin: 0 16px 14px; padding: 10px 0; border-radius: 20px; overflow: hidden; }
+.md-tl-row { padding: 8px 18px; }
+.md-tl-row.is-goal { margin: 2px 8px; padding: 8px 10px; border-radius: 14px; background: color-mix(in srgb, var(--pos) 16%, transparent); box-shadow: inset 0 1px 0 var(--glass-hi); }
+.md-tl-divider span, .md-ev-tag { background: var(--glass-on); border: 1px solid var(--glass-border); }
+.md-events-grid { margin: 0 16px 14px; border-radius: 20px; }
+.md-saves { margin: 0 16px 14px; border-radius: 16px; }
+.md-bonus { margin: 0 16px 16px; border-radius: 20px; }
+.md-bonus-chip { background: var(--glass-on); border-color: var(--glass-border); }
+.lu-bench { border-radius: 18px; }
+.lu-bench-head { background: transparent; }
+.lu-pitch { border-radius: 18px; box-shadow: var(--glass-shadow); }
+.ms-possession, .ms-group { border-radius: 18px; }
+.lt { width: calc(100% - 32px); margin: 4px 16px 16px; border-collapse: separate; border-spacing: 0; border-radius: 18px; overflow: hidden; }
+.lt th { background: transparent; }
+.lt tr:last-child td { border-bottom: 0; }
