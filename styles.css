@@ -1848,3 +1848,6 @@ html.touch-ui .tabbar { border-top-color: var(--glass-edge); box-shadow: var(--g
 /* League table form: draws get a solid grey pill like wins and losses */
 .lt .form-pill.form-n { background: #c4bfcc; color: #2f2838; }
 [data-theme="dark"] .lt .form-pill.form-n { background: #5e566a; color: #f2edf5; }
+/* Points breakdown keeps its own see-through header (the pitch shows blurred behind it) */
+.bd-card { background: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; border-color: var(--border); box-shadow: var(--shadow-lg); }
+.bd-table, .bd-empty, .bd-note { background: var(--surface); border-color: transparent; box-shadow: none; }
