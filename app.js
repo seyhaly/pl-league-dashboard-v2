@@ -4175,6 +4175,15 @@
     }
     if (modalName) modalName.textContent = manager.name;
     if (modalTeam) modalTeam.textContent = manager.teamName;
+
+    // Manager picker: everyone in standings order, current one selected
+    const picker = document.getElementById('modalManagerSelect');
+    if (picker) {
+      const order = [...document.querySelectorAll('#standingsBody tr[data-manager-id]')].map(el => Number(el.dataset.managerId));
+      const all = state.dataset.managers || [];
+      const list = order.length ? order.map(id => all.find(m => m.id === id)).filter(Boolean) : all;
+      picker.innerHTML = list.map((m, i) => `<option value="${m.id}"${m.id === manager.id ? ' selected' : ''}>${i + 1}. ${m.teamName} — ${m.name}</option>`).join('');
+    }
     if (modalFplId) modalFplId.textContent = `#${manager.id}`;
     if (modalGwBadge) modalGwBadge.textContent = `Gameweek ${gw}`;
     if (modalDirectLink) modalDirectLink.href = `https://fantasy.premierleague.com/entry/${manager.id}/event/${gw}`;

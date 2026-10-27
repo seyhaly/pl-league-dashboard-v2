@@ -61,7 +61,7 @@
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     if (location.hash) history.replaceState(null, '', location.pathname + location.search);
   </script>
-  <link rel="stylesheet" href="styles.css?v=564.0">
+  <link rel="stylesheet" href="styles.css?v=566.0">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
@@ -320,6 +320,9 @@
           <span id="modalManagerName">Manager</span>
         </div>
       </div>
+      <svg class="mh-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+      <!-- Tap the name to jump to another manager -->
+      <select id="modalManagerSelect" class="mh-switch" aria-label="Switch manager" onchange="openManagerModal(this.value)"></select>
     </div>
     <!-- Gameweek summary (points, played, transfers, bank, bench, chip) -->
     <div class="mh-mini" id="modalMiniSummary" aria-hidden="true"></div>
@@ -364,7 +367,7 @@
 
 <script src="demoData.js"></script>
 <script src="squadData.js?v=300.0"></script>
-<script src="app.js?v=565.0"></script>
+<script src="app.js?v=566.0"></script>
 <script>
   // Installable app: offline support via the service worker
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {

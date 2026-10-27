@@ -1884,3 +1884,9 @@ html.touch-ui .tabbar { border-top-color: var(--glass-edge); box-shadow: var(--g
 @media (max-width: 1024px) {
   .custom-table th:last-child, .custom-table td:last-child { padding-right: 6px; }
 }
+
+/* Squad panel: tap the team name to pick another manager */
+.manager-detail-modal .manager-modal-user-info { position: relative; cursor: pointer; border-radius: 12px; }
+.mh-chev { flex: none; color: var(--muted); margin-left: -4px; }
+.manager-modal-user-info:hover .mh-chev { color: var(--text); }
+.mh-switch { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; font-size: 16px; appearance: none; border: 0; }
