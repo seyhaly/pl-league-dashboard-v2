@@ -4251,13 +4251,18 @@
           if (outIdx !== -1 && inIdx !== -1) {
             const outPos = displayPicks[outIdx].position;
             const inPos = displayPicks[inIdx].position;
-            displayPicks[outIdx].position = inPos;
-            displayPicks[inIdx].position = outPos;
+            // Once FPL has processed the sub, its picks already have the two players
+            // swapped; only swap when the subbed-out player is still in the XI
+            if (outPos <= 11 && inPos > 11) {
+              displayPicks[outIdx].position = inPos;
+              displayPicks[inIdx].position = outPos;
+            }
             displayPicks[inIdx].was_subbed_in = true;
             displayPicks[outIdx].was_subbed_out = true;
             displayPicks[inIdx].subbed_for_id = s.element_out;
             displayPicks[outIdx].subbed_by_id = s.element_in;
-            displayPicks[outIdx].original_bench_role = inPos === 12 ? 'GK' : `Sub ${inPos - 12}`;
+            const benchPos = displayPicks[outIdx].position;
+            displayPicks[outIdx].original_bench_role = benchPos === 12 ? 'GK' : `Sub ${benchPos - 12}`;
           }
         });
 
