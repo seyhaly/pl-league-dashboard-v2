@@ -3978,6 +3978,20 @@
     const body = document.getElementById('modalContentBody');
     if (!modal || !body) return;
 
+    // Tap the team name to open the manager menu; tap a manager to jump there
+    const who = modal.querySelector('.manager-modal-user-info');
+    const menu = document.getElementById('modalManagerMenu');
+    if (who && menu) {
+      who.addEventListener('click', e => { e.stopPropagation(); menu.hidden = !menu.hidden; });
+      menu.addEventListener('click', e => {
+        const item = e.target.closest('[data-mid]');
+        if (!item) return;
+        menu.hidden = true;
+        if (Number(item.dataset.mid) !== state.activeModalManagerId) openManagerModal(item.dataset.mid);
+      });
+      document.addEventListener('click', e => { if (!menu.hidden && !menu.contains(e.target)) menu.hidden = true; });
+    }
+
     body.addEventListener('click', e => {
       if (body.dataset.justSwiped === '1') return;
       const el = e.target.closest('[data-element]');
@@ -4176,13 +4190,22 @@
     if (modalName) modalName.textContent = manager.name;
     if (modalTeam) modalTeam.textContent = manager.teamName;
 
-    // Manager picker: everyone in standings order, current one selected
-    const picker = document.getElementById('modalManagerSelect');
-    if (picker) {
+    // Manager menu: everyone in standings order, current one ticked
+    const menu = document.getElementById('modalManagerMenu');
+    if (menu) {
       const order = [...document.querySelectorAll('#standingsBody tr[data-manager-id]')].map(el => Number(el.dataset.managerId));
       const all = state.dataset.managers || [];
       const list = order.length ? order.map(id => all.find(m => m.id === id)).filter(Boolean) : all;
-      picker.innerHTML = list.map((m, i) => `<option value="${m.id}"${m.id === manager.id ? ' selected' : ''}>${i + 1}. ${m.teamName} — ${m.name}</option>`).join('');
+      menu.innerHTML = list.map((m, i) => {
+        const badge = getBadgeUrl(m.id);
+        const avatar = badge
+          ? `<img class="mh-menu-av" src="${badge}" alt="">`
+          : `<span class="mh-menu-av" style="background:${getManagerColor(m.id)}">${getManagerInitials(m.name)}</span>`;
+        return `<button type="button" role="menuitem" class="mh-menu-item${m.id === manager.id ? ' is-on' : ''}" data-mid="${m.id}">
+          <span class="mh-menu-pos">${i + 1}</span>${avatar}<span class="mh-menu-team">${m.teamName}</span><span class="mh-menu-name">${m.name}</span>
+        </button>`;
+      }).join('');
+      menu.hidden = true;
     }
     if (modalFplId) modalFplId.textContent = `#${manager.id}`;
     if (modalGwBadge) modalGwBadge.textContent = `Gameweek ${gw}`;
