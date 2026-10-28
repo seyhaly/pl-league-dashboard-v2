@@ -61,7 +61,7 @@
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     if (location.hash) history.replaceState(null, '', location.pathname + location.search);
   </script>
-  <link rel="stylesheet" href="styles.css?v=568.0">
+  <link rel="stylesheet" href="styles.css?v=569.0">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
@@ -123,6 +123,10 @@
       <a href="#section-trajectory" class="nav-link">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>
         Rank trajectory
+      </a>
+      <a href="#section-about" class="nav-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg>
+        About
       </a>
     </nav>
 
@@ -298,8 +302,70 @@
           <button class="collapse-btn" data-target="chartCollapse" aria-expanded="true">Hide</button>
         </div>
         <div id="chartCollapse" class="collapsible-content">
+
           <div class="chart-box chart-box-rank"><canvas id="rankChart"></canvas></div>
           <div id="rankChartManagers" class="rank-chips" aria-label="Highlight a manager"></div>
+        </div>
+      </section>
+      <!-- About (sidebar only, not in the tab bar) -->
+      <section class="card about" id="section-about">
+        <div class="about-hero">
+          <div class="about-video">
+            <video id="aboutVideo" src="assets/about-intro.mp4" poster="assets/about-poster.jpg" autoplay muted loop playsinline preload="metadata"></video>
+            <button type="button" class="about-sound" id="aboutSound" aria-label="Turn sound on">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5z"/><path class="about-sound-off" d="M22 9l-6 6M16 9l6 6"/><path class="about-sound-on" d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+            </button>
+          </div>
+          <div class="about-intro">
+            <span class="about-eyebrow">About</span>
+            <h2 class="about-title"><span class="tl-name">Clash of Elite</span> <span class="about-fantasy">Fantasy</span></h2>
+            <p class="about-lead">A private Fantasy Premier League mini-league for friends. Every gameweek is its own little contest: the top half collects, the bottom half pays, and this app keeps the score, the money and the bragging rights in one place.</p>
+            <div class="about-facts">
+              <div><span>Season</span><b>2026–27</b></div>
+              <div><span>League ID</span><b>389585</b></div>
+              <div><span>Weekly stake</span><b>$3</b></div>
+              <div><span>Gameweeks</span><b>38</b></div>
+            </div>
+            <a class="btn btn-secondary about-link" href="https://fantasy.premierleague.com/leagues/389585/standings/c" target="_blank" rel="noopener">Open the league on FPL ↗</a>
+          </div>
+        </div>
+
+        <div class="about-grid">
+          <div class="about-box">
+            <h3>Weekly payouts</h3>
+            <p>Managers are ranked on <b>net points</b> (gross points minus transfer hits). The top half each win <b>$3</b> from the manager in the mirror spot at the bottom: 1st from last, 2nd from second-last, and so on. With an odd number of managers, the one in the middle is <b>neutral</b>.</p>
+          </div>
+          <div class="about-box">
+            <h3>Tie-breaks</h3>
+            <p>Level on net points? The order is decided by, in turn:</p>
+            <ol>
+              <li>More bench points</li>
+              <li>More captain points</li>
+              <li>Fewer transfer hits</li>
+              <li>Higher season total</li>
+            </ol>
+          </div>
+          <div class="about-box">
+            <h3>Chips</h3>
+            <p>Everyone has two sets of Wildcard, Free Hit, Bench Boost and Triple Captain. Set 1 must be used by <b>GW19</b>; set 2 unlocks from <b>GW20</b>. The Chip tracker shows who has used what, and when.</p>
+          </div>
+          <div class="about-box">
+            <h3>Awards</h3>
+            <p><b>Manager of the Month</b> goes to the best net total over each month's gameweeks (a tie splits the prize). <b>Manager of the Season</b> crowns the best total over all 38. Turn them on from the sidebar.</p>
+          </div>
+          <div class="about-box">
+            <h3>Where the numbers come from</h3>
+            <p>Scores, squads, chips and transfers come straight from the official <b>Fantasy Premier League</b> data, refreshed every minute while the app is open. Match events, line-ups and stats in the match centre come from the <b>Premier League</b>.</p>
+          </div>
+          <div class="about-box">
+            <h3>Handy tips</h3>
+            <ul>
+              <li>Tap a manager in the standings to see their squad; tap a player for their points.</li>
+              <li>Swipe the squad panel to flip between managers, or tap the team name to jump.</li>
+              <li>Tap a match in Gameweek status for events, line-ups and stats.</li>
+              <li>Pull down or tap <b>LIVE</b> to refresh.</li>
+            </ul>
+          </div>
         </div>
       </section>
 
@@ -414,6 +480,18 @@
     new MutationObserver(copy).observe(source, { childList: true, characterData: true, subtree: true });
   })();
 
+  // About: intro video sound toggle
+  (function () {
+    const v = document.getElementById('aboutVideo'), b = document.getElementById('aboutSound');
+    if (!v || !b) return;
+    b.addEventListener('click', () => {
+      v.muted = !v.muted;
+      if (!v.muted) { v.currentTime = 0; v.play().catch(() => {}); }
+      b.classList.toggle('is-on', !v.muted);
+      b.setAttribute('aria-label', v.muted ? 'Turn sound on' : 'Turn sound off');
+    });
+  })();
+
   // Back to the top once everything has loaded (late renders can otherwise shift the view)
   window.addEventListener('load', () => window.scrollTo(0, 0));
 
@@ -424,6 +502,8 @@
       const target = document.querySelector(l.getAttribute('href'));
       if (!target) return;
       e.preventDefault();
+      // Touch tablets show one section at a time (About has no tab of its own)
+      if (window.showTab) { window.showTab(target.id); return; }
       target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }));
     const observer = new IntersectionObserver(entries => {
