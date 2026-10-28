@@ -1955,3 +1955,7 @@ html.touch-ui .tabbar { border-top-color: var(--glass-edge); box-shadow: var(--g
   .about-facts { justify-content: center; }
   .about-grid { grid-template-columns: 1fr; }
 }
+
+/* Award tie-break explanation */
+.award-reason { display: inline-block; margin-left: 8px; padding: 2px 9px; border-radius: 999px; background: rgba(255, 255, 255, 0.16); font-size: 11.5px; font-weight: 600; opacity: 0.95; }
+.mots-text-wrapper .award-reason { margin: 4px 0 0; width: fit-content; }

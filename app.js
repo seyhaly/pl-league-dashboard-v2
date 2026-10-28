@@ -1265,17 +1265,9 @@
       return { id: m.id, name: m.name, teamName: m.teamName, netPts, grossPts, benchPts, captainPts, hitCost };
     });
 
-    totals.sort((a, b) => {
-      if (b.netPts !== a.netPts) return b.netPts - a.netPts;
-      if (b.benchPts !== a.benchPts) return b.benchPts - a.benchPts;
-      if (b.captainPts !== a.captainPts) return b.captainPts - a.captainPts;
-      return a.hitCost - b.hitCost;
-    });
-
+    const award = rankAward(totals);
     const topScore = (totals.length > 0 && gwsToCalculate.length > 0) ? totals[0].netPts : 0;
-    const leaders = (totals.length > 0 && gwsToCalculate.length > 0)
-      ? totals.filter(m => m.netPts === topScore)
-      : [];
+    const leaders = (totals.length > 0 && gwsToCalculate.length > 0) ? award.leaders : [];
     const isTied = leaders.length > 1;
 
     return {
@@ -1283,6 +1275,7 @@
       leaders,
       leader: leaders[0] || null,
       isTied,
+      tieReason: gwsToCalculate.length > 0 ? award.reason : '',
       topScore,
       totals,
       isFinalized,
@@ -1297,17 +1290,52 @@
     if (!managers || managers.length === 0) return [];
     
     const totals = managers.map(m => {
-      let totalNetPts = 0;
+      let netPts = 0, benchPts = 0, captainPts = 0, hitCost = 0;
       for (let g = 1; g <= gw; g++) {
         const gwData = state.dataset.gameweeks.find(x => x.gw === g);
-        if (gwData) totalNetPts += (gwData.scores[m.id] || 0) - (gwData.hits ? (gwData.hits[m.id] || 0) : 0);
+        if (!gwData) continue;
+        const hits = gwData.hits ? (gwData.hits[m.id] || 0) : 0;
+        netPts += (gwData.scores[m.id] || 0) - hits;
+        benchPts += gwData.benchPoints ? (gwData.benchPoints[m.id] || 0) : 0;
+        captainPts += gwData.captainPoints ? (gwData.captainPoints[m.id] || 0) : 0;
+        hitCost += hits;
       }
-      return { id: m.id, name: m.name, totalNetPts };
+      return { id: m.id, name: m.name, netPts, totalNetPts: netPts, benchPts, captainPts, hitCost };
     });
-    totals.sort((a, b) => b.totalNetPts - a.totalNetPts);
-    
-    const maxPts = totals[0].totalNetPts;
-    return totals.filter(t => t.totalNetPts === maxPts);
+    const award = rankAward(totals);
+    const leaders = award.leaders;
+    leaders.tieReason = award.reason;
+    return leaders;
+  }
+
+  // Awards use the same tie-breaks as the weekly payout: net points, then more bench
+  // points, more captain points, fewer transfer hits; only a full tie splits the prize.
+  const AWARD_TIEBREAKS = [
+    { key: 'benchPts', label: 'bench points', better: 'high' },
+    { key: 'captainPts', label: 'captain points', better: 'high' },
+    { key: 'hitCost', label: 'fewer transfer hits', better: 'low' }
+  ];
+  function rankAward(totals) {
+    totals.sort((a, b) => {
+      if (b.netPts !== a.netPts) return b.netPts - a.netPts;
+      for (const t of AWARD_TIEBREAKS) {
+        if (a[t.key] !== b[t.key]) return t.better === 'high' ? b[t.key] - a[t.key] : a[t.key] - b[t.key];
+      }
+      return 0;
+    });
+    const top = totals[0];
+    if (!top) return { leaders: [], reason: '' };
+    const same = m => m.netPts === top.netPts && AWARD_TIEBREAKS.every(t => m[t.key] === top[t.key]);
+    const leaders = totals.filter(same);
+    let reason = '';
+    const runnerUp = totals[leaders.length];
+    if (leaders.length > 1) {
+      reason = 'Level on points and every tie-break';
+    } else if (runnerUp && runnerUp.netPts === top.netPts) {
+      const t = AWARD_TIEBREAKS.find(x => runnerUp[x.key] !== top[x.key]);
+      if (t) reason = `Level on ${top.netPts} pts · won on ${t.label} (${top[t.key]} v ${runnerUp[t.key]})`;
+    }
+    return { leaders, reason };
   }
 
   function getManagerSeasonNetUpToGw(managerId, upToGw) {
@@ -2167,7 +2195,8 @@
         if (motmInfo.leaders && motmInfo.leaders.length > 0) {
           const names = motmInfo.leaders.map(l => l.name).join(' & ');
           const splitHtml = motmInfo.isTied ? ' <span class="motm-split-tag">(split the prize)</span>' : '';
-          winnerContent = `<span class="motm-winner-name">${names}</span>${splitHtml}`;
+          const reasonHtml = motmInfo.tieReason ? ` <span class="award-reason">${motmInfo.tieReason}</span>` : '';
+          winnerContent = `<span class="motm-winner-name">${names}</span>${splitHtml}${reasonHtml}`;
         } else {
           winnerContent = `<span class="motm-split-tag">Upcoming (starts GW${motmInfo.startGw})</span>`;
         }
@@ -2207,6 +2236,7 @@
               <div class="mots-text-wrapper">
                 <span class="mots-title">MANAGER OF THE SEASON${tiedText}</span>
                 <span class="mots-winner-names">${names}</span>
+                ${motsLeaders.tieReason ? `<span class="award-reason">${motsLeaders.tieReason}</span>` : ''}
               </div>
             </div>
           </div>
