@@ -2053,3 +2053,44 @@ html.touch-ui .tabbar { border-top-color: var(--glass-edge); box-shadow: var(--g
 .mots-title, [data-theme="dark"] .mots-title { color: #6b4708; }
 .mots-winner-names, [data-theme="dark"] .mots-winner-names { color: #2a1a03; text-shadow: 0 1px 0 rgba(255, 245, 210, 0.5); }
 .mots-banner .award-reason, [data-theme="dark"] .mots-banner .award-reason { background: rgba(255, 255, 255, 0.4); color: #4a3105; }
+
+/* Manager of the Season: an engraved gold plate —
+   brushed metal, a bevelled edge, an inner engraved frame line, and lettering cut into the surface
+   (dark text with a light highlight on its lower edge and a shadow on its upper edge) */
+.mots-banner, [data-theme="dark"] .mots-banner {
+  position: relative;
+  padding: 14px 18px;
+  background:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 3px),
+    linear-gradient(rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 45%, rgba(120, 80, 10, 0.12)),
+    linear-gradient(120deg, #e8c567, #c39233 30%, #f4d98a 52%, #b0801f 78%, #e2bc58);
+  border: 1px solid #9c6e18;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 248, 220, 0.85),
+    inset 0 -1px 0 rgba(110, 70, 8, 0.45),
+    inset 1px 0 0 rgba(255, 240, 200, 0.35),
+    inset -1px 0 0 rgba(110, 70, 8, 0.3),
+    0 8px 20px -12px rgba(120, 80, 10, 0.6);
+}
+/* Engraved frame line inside the plate */
+.mots-banner::before {
+  content: ''; position: absolute; inset: 5px; border-radius: calc(var(--radius-lg) - 4px); pointer-events: none;
+  border: 1px solid rgba(100, 65, 8, 0.45);
+  box-shadow: 0 1px 0 rgba(255, 245, 210, 0.55), inset 0 1px 0 rgba(255, 245, 210, 0.45);
+  -webkit-mask: none; mask: none; background: none; padding: 0;
+}
+.mots-banner-content { position: relative; }
+.mots-title, [data-theme="dark"] .mots-title,
+.mots-winner-names, [data-theme="dark"] .mots-winner-names {
+  text-shadow: 0 1px 0 rgba(255, 246, 215, 0.75), 0 -1px 0 rgba(80, 50, 5, 0.35);
+}
+.mots-title, [data-theme="dark"] .mots-title { color: #6e4a0a; }
+.mots-winner-names, [data-theme="dark"] .mots-winner-names { color: #4a2f04; letter-spacing: 0.01em; }
+.mots-icon, [data-theme="dark"] .mots-icon {
+  color: #6e4a0a;
+  filter: drop-shadow(0 1px 0 rgba(255, 246, 215, 0.75)) drop-shadow(0 -1px 0 rgba(80, 50, 5, 0.3));
+}
+.mots-banner .award-reason, [data-theme="dark"] .mots-banner .award-reason {
+  background: rgba(110, 72, 8, 0.12); color: #5a3c07;
+  box-shadow: inset 0 1px 1px rgba(80, 50, 5, 0.25), 0 1px 0 rgba(255, 246, 215, 0.6);
+}
