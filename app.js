@@ -1319,9 +1319,10 @@
     return leaders;
   }
 
-  // Manager of the Month banner styles. Each month starts on its own style
-  // (rotating through the list); a pick from the sidebar swatches is saved per month.
+  // Manager of the Month banner styles: engraved plates with a gold border.
+  // Every month starts on silver; a pick from the sidebar swatches is saved per month.
   const MOTM_STYLES = [
+    { key: 'silver', label: 'Silver' },
     { key: 'violet', label: 'Royal violet' },
     { key: 'plum', label: 'Royal plum' },
     { key: 'onyx', label: 'Onyx' },
@@ -1334,9 +1335,7 @@
   function getMotmStyle(monthName) {
     const saved = savedMotmStyles()[monthName];
     if (saved && MOTM_STYLES.some(s => s.key === saved)) return saved;
-    const months = (state.dataset && state.dataset.months) || [];
-    const i = Math.max(0, months.findIndex(m => m.name === monthName));
-    return MOTM_STYLES[i % MOTM_STYLES.length].key;
+    return 'silver';
   }
   function setMotmStyle(monthName, key) {
     if (!monthName) return;
