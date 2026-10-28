@@ -2031,3 +2031,25 @@ html.touch-ui .tabbar { border-top-color: var(--glass-edge); box-shadow: var(--g
 [data-theme="dark"] .mots-title { color: #f3d27a; }
 [data-theme="dark"] .mots-winner-names { color: #fffaf0; text-shadow: 0 0 14px rgba(243, 210, 122, 0.35); }
 [data-theme="dark"] .mots-banner .award-reason { background: rgba(243, 210, 122, 0.14); color: #f6e3a6; }
+
+/* Manager of the Season: golden background (as in the chosen sample), dark text for contrast */
+.mots-banner, [data-theme="dark"] .mots-banner {
+  border: 1.5px solid #c9952f;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.28)),
+    linear-gradient(120deg, #e9c766, #b8862b 35%, #f6dc8a 55%, #a87620 80%, #e2bb55);
+  -webkit-backdrop-filter: none; backdrop-filter: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 8px 20px -12px rgba(140, 95, 20, 0.55);
+}
+[data-theme="dark"] .mots-banner {
+  border-color: #f3d27a;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02)),
+    linear-gradient(120deg, #f6dc8a, #c9952f 35%, #fff1b8 55%, #b98426 80%, #f3d27a);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 10px 26px -12px rgba(243, 190, 80, 0.4);
+}
+.mots-banner::before { content: none; }
+.mots-icon, [data-theme="dark"] .mots-icon { color: #5c3d06; }
+.mots-title, [data-theme="dark"] .mots-title { color: #6b4708; }
+.mots-winner-names, [data-theme="dark"] .mots-winner-names { color: #2a1a03; text-shadow: 0 1px 0 rgba(255, 245, 210, 0.5); }
+.mots-banner .award-reason, [data-theme="dark"] .mots-banner .award-reason { background: rgba(255, 255, 255, 0.4); color: #4a3105; }
