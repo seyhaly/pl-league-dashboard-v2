@@ -61,7 +61,7 @@
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     if (location.hash) history.replaceState(null, '', location.pathname + location.search);
   </script>
-  <link rel="stylesheet" href="styles.css?v=569.0">
+  <link rel="stylesheet" href="styles.css?v=570.0">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
@@ -311,10 +311,7 @@
       <section class="card about" id="section-about">
         <div class="about-hero">
           <div class="about-video">
-            <video id="aboutVideo" src="assets/about-intro.mp4" poster="assets/about-poster.jpg" autoplay muted loop playsinline preload="metadata"></video>
-            <button type="button" class="about-sound" id="aboutSound" aria-label="Turn sound on">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5z"/><path class="about-sound-off" d="M22 9l-6 6M16 9l6 6"/><path class="about-sound-on" d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>
-            </button>
+            <video id="aboutVideo" src="assets/about-intro.mp4?v=2" poster="assets/about-poster.jpg?v=2" autoplay muted loop playsinline preload="metadata" aria-label="Clash of Elite Fantasy intro"></video>
           </div>
           <div class="about-intro">
             <span class="about-eyebrow">About</span>
@@ -478,18 +475,6 @@
     };
     copy();
     new MutationObserver(copy).observe(source, { childList: true, characterData: true, subtree: true });
-  })();
-
-  // About: intro video sound toggle
-  (function () {
-    const v = document.getElementById('aboutVideo'), b = document.getElementById('aboutSound');
-    if (!v || !b) return;
-    b.addEventListener('click', () => {
-      v.muted = !v.muted;
-      if (!v.muted) { v.currentTime = 0; v.play().catch(() => {}); }
-      b.classList.toggle('is-on', !v.muted);
-      b.setAttribute('aria-label', v.muted ? 'Turn sound on' : 'Turn sound off');
-    });
   })();
 
   // Back to the top once everything has loaded (late renders can otherwise shift the view)
