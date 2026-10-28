@@ -1911,3 +1911,7 @@ html.touch-ui .tabbar { border-top-color: var(--glass-edge); box-shadow: var(--g
 .mh-menu-av { flex: none; width: 28px; height: 28px; border-radius: 50%; object-fit: cover; display: grid; place-items: center; color: #fff; font-size: 11px; font-weight: 700; }
 .mh-menu-team { font-weight: 700; }
 .mh-menu-name { color: var(--muted); }
+
+/* Sidebar logo: the crowned C from the app icon */
+.brand-mark { overflow: hidden; background: transparent; padding: 0; }
+.brand-mark img { display: block; width: 100%; height: 100%; border-radius: inherit; }
