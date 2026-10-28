@@ -1857,11 +1857,11 @@ html.touch-ui .tabbar { border-top-color: var(--glass-edge); box-shadow: var(--g
 .sidebar-collapsed .topbar-league { display: inline-flex; align-items: center; gap: 10px; }
 .tl-name {
   font-family: var(--font-display); font-size: 26px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.15;
-  background: linear-gradient(90deg, #37003c 0%, #7b1fa2 48%, #05b866 100%);
+  background: linear-gradient(90deg, #3a0a8c 0%, #6d28d9 50%, #a463f2 100%);
   -webkit-background-clip: text; background-clip: text; color: transparent;
   white-space: nowrap;
 }
-[data-theme="dark"] .tl-name { background-image: linear-gradient(90deg, #e2bff6 0%, #c58df0 45%, #00ff85 100%); }
+[data-theme="dark"] .tl-name { background-image: linear-gradient(90deg, #f1e6ff 0%, #c9a6ff 50%, #9a62ff 100%); }
 .tl-season {
   padding: 3px 9px; border-radius: 999px;
   background: var(--accent-soft); color: var(--accent-text);
