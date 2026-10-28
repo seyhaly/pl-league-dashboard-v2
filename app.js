@@ -480,17 +480,6 @@
       });
     }
 
-    // Banner style swatches: the choice is saved for the month being shown
-    const stylePicker = document.getElementById('motmStylePicker');
-    if (stylePicker) {
-      stylePicker.addEventListener('click', e => {
-        const b = e.target.closest('[data-motm-style]');
-        if (!b) return;
-        setMotmStyle(stylePicker.dataset.month, b.dataset.motmStyle);
-        renderStandingsTable();
-      });
-    }
-
     if (elements.toggleMotsBtn) {
       elements.toggleMotsBtn.addEventListener('click', () => {
         state.showMotsBadge = !state.showMotsBadge;
@@ -1317,41 +1306,6 @@
     const leaders = award.leaders;
     leaders.tieReason = award.reason;
     return leaders;
-  }
-
-  // Manager of the Month banner styles: engraved plates with a gold border.
-  // Every month starts on silver; a pick from the sidebar swatches is saved per month.
-  const MOTM_STYLES = [
-    { key: 'silver', label: 'Silver' },
-    { key: 'violet', label: 'Royal violet' },
-    { key: 'plum', label: 'Royal plum' },
-    { key: 'onyx', label: 'Onyx' },
-    { key: 'burgundy', label: 'Burgundy' },
-    { key: 'espresso', label: 'Espresso' }
-  ];
-  function savedMotmStyles() {
-    try { return JSON.parse(localStorage.getItem('fpl_motm_styles') || '{}') || {}; } catch (e) { return {}; }
-  }
-  function getMotmStyle(monthName) {
-    const saved = savedMotmStyles()[monthName];
-    if (saved && MOTM_STYLES.some(s => s.key === saved)) return saved;
-    return 'silver';
-  }
-  function setMotmStyle(monthName, key) {
-    if (!monthName) return;
-    const all = savedMotmStyles();
-    all[monthName] = key;
-    try { localStorage.setItem('fpl_motm_styles', JSON.stringify(all)); } catch (e) {}
-  }
-  function renderMotmStylePicker(monthName, current) {
-    const picker = document.getElementById('motmStylePicker');
-    if (!picker) return;
-    if (!monthName) { picker.hidden = true; return; }
-    picker.hidden = false;
-    picker.dataset.month = monthName;
-    picker.innerHTML = `<span class="motm-styles-label">${monthName} style</span>` + MOTM_STYLES.map(s =>
-      `<button type="button" class="motm-swatch motm-style-${s.key}${s.key === current ? ' is-on' : ''}" data-motm-style="${s.key}" title="${s.label}" aria-label="${s.label}" aria-pressed="${s.key === current}"></button>`
-    ).join('');
   }
 
   // Awards use the same tie-breaks as the weekly payout: net points, then more bench
@@ -2247,9 +2201,8 @@
           winnerContent = `<span class="motm-split-tag">Upcoming (starts GW${motmInfo.startGw})</span>`;
         }
 
-        const motmStyle = getMotmStyle(activeMotmMonthName);
         motmBannerContainer.innerHTML = `
-          <div class="motm-banner motm-style-${motmStyle}">
+          <div class="motm-banner motm-style-silver">
             <div class="motm-banner-content">
               <span class="motm-icon">${bannerIcon}</span>
               <span class="motm-title">${activeMotmMonthName} Manager of the Month:</span>
@@ -2262,13 +2215,11 @@
           elements.motmMonthSelect.style.display = 'inline-block';
           elements.motmMonthSelect.value = activeMotmMonthName;
         }
-        renderMotmStylePicker(activeMotmMonthName, motmStyle);
       } else {
         motmBannerContainer.innerHTML = '';
         if (elements.motmMonthSelect) {
           elements.motmMonthSelect.style.display = 'none';
         }
-        renderMotmStylePicker(null);
       }
     }
 

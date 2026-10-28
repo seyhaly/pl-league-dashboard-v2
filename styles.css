@@ -1979,28 +1979,9 @@ html.touch-ui .tabbar { border-top-color: var(--glass-edge); box-shadow: var(--g
 .motm-banner .award-reason { background: rgba(243, 210, 122, 0.16); color: #f6e3a6; }
 .motm-split-tag { color: rgba(246, 227, 166, 0.85); }
 
-/* ---- Manager of the Month: five styles, all with the gold frame ---- */
+/* ---- Manager of the Month: silver plate with the gold frame ---- */
 :root { --gold-frame: linear-gradient(120deg, #f6dc8a, #c9952f 35%, #fff1b8 55%, #b98426 80%, #f3d27a); }
-.motm-style-violet   { --motm-bg: radial-gradient(60% 140% at 0% 0%, rgba(140, 90, 255, 0.35), transparent 70%), linear-gradient(120deg, #2a0a6e 0%, #3d0a9a 50%, #1b0552 100%); }
-.motm-style-plum     { --motm-bg: linear-gradient(120deg, #37003c 0%, #5a1462 55%, #2a0030 100%); }
-.motm-style-onyx     { --motm-bg: linear-gradient(120deg, #1a161d 0%, #2c2631 55%, #121014 100%); }
-.motm-style-burgundy { --motm-bg: linear-gradient(120deg, #4a0d22 0%, #741532 55%, #360818 100%); }
-.motm-style-espresso { --motm-bg: linear-gradient(120deg, #2e1d12 0%, #4a301c 55%, #21140c 100%); }
 .motm-banner, [data-theme="dark"] .motm-banner { background: var(--motm-bg) padding-box, var(--gold-frame) border-box; }
-
-/* Style swatches in the sidebar (under the month picker) */
-.motm-styles { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
-.motm-styles[hidden] { display: none; }
-.motm-styles-label { flex-basis: 100%; font-size: 11px; font-weight: 600; color: var(--muted); }
-.motm-swatch {
-  width: 28px; height: 28px; padding: 0; border-radius: 50%;
-  border: 2px solid transparent;
-  background: var(--motm-bg) padding-box, var(--gold-frame) border-box;
-  box-shadow: 0 2px 6px -2px rgba(0, 0, 0, 0.4);
-  transition: transform 0.12s;
-}
-.motm-swatch:hover { transform: scale(1.08); }
-.motm-swatch.is-on { outline: 2px solid var(--accent-text); outline-offset: 2px; }
 
 /* ---- Manager of the Season: transparent glass with a gold frame ---- */
 .mots-banner, [data-theme="dark"] .mots-banner {
@@ -2138,3 +2119,19 @@ html.touch-ui .tabbar { border-top-color: var(--glass-edge); box-shadow: var(--g
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.85), 0 -1px 0 rgba(60, 35, 0, 0.3);
 }
 .motm-style-silver .award-reason { background: rgba(50, 56, 66, 0.1); color: #3a3f47; box-shadow: inset 0 1px 1px rgba(30, 35, 45, 0.25), 0 1px 0 rgba(255, 255, 255, 0.7); }
+
+/* Manager of the Season: clearer lettering — darker, heavier, larger, with only a soft
+   highlight underneath (still reads as cut into the plate, but with much more contrast) */
+.mots-title, [data-theme="dark"] .mots-title {
+  color: #3a2502; font-size: 12px; font-weight: 800; letter-spacing: 0.09em;
+  text-shadow: 0 1px 0 rgba(255, 249, 225, 0.8);
+}
+.mots-winner-names, [data-theme="dark"] .mots-winner-names {
+  color: #1c1100; font-size: 18px; font-weight: 800;
+  text-shadow: 0 1px 0 rgba(255, 249, 225, 0.85);
+}
+.mots-icon, [data-theme="dark"] .mots-icon {
+  color: #3a2502;
+  filter: drop-shadow(0 1px 0 rgba(255, 249, 225, 0.8));
+}
+.mots-banner .award-reason, [data-theme="dark"] .mots-banner .award-reason { color: #3a2502; background: rgba(255, 252, 235, 0.45); }
