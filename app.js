@@ -313,6 +313,12 @@
 
   function init() {
     applySeasonSettings();
+    const reminderHide = document.getElementById('seasonReminderHide');
+    if (reminderHide) reminderHide.addEventListener('click', () => {
+      // Back tomorrow, so it isn't forgotten
+      try { localStorage.setItem('fpl_season_reminder_hidden', String(Date.now() + 24 * 60 * 60 * 1000)); } catch (e) {}
+      updateSeasonReminder();
+    });
     applyTheme(state.theme);
     if (darkQuery) darkQuery.addEventListener('change', () => { if (state.themeMode === 'auto') applyTheme('auto'); });
     if (typeof Chart !== 'undefined') Chart.defaults.font.family = CHART_FONT;
@@ -2053,7 +2059,25 @@
   setInterval(updateSyncAgo, 30000);
 
   // ===================== RENDER ALL =====================
+  // From the final gameweek, remind the league admin to finish the season switcher
+  // (plan step 3, part B) until config/season.js says it's ready
+  function updateSeasonReminder() {
+    const box = document.getElementById('seasonReminder');
+    if (!box) return;
+    const latest = state.seasonGw || state.maxGw || 0;
+    let hiddenUntil = 0;
+    try { hiddenUntil = Number(localStorage.getItem('fpl_season_reminder_hidden') || 0); } catch (e) {}
+    const show = !SEASON.seasonViewerReady && latest >= SEASON.totalGameweeks && Date.now() > hiddenUntil
+      && String(state.activeLeagueId) === MAIN_LEAGUE;
+    box.hidden = !show;
+    const body = document.getElementById('seasonReminderBody');
+    if (show && body) {
+      body.textContent = `It's GW${SEASON.totalGameweeks}. Before FPL opens next season in July, ask Claude to finish step 3 part B — the season switcher and off-season view — so ${String(SEASON.season).replace('-', '–')} stays viewable in the app.`;
+    }
+  }
+
   function renderAll() {
+    updateSeasonReminder();
     const hasData = state.dataset.managers && state.dataset.managers.length > 0;
     
     if (document.getElementById('section-gw-status')) {

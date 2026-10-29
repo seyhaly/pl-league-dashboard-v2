@@ -2135,3 +2135,17 @@ html.touch-ui .tabbar { border-top-color: var(--glass-edge); box-shadow: var(--g
   filter: drop-shadow(0 1px 0 rgba(255, 249, 225, 0.8));
 }
 .mots-banner .award-reason, [data-theme="dark"] .mots-banner .award-reason { color: #3a2502; background: rgba(255, 252, 235, 0.45); }
+
+/* League-admin reminder (end of season) */
+.season-reminder {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 16px; border-radius: var(--radius-lg);
+  border: 1px solid var(--warn-border, rgba(217, 140, 0, 0.35));
+  background: var(--warn-soft); color: var(--text);
+}
+.season-reminder[hidden] { display: none; }
+.season-reminder-icon { flex: none; color: var(--warn); }
+.season-reminder-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; font-size: 13.5px; line-height: 1.45; }
+.season-reminder-text strong { font-size: 14px; }
+.season-reminder-text span { color: var(--text-2); }
+.season-reminder-hide { flex: none; margin-left: auto; height: 32px; padding: 0 12px; font-size: 12.5px; }

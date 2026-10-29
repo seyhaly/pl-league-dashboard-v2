@@ -61,7 +61,7 @@
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     if (location.hash) history.replaceState(null, '', location.pathname + location.search);
   </script>
-  <link rel="stylesheet" href="styles.css?v=578.0">
+  <link rel="stylesheet" href="styles.css?v=581.0">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
@@ -188,6 +188,16 @@
     </header>
 
     <div class="content">
+
+      <!-- League-admin reminder: shown from the final gameweek until the season switcher is built -->
+      <div class="season-reminder" id="seasonReminder" role="status" hidden>
+        <svg class="season-reminder-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+        <div class="season-reminder-text">
+          <strong>League admin reminder: the season is ending</strong>
+          <span id="seasonReminderBody">Before FPL opens next season in July, ask Claude to finish step 3 part B (the season switcher and off-season view) so this season stays viewable in the app.</span>
+        </div>
+        <button type="button" class="btn btn-secondary season-reminder-hide" id="seasonReminderHide">Hide for today</button>
+      </div>
 
       <!-- Empty state -->
       <section class="card empty-state" id="section-empty" style="display: none;">
@@ -428,11 +438,11 @@
     </button>
   </nav>
 
-<script src="config/season.js?v=1"></script>
+<script src="config/season.js?v=2"></script>
 <script src="config/managers.js?v=1"></script>
 <script src="demoData.js"></script>
 <script src="squadData.js?v=300.0"></script>
-<script src="app.js?v=580.0"></script>
+<script src="app.js?v=581.0"></script>
 <script>
   // Installable app: offline support via the service worker
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {
