@@ -1,12 +1,29 @@
 // FPL Private League Admin Engine — v3 with UI Enhancements
 (function () {
+  // ===================== SEASON & MANAGERS =====================
+  // Season settings and the manager list live in config/season.js and config/managers.js
+  const SEASON = Object.assign({
+    season: '', totalGameweeks: 38, weeklyStake: 3, chipSetOneLastGw: 19, mainLeague: '', leagues: []
+  }, window.FPL_SEASON || {});
+  const MAIN_LEAGUE = String(SEASON.mainLeague || (SEASON.leagues[0] && SEASON.leagues[0].id) || '');
+  const leagueConfig = id => SEASON.leagues.find(l => String(l.id) === String(id)) || null;
+  const leagueNameFor = id => (leagueConfig(id) && leagueConfig(id).name) || 'FPL League';
+  const MAIN_LEAGUE_NAME = leagueNameFor(MAIN_LEAGUE);
+
+  // Each person keeps their details across seasons; look them up by any of their FPL team IDs
+  const PEOPLE = Array.isArray(window.FPL_MANAGERS) ? window.FPL_MANAGERS : [];
+  const PERSON_BY_TEAM = {};
+  PEOPLE.forEach(p => Object.values(p.teams || {}).forEach(t => { if (t && t.id) PERSON_BY_TEAM[String(t.id)] = p; }));
+  const personFor = teamId => PERSON_BY_TEAM[String(teamId)] || null;
+  const abaFor = teamId => (personFor(teamId) && personFor(teamId).aba) || '';
+
   // App State
   const state = {
     viewMode: 'overall',
     currentGw: 3,
     seasonGw: 3,
     maxGw: 3,
-    entryFee: 3,
+    entryFee: SEASON.weeklyStake,
     showMotmBadge: false,
     showMotsBadge: false,
     theme: localStorage.getItem('fpl_admin_theme') || 'light',
@@ -21,7 +38,7 @@
     perfChartInstance: null,
     standingsSortColumn: null,
     standingsSortDir: 'desc',
-    activeLeagueId: '389585',
+    activeLeagueId: MAIN_LEAGUE,
     fetchCounter: 0,
     motmSelectedMonth: null
   };
@@ -52,18 +69,6 @@
     standingsGwBadge:       document.getElementById('standingsGwBadge'),
     viewModeSelect:         document.getElementById('viewModeSelect'),
     leagueNameDisplay:      document.getElementById('leagueNameDisplay')
-  };
-
-  // ===================== ABA BANK ACCOUNTS =====================
-  const ABA_ACCOUNTS = {
-    2023789: '001 335 048', // Monor Noem
-    2026484: '000 971 427', // Bora Chhe
-    2023013: '000 790 069', // នរសិង្ហ កន្សៃ
-    2067578: '002 157 778', // Kun Phaktra
-    2024611: '077 767 949', // Vibol Dang
-    2019453: '085 897 968', // Seyha ly
-    2026160: '007 043 391', // Piseth Nhim
-    145847: ''              // Hokheng Ker (blank)
   };
 
   // ===================== ICONS =====================
@@ -112,7 +117,13 @@
   let teamBadges = {};
 
   function getBadgeUrl(managerId) {
-    const b = teamBadges[String(managerId)];
+    let b = teamBadges[String(managerId)];
+    // No badge for this season's team yet? Use the person's badge from another season
+    if (!(b && b.file)) {
+      const person = personFor(managerId);
+      const other = person && Object.values(person.teams || {}).map(t => teamBadges[String(t.id)]).find(x => x && x.file);
+      if (other) b = other;
+    }
     return b && b.file ? `${b.file}?v=${b.v || ''}` : null;
   }
 
@@ -278,18 +289,41 @@
   }
 
   // ===================== INITIALIZE APPLICATION =====================
+  // Sidebar league list, league name and About page facts come from the season settings
+  function applySeasonSettings() {
+    const list = document.querySelector('.league-list');
+    if (list && SEASON.leagues.length) {
+      list.innerHTML = SEASON.leagues.map(l =>
+        `<button class="league-pill${String(l.id) === MAIN_LEAGUE ? ' active' : ''}" data-league-code="${l.id}" data-league-name="${l.name}"><span class="league-dot"></span>${l.name}</button>`
+      ).join('') + '<button class="league-pill" data-league-code="demo" data-league-name="Demo Preview"><span class="league-dot"></span>Demo Preview</button>';
+    }
+    if (elements.leagueNameHeader) elements.leagueNameHeader.textContent = MAIN_LEAGUE_NAME;
+    const set = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+    const seasonLabel = String(SEASON.season || '').replace('-', '–');
+    if (seasonLabel) set('aboutSeason', seasonLabel);
+    set('aboutLeagueId', MAIN_LEAGUE);
+    set('aboutStake', `$${SEASON.weeklyStake}`);
+    set('aboutGameweeks', String(SEASON.totalGameweeks));
+    set('aboutChipLast', `GW${SEASON.chipSetOneLastGw}`);
+    set('aboutChipNext', `GW${SEASON.chipSetOneLastGw + 1}`);
+    set('aboutStakeRule', `$${SEASON.weeklyStake}`);
+    const link = document.getElementById('aboutLeagueLink');
+    if (link) link.href = `https://fantasy.premierleague.com/leagues/${MAIN_LEAGUE}/standings/c`;
+  }
+
   function init() {
+    applySeasonSettings();
     applyTheme(state.theme);
     if (darkQuery) darkQuery.addEventListener('change', () => { if (state.themeMode === 'auto') applyTheme('auto'); });
     if (typeof Chart !== 'undefined') Chart.defaults.font.family = CHART_FONT;
 
-    // If pre-bundled live static data exists, initialize immediately with real league 389585
+    // If pre-bundled live static data exists, initialize immediately with the main league
     const staticData = window.FPL_LIVE_STATIC || {};
-    if (staticData.leagues && staticData.leagues['389585']) {
-      const lData = staticData.leagues['389585'];
+    if (staticData.leagues && staticData.leagues[MAIN_LEAGUE]) {
+      const lData = staticData.leagues[MAIN_LEAGUE];
       state.dataset = {
-        leagueName: lData.leagueName || 'Clash of Elite 2026-2027',
-        entryFee: 3.00,
+        leagueName: lData.leagueName || MAIN_LEAGUE_NAME,
+        entryFee: SEASON.weeklyStake,
         chipTypes: window.DEMO_DATA ? window.DEMO_DATA.chipTypes : [],
         managers: lData.managers || [],
         months: lData.months || (window.DEMO_DATA ? window.DEMO_DATA.months : []),
@@ -330,9 +364,9 @@
     // Swap initials for team badges once the badge index has loaded
     loadTeamBadges().then(() => { if (Object.keys(teamBadges).length) renderAll(); });
 
-    // Default to real league Clash of Elite 2026-2027 (389585) on load
+    // Default to the main league on load
     if (elements.leagueIdInput) {
-      elements.leagueIdInput.value = '389585';
+      elements.leagueIdInput.value = MAIN_LEAGUE;
       syncLiveFplLeague();
     }
 
@@ -646,9 +680,9 @@
     let inputCode = elements.leagueIdInput.value.trim();
     if (!inputCode) return;
 
-    // Automatic Join Code mapping fallback for pre-season join codes
-    if (inputCode.toLowerCase() === '8d70fl') inputCode = '389585';
-    if (inputCode.toLowerCase() === '0m27ty') inputCode = '390100';
+    // Join codes from the season settings map to their league IDs
+    const byCode = SEASON.leagues.find(l => l.joinCode && l.joinCode.toLowerCase() === inputCode.toLowerCase());
+    if (byCode) inputCode = String(byCode.id);
     
     if (!inputCode) {
       alert('Please enter a valid FPL League ID or Join Code.');
@@ -791,29 +825,19 @@
 
     // If still no data at all (first visit with no network), set clean pre-season template
     if (!dataLoadedSuccessfully && (!state.dataset.managers || state.dataset.managers.length === 0)) {
-      if (inputCode === '390100') {
-        if (elements.leagueNameHeader) elements.leagueNameHeader.textContent = "Fantasy with Heng";
-        if (elements.leagueNameDisplay) elements.leagueNameDisplay.textContent = "Fantasy with Heng";
-        state.dataset.managers = [
-          { id: 145847, name: "Hokheng Ker", teamName: "Undefeated", avatar: "HK" },
-          { id: 2019453, name: "Seyha ly", teamName: "The Red Devil", avatar: "SL" }
-        ];
-      } else if (inputCode === '389585') {
-        if (elements.leagueNameHeader) elements.leagueNameHeader.textContent = "Clash of Elite 2026-2027";
-        if (elements.leagueNameDisplay) elements.leagueNameDisplay.textContent = "Clash of Elite 2026-2027";
-        state.dataset.managers = [
-          { id: 2023789, name: "Monor Noem", teamName: "NORA FC", avatar: "MO" },
-          { id: 2023013, name: "នរ សិង្ហ កន្សៃ", teamName: "G.O.A.T", avatar: "នរ" },
-          { id: 2026484, name: "Bora Chhe", teamName: "Bora's Team", avatar: "BO" },
-          { id: 2067578, name: "Kun Phaktra", teamName: "The Blue Warriors", avatar: "KU" },
-          { id: 2026160, name: "Piseth Nhim", teamName: "DESSTRo", avatar: "PI" },
-          { id: 2019453, name: "Seyha ly", teamName: "The Red Devil", avatar: "SE" },
-          { id: 2024611, name: "Vibol Dang", teamName: "The White Emperor", avatar: "VI" }
-        ];
-      } else {
-        state.dataset.managers = [];
+      // Roster from the manager list for this season and league
+      const roster = PEOPLE.map(p => {
+        const t = (p.teams || {})[SEASON.season];
+        return t && (t.leagues || []).map(String).includes(String(inputCode))
+          ? { id: t.id, name: p.name, teamName: t.team || '', avatar: getManagerInitials(p.name) }
+          : null;
+      }).filter(Boolean);
+      if (leagueConfig(inputCode)) {
+        if (elements.leagueNameHeader) elements.leagueNameHeader.textContent = leagueNameFor(inputCode);
+        if (elements.leagueNameDisplay) elements.leagueNameDisplay.textContent = leagueNameFor(inputCode);
       }
-      state.dataset.gameweeks = Array.from({ length: 38 }, (_, i) => ({
+      state.dataset.managers = roster;
+      state.dataset.gameweeks = Array.from({ length: SEASON.totalGameweeks }, (_, i) => ({
         gw: i + 1, scores: {}, hits: {}, transfers: {}, benchPoints: {}, captainPoints: {}, chipsUsed: {}, seasonTotals: {}
       }));
       updateMemberCountBadge();
@@ -1137,7 +1161,7 @@
 
         try {
           localStorage.setItem(`fpl_live_cache_${inputCode}`, JSON.stringify({
-            leagueName: (data && data.league && data.league.name) ? data.league.name : "Clash of Elite 2026-2027",
+            leagueName: (data && data.league && data.league.name) ? data.league.name : leagueNameFor(inputCode),
             managers: state.dataset.managers,
             gameweeks: state.dataset.gameweeks,
             currentGw: state.currentGw,
@@ -2084,7 +2108,7 @@
     // Heading update
     const headingEl = document.getElementById('standingsSectionHeading');
     if (headingEl) {
-      const curLeagueText = elements.leagueNameDisplay ? elements.leagueNameDisplay.textContent : (state.dataset.leagueName || 'Clash of Elite 2026-2027');
+      const curLeagueText = elements.leagueNameDisplay ? elements.leagueNameDisplay.textContent : (state.dataset.leagueName || MAIN_LEAGUE_NAME);
       if (isMonthlyView) {
         headingEl.innerHTML = `${activeMonthName} Standings &amp; Monthly Payouts — <span id="leagueNameDisplay" style="color: var(--pl-cyan);">${curLeagueText}</span>`;
       } else {
@@ -2288,7 +2312,7 @@
         ? `<span class="tiebreaker-detail">${m.tiebreakerText}</span>`
         : '';
 
-      const abaAccount = ABA_ACCOUNTS[m.id] || '';
+      const abaAccount = abaFor(m.id);
       const abaTd = state.showAba
         ? `<td class="text-center">${abaAccount ? `<span class="aba-account-pill">${abaAccount}</span>` : '<span class="cell-empty">–</span>'}</td>`
         : '<td class="aba-td-hidden"></td>';
@@ -2424,19 +2448,19 @@
             const raw = String(gwObj.chipsUsed[m.id]).toLowerCase();
             const gNum = gwObj.gw;
             if (raw.includes('wildcard') || raw.includes('wc')) {
-              if (gNum <= 19) chipsUsedMap['Wildcard 1'] = gNum;
+              if (gNum <= SEASON.chipSetOneLastGw) chipsUsedMap['Wildcard 1'] = gNum;
               else chipsUsedMap['Wildcard 2'] = gNum;
               chipsUsedMap['Wildcard'] = gNum;
             } else if (raw.includes('freehit') || raw.includes('free hit') || raw.includes('fh')) {
-              if (gNum <= 19) chipsUsedMap['Free Hit 1'] = gNum;
+              if (gNum <= SEASON.chipSetOneLastGw) chipsUsedMap['Free Hit 1'] = gNum;
               else chipsUsedMap['Free Hit 2'] = gNum;
               chipsUsedMap['Free Hit'] = gNum;
             } else if (raw.includes('bboost') || raw.includes('bench boost') || raw.includes('bb')) {
-              if (gNum <= 19) chipsUsedMap['Bench Boost 1'] = gNum;
+              if (gNum <= SEASON.chipSetOneLastGw) chipsUsedMap['Bench Boost 1'] = gNum;
               else chipsUsedMap['Bench Boost 2'] = gNum;
               chipsUsedMap['Bench Boost'] = gNum;
             } else if (raw.includes('3xc') || raw.includes('triple captain') || raw.includes('tc')) {
-              if (gNum <= 19) chipsUsedMap['Triple Captain 1'] = gNum;
+              if (gNum <= SEASON.chipSetOneLastGw) chipsUsedMap['Triple Captain 1'] = gNum;
               else chipsUsedMap['Triple Captain 2'] = gNum;
               chipsUsedMap['Triple Captain'] = gNum;
             } else {
@@ -2654,7 +2678,7 @@
           <tbody>${rows}</tbody>
         </table>
       </div>
-      <p class="chip-matrix-note">First-half chips (1) expire after GW19 · second-half chips (2) unlock at GW20</p>
+      <p class="chip-matrix-note">First-half chips (1) expire after GW${SEASON.chipSetOneLastGw} · second-half chips (2) unlock at GW${SEASON.chipSetOneLastGw + 1}</p>
     `;
   }
 

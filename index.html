@@ -318,19 +318,19 @@
             <h2 class="about-title"><span class="tl-name">Clash of Elite</span> <span class="about-fantasy">Fantasy</span></h2>
             <p class="about-lead">A private Fantasy Premier League mini-league for friends. Every gameweek is its own little contest: the top half collects, the bottom half pays, and this app keeps the score, the money and the bragging rights in one place.</p>
             <div class="about-facts">
-              <div><span>Season</span><b>2026–27</b></div>
-              <div><span>League ID</span><b>389585</b></div>
-              <div><span>Weekly stake</span><b>$3</b></div>
-              <div><span>Gameweeks</span><b>38</b></div>
+              <div><span>Season</span><b id="aboutSeason">2026–27</b></div>
+              <div><span>League ID</span><b id="aboutLeagueId">389585</b></div>
+              <div><span>Weekly stake</span><b id="aboutStake">$3</b></div>
+              <div><span>Gameweeks</span><b id="aboutGameweeks">38</b></div>
             </div>
-            <a class="btn btn-secondary about-link" href="https://fantasy.premierleague.com/leagues/389585/standings/c" target="_blank" rel="noopener">Open the league on FPL ↗</a>
+            <a class="btn btn-secondary about-link" id="aboutLeagueLink" href="https://fantasy.premierleague.com/leagues/389585/standings/c" target="_blank" rel="noopener">Open the league on FPL ↗</a>
           </div>
         </div>
 
         <div class="about-grid">
           <div class="about-box">
             <h3>Weekly payouts</h3>
-            <p>Managers are ranked on <b>net points</b> (gross points minus transfer hits). The top half each win <b>$3</b> from the manager in the mirror spot at the bottom: 1st from last, 2nd from second-last, and so on. With an odd number of managers, the one in the middle is <b>neutral</b>.</p>
+            <p>Managers are ranked on <b>net points</b> (gross points minus transfer hits). The top half each win <b id="aboutStakeRule">$3</b> from the manager in the mirror spot at the bottom: 1st from last, 2nd from second-last, and so on. With an odd number of managers, the one in the middle is <b>neutral</b>.</p>
           </div>
           <div class="about-box">
             <h3>Tie-breaks</h3>
@@ -344,7 +344,7 @@
           </div>
           <div class="about-box">
             <h3>Chips</h3>
-            <p>Everyone has two sets of Wildcard, Free Hit, Bench Boost and Triple Captain. Set 1 must be used by <b>GW19</b>; set 2 unlocks from <b>GW20</b>. The Chip tracker shows who has used what, and when.</p>
+            <p>Everyone has two sets of Wildcard, Free Hit, Bench Boost and Triple Captain. Set 1 must be used by <b id="aboutChipLast">GW19</b>; set 2 unlocks from <b id="aboutChipNext">GW20</b>. The Chip tracker shows who has used what, and when.</p>
           </div>
           <div class="about-box">
             <h3>Awards</h3>
@@ -428,9 +428,11 @@
     </button>
   </nav>
 
+<script src="config/season.js?v=1"></script>
+<script src="config/managers.js?v=1"></script>
 <script src="demoData.js"></script>
 <script src="squadData.js?v=300.0"></script>
-<script src="app.js?v=578.0"></script>
+<script src="app.js?v=580.0"></script>
 <script>
   // Installable app: offline support via the service worker
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {

@@ -5,18 +5,43 @@ import sys
 import urllib.request
 from datetime import datetime
 
-LEAGUES = ['389585', '390100']
 
-REAL_MANAGER_MAP = {
-    2019453: {"name": "Seyha ly", "teamName": "The Red Devil"},
-    2067578: {"name": "Kun Phaktra", "teamName": "The Blue Warriors"},
-    2026160: {"name": "Piseth Nhim", "teamName": "DESSTRo"},
-    2026484: {"name": "Bora Chhe", "teamName": "Bora's Team"},
-    2024611: {"name": "Vibol Dang", "teamName": "The White Emperor"},
-    2023789: {"name": "Monor Noem", "teamName": "NORA FC"},
-    2023013: {"name": "នរ សិង្ហ កន្សៃ", "teamName": "G.O.A.T"},
-    145847: {"name": "Hokheng Ker", "teamName": "Undefeated"}
-}
+def load_season_config():
+    """Read config/season.js (the JSON object after `window.FPL_SEASON =`)."""
+    path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'config', 'season.js')
+    try:
+        with open(path, encoding='utf-8') as f:
+            text = f.read()
+        body = text[text.index('=', text.index('window.FPL_SEASON')) + 1:].strip().rstrip(';')
+        return json.loads(body)
+    except Exception as e:
+        print(f"⚠️ Could not read config/season.js ({e}); using built-in defaults")
+        return {"leagues": [{"id": "389585", "name": "Clash of Elite 2026-2027"}, {"id": "390100", "name": "Fantasy with Heng"}]}
+
+
+SEASON = load_season_config()
+LEAGUES = [str(l['id']) for l in SEASON.get('leagues', [])]
+LEAGUE_NAMES = {str(l['id']): l.get('name', '') for l in SEASON.get('leagues', [])}
+
+def load_manager_map():
+    """Names and team names from config/managers.js, keyed by every season's FPL team ID."""
+    path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'config', 'managers.js')
+    try:
+        with open(path, encoding='utf-8') as f:
+            text = f.read()
+        people = json.loads(text[text.index('=', text.index('window.FPL_MANAGERS')) + 1:].strip().rstrip(';'))
+    except Exception as e:
+        print(f"⚠️ Could not read config/managers.js ({e})")
+        return {}
+    out = {}
+    for p in people:
+        for t in (p.get('teams') or {}).values():
+            if t and t.get('id'):
+                out[int(t['id'])] = {"name": p.get('name', ''), "teamName": t.get('team', '')}
+    return out
+
+
+REAL_MANAGER_MAP = load_manager_map()
 
 MONTHS_CONFIG = [
     {"name": "August", "gws": [1, 2]},
@@ -275,7 +300,7 @@ def main():
         standings_data = fetch_json(f'https://fantasy.premierleague.com/api/leagues-classic/{league_id}/standings/')
         
         fetched_results = []
-        league_name = "Fantasy with Heng" if league_id == '390100' else "Clash of Elite 2026-2027"
+        league_name = LEAGUE_NAMES.get(league_id) or f"League {league_id}"
 
         if standings_data:
             if 'league' in standings_data and 'name' in standings_data['league']:
