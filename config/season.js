@@ -9,8 +9,8 @@
 //  Then add everyone's new FPL team ID in config/managers.js.
 //
 //  "seasonViewerReady" stays false until the season switcher (plan step 3,
-//  part B) is built; while false, a reminder appears in the app at the final
-//  gameweek.
+//  part B) is built; while false, a reminder appears in the app from gameweek
+//  "seasonViewerReminderFromGw" (the best time to build it) onwards.
 //
 //  Keep everything between the outer braces as plain JSON (double quotes,
 //  no comments inside) — the GitHub sync script reads this file too.
@@ -22,6 +22,7 @@ window.FPL_SEASON = {
   "chipSetOneLastGw": 19,
   "mainLeague": "389585",
   "seasonViewerReady": false,
+  "seasonViewerReminderFromGw": 24,
   "leagues": [
     { "id": "389585", "name": "Clash of Elite 2026-2027", "joinCode": "8d70fl" },
     { "id": "390100", "name": "Fantasy with Heng", "joinCode": "0m27ty" }

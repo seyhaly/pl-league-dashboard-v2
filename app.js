@@ -2059,21 +2059,30 @@
   setInterval(updateSyncAgo, 30000);
 
   // ===================== RENDER ALL =====================
-  // From the final gameweek, remind the league admin to finish the season switcher
-  // (plan step 3, part B) until config/season.js says it's ready
+  // Remind the league admin to finish the season switcher (plan step 3, part B) from the
+  // best time to do it (seasonViewerReminderFromGw) until config/season.js says it's ready;
+  // the wording gets more urgent at the final gameweek
   function updateSeasonReminder() {
     const box = document.getElementById('seasonReminder');
     if (!box) return;
     const latest = state.seasonGw || state.maxGw || 0;
     let hiddenUntil = 0;
     try { hiddenUntil = Number(localStorage.getItem('fpl_season_reminder_hidden') || 0); } catch (e) {}
-    const show = !SEASON.seasonViewerReady && latest >= SEASON.totalGameweeks && Date.now() > hiddenUntil
+    const fromGw = Number(SEASON.seasonViewerReminderFromGw) || SEASON.totalGameweeks;
+    const show = !SEASON.seasonViewerReady && latest >= fromGw && Date.now() > hiddenUntil
       && String(state.activeLeagueId) === MAIN_LEAGUE;
     box.hidden = !show;
+    if (!show) return;
+    const seasonLabel = String(SEASON.season).replace('-', '–');
+    const ending = latest >= SEASON.totalGameweeks;
+    const title = box.querySelector('.season-reminder-text strong');
     const body = document.getElementById('seasonReminderBody');
-    if (show && body) {
-      body.textContent = `It's GW${SEASON.totalGameweeks}. Before FPL opens next season in July, ask Claude to finish step 3 part B — the season switcher and off-season view — so ${String(SEASON.season).replace('-', '–')} stays viewable in the app.`;
-    }
+    if (title) title.textContent = ending
+      ? 'League admin reminder: the season is ending'
+      : 'League admin reminder: a good time to prepare for next season';
+    if (body) body.textContent = ending
+      ? `It's GW${SEASON.totalGameweeks}. Before FPL opens next season in July, ask Claude to finish step 3 part B — the season switcher and off-season view — so ${seasonLabel} stays viewable in the app.`
+      : `Any quiet week from now, ask Claude to do step 3 part B — the season switcher and off-season view — so ${seasonLabel} stays viewable in the app after the season ends. Your season data is already being saved automatically.`;
   }
 
   function renderAll() {
