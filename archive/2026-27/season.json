@@ -1,0 +1,494 @@
+{
+ "clubs": {
+  "1": {
+   "code": 3,
+   "id": 1,
+   "name": "Arsenal",
+   "short_name": "ARS"
+  },
+  "10": {
+   "code": 54,
+   "id": 10,
+   "name": "Fulham",
+   "short_name": "FUL"
+  },
+  "11": {
+   "code": 88,
+   "id": 11,
+   "name": "Hull City",
+   "short_name": "HUL"
+  },
+  "12": {
+   "code": 40,
+   "id": 12,
+   "name": "Ipswich Town",
+   "short_name": "IPS"
+  },
+  "13": {
+   "code": 2,
+   "id": 13,
+   "name": "Leeds",
+   "short_name": "LEE"
+  },
+  "14": {
+   "code": 14,
+   "id": 14,
+   "name": "Liverpool",
+   "short_name": "LIV"
+  },
+  "15": {
+   "code": 43,
+   "id": 15,
+   "name": "Man City",
+   "short_name": "MCI"
+  },
+  "16": {
+   "code": 1,
+   "id": 16,
+   "name": "Man Utd",
+   "short_name": "MUN"
+  },
+  "17": {
+   "code": 4,
+   "id": 17,
+   "name": "Newcastle",
+   "short_name": "NEW"
+  },
+  "18": {
+   "code": 17,
+   "id": 18,
+   "name": "Nott'm Forest",
+   "short_name": "NFO"
+  },
+  "19": {
+   "code": 6,
+   "id": 19,
+   "name": "Spurs",
+   "short_name": "TOT"
+  },
+  "2": {
+   "code": 7,
+   "id": 2,
+   "name": "Aston Villa",
+   "short_name": "AVL"
+  },
+  "20": {
+   "code": 56,
+   "id": 20,
+   "name": "Sunderland",
+   "short_name": "SUN"
+  },
+  "3": {
+   "code": 91,
+   "id": 3,
+   "name": "Bournemouth",
+   "short_name": "BOU"
+  },
+  "4": {
+   "code": 94,
+   "id": 4,
+   "name": "Brentford",
+   "short_name": "BRE"
+  },
+  "5": {
+   "code": 36,
+   "id": 5,
+   "name": "Brighton",
+   "short_name": "BHA"
+  },
+  "6": {
+   "code": 8,
+   "id": 6,
+   "name": "Chelsea",
+   "short_name": "CHE"
+  },
+  "7": {
+   "code": 9,
+   "id": 7,
+   "name": "Coventry City",
+   "short_name": "COV"
+  },
+  "8": {
+   "code": 31,
+   "id": 8,
+   "name": "Crystal Palace",
+   "short_name": "CRY"
+  },
+  "9": {
+   "code": 11,
+   "id": 9,
+   "name": "Everton",
+   "short_name": "EVE"
+  }
+ },
+ "complete": false,
+ "gameweeksSaved": [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8
+ ],
+ "leagues": {
+  "389585": {
+   "managers": [
+    {
+     "avatar": "KU",
+     "id": 2067578,
+     "name": "Kun Phaktra",
+     "teamName": "The Blue Warriors"
+    },
+    {
+     "avatar": "MO",
+     "id": 2023789,
+     "name": "Monor Noem",
+     "teamName": "NORA FC"
+    },
+    {
+     "avatar": "SE",
+     "id": 2019453,
+     "name": "Seyha ly",
+     "teamName": "The Red Devil"
+    },
+    {
+     "avatar": "PI",
+     "id": 2026160,
+     "name": "Piseth Nhim",
+     "teamName": "DESSTRo"
+    },
+    {
+     "avatar": "នរ",
+     "id": 2023013,
+     "name": "នរ សិង្ហ កន្សៃ",
+     "teamName": "G.O.A.T"
+    },
+    {
+     "avatar": "VI",
+     "id": 2024611,
+     "name": "Vibol Dang",
+     "teamName": "The White Emperor"
+    },
+    {
+     "avatar": "BO",
+     "id": 2026484,
+     "name": "Bora Chhe",
+     "teamName": "Bora's Team"
+    }
+   ],
+   "months": [
+    {
+     "gws": [
+      1,
+      2
+     ],
+     "name": "August"
+    },
+    {
+     "gws": [
+      3,
+      4,
+      5
+     ],
+     "name": "September"
+    },
+    {
+     "gws": [
+      6,
+      7,
+      8,
+      9
+     ],
+     "name": "October"
+    },
+    {
+     "gws": [
+      10,
+      11,
+      12
+     ],
+     "name": "November"
+    },
+    {
+     "gws": [
+      13,
+      14,
+      15,
+      16,
+      17,
+      18
+     ],
+     "name": "December"
+    },
+    {
+     "gws": [
+      19,
+      20,
+      21,
+      22,
+      23
+     ],
+     "name": "January"
+    },
+    {
+     "gws": [
+      24,
+      25,
+      26,
+      27
+     ],
+     "name": "February"
+    },
+    {
+     "gws": [
+      28,
+      29,
+      30
+     ],
+     "name": "March"
+    },
+    {
+     "gws": [
+      31,
+      32,
+      33
+     ],
+     "name": "April"
+    },
+    {
+     "gws": [
+      34,
+      35,
+      36,
+      37,
+      38
+     ],
+     "name": "May"
+    }
+   ],
+   "name": "Clash of Elite 2026-2027"
+  },
+  "390100": {
+   "managers": [
+    {
+     "avatar": "HO",
+     "id": 145847,
+     "name": "Hokheng Ker",
+     "teamName": "Undefeated"
+    },
+    {
+     "avatar": "SE",
+     "id": 2019453,
+     "name": "Seyha ly",
+     "teamName": "The Red Devil"
+    }
+   ],
+   "months": [
+    {
+     "gws": [
+      1,
+      2
+     ],
+     "name": "August"
+    },
+    {
+     "gws": [
+      3,
+      4,
+      5
+     ],
+     "name": "September"
+    },
+    {
+     "gws": [
+      6,
+      7,
+      8,
+      9
+     ],
+     "name": "October"
+    },
+    {
+     "gws": [
+      10,
+      11,
+      12
+     ],
+     "name": "November"
+    },
+    {
+     "gws": [
+      13,
+      14,
+      15,
+      16,
+      17,
+      18
+     ],
+     "name": "December"
+    },
+    {
+     "gws": [
+      19,
+      20,
+      21,
+      22,
+      23
+     ],
+     "name": "January"
+    },
+    {
+     "gws": [
+      24,
+      25,
+      26,
+      27
+     ],
+     "name": "February"
+    },
+    {
+     "gws": [
+      28,
+      29,
+      30
+     ],
+     "name": "March"
+    },
+    {
+     "gws": [
+      31,
+      32,
+      33
+     ],
+     "name": "April"
+    },
+    {
+     "gws": [
+      34,
+      35,
+      36,
+      37,
+      38
+     ],
+     "name": "May"
+    }
+   ],
+   "name": "Fantasy with Heng"
+  }
+ },
+ "people": [
+  {
+   "aba": "085 897 968",
+   "name": "Seyha ly",
+   "teams": {
+    "2026-27": {
+     "id": 2019453,
+     "leagues": [
+      "389585",
+      "390100"
+     ],
+     "team": "The Red Devil"
+    }
+   }
+  },
+  {
+   "aba": "000 790 069",
+   "name": "នរ សិង្ហ កន្សៃ",
+   "teams": {
+    "2026-27": {
+     "id": 2023013,
+     "leagues": [
+      "389585"
+     ],
+     "team": "G.O.A.T"
+    }
+   }
+  },
+  {
+   "aba": "007 043 391",
+   "name": "Piseth Nhim",
+   "teams": {
+    "2026-27": {
+     "id": 2026160,
+     "leagues": [
+      "389585"
+     ],
+     "team": "DESSTRo"
+    }
+   }
+  },
+  {
+   "aba": "001 335 048",
+   "name": "Monor Noem",
+   "teams": {
+    "2026-27": {
+     "id": 2023789,
+     "leagues": [
+      "389585"
+     ],
+     "team": "NORA FC"
+    }
+   }
+  },
+  {
+   "aba": "077 767 949",
+   "name": "Vibol Dang",
+   "teams": {
+    "2026-27": {
+     "id": 2024611,
+     "leagues": [
+      "389585"
+     ],
+     "team": "The White Emperor"
+    }
+   }
+  },
+  {
+   "aba": "002 157 778",
+   "name": "Kun Phaktra",
+   "teams": {
+    "2026-27": {
+     "id": 2067578,
+     "leagues": [
+      "389585"
+     ],
+     "team": "The Blue Warriors"
+    }
+   }
+  },
+  {
+   "aba": "000 971 427",
+   "name": "Bora Chhe",
+   "teams": {
+    "2026-27": {
+     "id": 2026484,
+     "leagues": [
+      "389585"
+     ],
+     "team": "Bora's Team"
+    }
+   }
+  },
+  {
+   "aba": "",
+   "name": "Hokheng Ker",
+   "teams": {
+    "2026-27": {
+     "id": 145847,
+     "leagues": [
+      "390100"
+     ],
+     "team": "Undefeated"
+    }
+   }
+  }
+ ],
+ "rules": {
+  "chipSetOneLastGw": 19,
+  "totalGameweeks": 38,
+  "weeklyStake": 3
+ },
+ "season": "2026-27"
+}
