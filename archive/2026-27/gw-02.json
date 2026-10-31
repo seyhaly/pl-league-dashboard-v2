@@ -3724,7 +3724,96 @@
   }
  ],
  "gw": 2,
- "leagues": {},
+ "leagues": {
+  "389585": {
+   "benchPoints": {
+    "2019453": 3,
+    "2023013": 6,
+    "2023789": 4,
+    "2024611": 0,
+    "2026160": 15,
+    "2026484": 2,
+    "2067578": 11
+   },
+   "captainPoints": {
+    "2019453": 26,
+    "2023013": 26,
+    "2023789": 26,
+    "2024611": 26,
+    "2026160": 18,
+    "2026484": 18,
+    "2067578": 26
+   },
+   "chipsUsed": {
+    "2026484": "wildcard"
+   },
+   "gw": 2,
+   "hits": {
+    "2019453": 0,
+    "2023013": 0,
+    "2023789": 0,
+    "2024611": 0,
+    "2026160": 0,
+    "2026484": 0,
+    "2067578": 0
+   },
+   "scores": {
+    "2019453": 87,
+    "2023013": 76,
+    "2023789": 74,
+    "2024611": 73,
+    "2026160": 76,
+    "2026484": 65,
+    "2067578": 80
+   },
+   "seasonTotals": {
+    "2019453": 128,
+    "2023013": 128,
+    "2023789": 146,
+    "2024611": 127,
+    "2026160": 125,
+    "2026484": 126,
+    "2067578": 146
+   },
+   "transfers": {
+    "2019453": 0,
+    "2023013": 1,
+    "2023789": 1,
+    "2024611": 0,
+    "2026160": 1,
+    "2026484": 0,
+    "2067578": 1
+   }
+  },
+  "390100": {
+   "benchPoints": {
+    "145847": 13,
+    "2019453": 3
+   },
+   "captainPoints": {
+    "145847": 46,
+    "2019453": 26
+   },
+   "chipsUsed": {},
+   "gw": 2,
+   "hits": {
+    "145847": 0,
+    "2019453": 0
+   },
+   "scores": {
+    "145847": 103,
+    "2019453": 87
+   },
+   "seasonTotals": {
+    "145847": 146,
+    "2019453": 128
+   },
+   "transfers": {
+    "145847": 0,
+    "2019453": 0
+   }
+  }
+ },
  "playerPoints": {
   "1": 6,
   "10": 7,
@@ -5250,6 +5339,13 @@
     2
    ]
   ],
+  "166": [
+   [
+    "minutes",
+    70,
+    2
+   ]
+  ],
   "167": [
    [
     "minutes",
@@ -6184,6 +6280,7 @@
     4
    ]
   ],
+  "53": [],
   "542": [
    [
     "minutes",
@@ -6286,6 +6383,18 @@
    ]
   ],
   "58": [],
+  "60": [
+   [
+    "minutes",
+    90,
+    2
+   ],
+   [
+    "defensive_contribution",
+    12,
+    2
+   ]
+  ],
   "68": [
    [
     "minutes",
@@ -6296,6 +6405,18 @@
     "yellow_cards",
     1,
     -1
+   ]
+  ],
+  "79": [
+   [
+    "minutes",
+    80,
+    2
+   ],
+   [
+    "assists",
+    1,
+    3
    ]
   ],
   "8": [
@@ -7520,5 +7641,214 @@
    ]
   }
  },
- "transfers": {}
+ "transfers": {
+  "2023013": [
+   {
+    "element_in": 379,
+    "element_in_cost": 90,
+    "element_out": 25,
+    "element_out_cost": 75,
+    "entry": 2023013,
+    "event": 2,
+    "time": "2026-08-22T06:44:02.281015Z"
+   }
+  ],
+  "2023789": [
+   {
+    "element_in": 569,
+    "element_in_cost": 60,
+    "element_out": 463,
+    "element_out_cost": 60,
+    "entry": 2023789,
+    "event": 2,
+    "time": "2026-08-28T07:54:47.989682Z"
+   }
+  ],
+  "2026160": [
+   {
+    "element_in": 367,
+    "element_in_cost": 70,
+    "element_out": 397,
+    "element_out_cost": 85,
+    "entry": 2026160,
+    "event": 2,
+    "time": "2026-08-28T14:55:45.754628Z"
+   }
+  ],
+  "2026484": [
+   {
+    "element_in": 498,
+    "element_in_cost": 60,
+    "element_out": 88,
+    "element_out_cost": 45,
+    "entry": 2026484,
+    "event": 2,
+    "time": "2026-08-25T15:48:56.904862Z"
+   },
+   {
+    "element_in": 8,
+    "element_in_cost": 55,
+    "element_out": 229,
+    "element_out_cost": 60,
+    "entry": 2026484,
+    "event": 2,
+    "time": "2026-08-25T15:46:16.438772Z"
+   },
+   {
+    "element_in": 106,
+    "element_in_cost": 80,
+    "element_out": 26,
+    "element_out_cost": 75,
+    "entry": 2026484,
+    "event": 2,
+    "time": "2026-08-25T15:46:16.438557Z"
+   },
+   {
+    "element_in": 88,
+    "element_in_cost": 45,
+    "element_out": 8,
+    "element_out_cost": 55,
+    "entry": 2026484,
+    "event": 2,
+    "time": "2026-08-25T06:01:16.521186Z"
+   },
+   {
+    "element_in": 226,
+    "element_in_cost": 55,
+    "element_out": 572,
+    "element_out_cost": 45,
+    "entry": 2026484,
+    "event": 2,
+    "time": "2026-08-25T06:01:16.520768Z"
+   },
+   {
+    "element_in": 140,
+    "element_in_cost": 50,
+    "element_out": 350,
+    "element_out_cost": 55,
+    "entry": 2026484,
+    "event": 2,
+    "time": "2026-08-25T06:01:16.520385Z"
+   },
+   {
+    "element_in": 356,
+    "element_in_cost": 65,
+    "element_out": 173,
+    "element_out_cost": 40,
+    "entry": 2026484,
+    "event": 2,
+    "time": "2026-08-25T06:01:16.519959Z"
+   },
+   {
+    "element_in": 40,
+    "element_in_cost": 75,
+    "element_out": 565,
+    "element_out_cost": 55,
+    "entry": 2026484,
+    "event": 2,
+    "time": "2026-08-25T06:01:16.519572Z"
+   },
+   {
+    "element_in": 26,
+    "element_in_cost": 75,
+    "element_out": 411,
+    "element_out_cost": 155,
+    "entry": 2026484,
+    "event": 2,
+    "time": "2026-08-25T06:01:16.519150Z"
+   },
+   {
+    "element_in": 572,
+    "element_in_cost": 45,
+    "element_out": 109,
+    "element_out_cost": 45,
+    "entry": 2026484,
+    "event": 2,
+    "time": "2026-08-24T14:53:24.500821Z"
+   },
+   {
+    "element_in": 552,
+    "element_in_cost": 60,
+    "element_out": 272,
+    "element_out_cost": 45,
+    "entry": 2026484,
+    "event": 2,
+    "time": "2026-08-24T14:53:24.500532Z"
+   },
+   {
+    "element_in": 350,
+    "element_in_cost": 55,
+    "element_out": 496,
+    "element_out_cost": 45,
+    "entry": 2026484,
+    "event": 2,
+    "time": "2026-08-24T14:53:24.499531Z"
+   },
+   {
+    "element_in": 229,
+    "element_in_cost": 60,
+    "element_out": 418,
+    "element_out_cost": 50,
+    "entry": 2026484,
+    "event": 2,
+    "time": "2026-08-24T14:47:59.114817Z"
+   },
+   {
+    "element_in": 565,
+    "element_in_cost": 55,
+    "element_out": 212,
+    "element_out_cost": 45,
+    "entry": 2026484,
+    "event": 2,
+    "time": "2026-08-24T14:47:20.584772Z"
+   },
+   {
+    "element_in": 367,
+    "element_in_cost": 70,
+    "element_out": 124,
+    "element_out_cost": 55,
+    "entry": 2026484,
+    "event": 2,
+    "time": "2026-08-24T14:47:20.584500Z"
+   },
+   {
+    "element_in": 368,
+    "element_in_cost": 70,
+    "element_out": 427,
+    "element_out_cost": 80,
+    "entry": 2026484,
+    "event": 2,
+    "time": "2026-08-24T14:47:20.584223Z"
+   },
+   {
+    "element_in": 391,
+    "element_in_cost": 55,
+    "element_out": 4,
+    "element_out_cost": 80,
+    "entry": 2026484,
+    "event": 2,
+    "time": "2026-08-24T14:45:16.848252Z"
+   },
+   {
+    "element_in": 12,
+    "element_in_cost": 95,
+    "element_out": 426,
+    "element_out_cost": 120,
+    "entry": 2026484,
+    "event": 2,
+    "time": "2026-08-24T14:45:16.841602Z"
+   }
+  ],
+  "2067578": [
+   {
+    "element_in": 565,
+    "element_in_cost": 55,
+    "element_out": 127,
+    "element_out_cost": 50,
+    "entry": 2067578,
+    "event": 2,
+    "time": "2026-08-25T00:27:33.395226Z"
+   }
+  ]
+ }
 }

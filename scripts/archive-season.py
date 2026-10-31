@@ -91,6 +91,9 @@ def main():
     os.makedirs(folder, exist_ok=True)
 
     leagues = live.get('leagues') or {}
+    if not leagues:
+        print("⚠️ Archive skipped: this run's data has no leagues (FPL may not have answered)")
+        return 0
     players = live.get('players') or {}
     finished = sorted(int(gw) for gw, s in statuses.items() if s.get('finished') and s.get('data_checked'))
 
@@ -132,6 +135,22 @@ def main():
             if made:
                 transfers[entry_id] = made
 
+        # Merge with what's already saved: a run where FPL left something out can update
+        # what it has, but never removes saved data
+        saved = {}
+        if os.path.exists(existing_path):
+            try:
+                with open(existing_path, encoding='utf-8') as f:
+                    saved = json.load(f) or {}
+            except Exception:
+                saved = {}
+        merge = lambda new, old: {**(old or {}), **(new or {})}
+        league_rows = merge(league_rows, saved.get('leagues'))
+        squads = merge(squads, saved.get('squads'))
+        player_info = merge(player_info, saved.get('players'))
+        transfers = merge(transfers, saved.get('transfers'))
+        fixtures = fixtures or saved.get('fixtures') or []
+
         record = {
             'season': season,
             'gw': gw,
@@ -139,35 +158,43 @@ def main():
             'leagues': league_rows,
             'squads': squads,
             'players': player_info,
-            'playerPoints': (live.get('playerGwPoints') or {}).get(key) or {},
-            'pointsBreakdown': (live.get('playerGwExplain') or {}).get(key) or {},
+            'playerPoints': merge((live.get('playerGwPoints') or {}).get(key), saved.get('playerPoints')),
+            'pointsBreakdown': merge((live.get('playerGwExplain') or {}).get(key), saved.get('pointsBreakdown')),
             'transfers': transfers,
             'fixtures': fixtures,
         }
         if write_if_changed(existing_path, record):
             changed.append(gw)
 
-    saved = sorted(int(n[3:5]) for n in os.listdir(folder) if n.startswith('gw-') and n.endswith('.json'))
+    saved_gws = sorted(int(n[3:5]) for n in os.listdir(folder) if n.startswith('gw-') and n.endswith('.json'))
+    summary_path = os.path.join(folder, 'season.json')
+    old_summary = {}
+    if os.path.exists(summary_path):
+        try:
+            with open(summary_path, encoding='utf-8') as f:
+                old_summary = json.load(f) or {}
+        except Exception:
+            old_summary = {}
+    # Leagues: keep what's saved, update with this run's (a missing league keeps its saved copy)
+    league_summary = dict(old_summary.get('leagues') or {})
+    for lid, l in leagues.items():
+        league_summary[lid] = {'name': l.get('leagueName'), 'managers': l.get('managers'), 'months': l.get('months')}
     summary = {
         'season': season,
         'rules': {k: season_cfg.get(k) for k in ('weeklyStake', 'chipSetOneLastGw', 'totalGameweeks')},
-        'leagues': {lid: {
-            'name': l.get('leagueName'),
-            'managers': l.get('managers'),
-            'months': l.get('months'),
-        } for lid, l in leagues.items()},
+        'leagues': league_summary,
         'people': people,
-        'clubs': live.get('teams') or {},
-        'gameweeksSaved': saved,
-        'complete': len(saved) >= int(season_cfg.get('totalGameweeks') or 38),
+        'clubs': live.get('teams') or old_summary.get('clubs') or {},
+        'gameweeksSaved': saved_gws,
+        'complete': len(saved_gws) >= int(season_cfg.get('totalGameweeks') or 38),
     }
-    if write_if_changed(os.path.join(folder, 'season.json'), summary):
+    if write_if_changed(summary_path, summary):
         changed.append('season')
 
     if changed:
-        print(f"🗄️ Archive {season}: updated {', '.join(str(c) for c in changed)}; {len(saved)} gameweeks saved")
+        print(f"🗄️ Archive {season}: updated {', '.join(str(c) for c in changed)}; {len(saved_gws)} gameweeks saved")
     else:
-        print(f"🗄️ Archive {season}: up to date ({len(saved)} gameweeks saved)")
+        print(f"🗄️ Archive {season}: up to date ({len(saved_gws)} gameweeks saved)")
     return 0
 
 

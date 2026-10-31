@@ -132,7 +132,252 @@
   7,
   8
  ],
- "leagues": {},
+ "leagues": {
+  "389585": {
+   "managers": [
+    {
+     "avatar": "MO",
+     "id": 2023789,
+     "name": "Monor Noem",
+     "teamName": "NORA FC"
+    },
+    {
+     "avatar": "KU",
+     "id": 2067578,
+     "name": "Kun Phaktra",
+     "teamName": "The Blue Warriors"
+    },
+    {
+     "avatar": "SE",
+     "id": 2019453,
+     "name": "Seyha ly",
+     "teamName": "The Red Devil"
+    },
+    {
+     "avatar": "នរ",
+     "id": 2023013,
+     "name": "នរ សិង្ហ កន្សៃ",
+     "teamName": "G.O.A.T"
+    },
+    {
+     "avatar": "PI",
+     "id": 2026160,
+     "name": "Piseth Nhim",
+     "teamName": "DESSTRo"
+    },
+    {
+     "avatar": "VI",
+     "id": 2024611,
+     "name": "Vibol Dang",
+     "teamName": "The White Emperor"
+    },
+    {
+     "avatar": "BO",
+     "id": 2026484,
+     "name": "Bora Chhe",
+     "teamName": "Bora's Team"
+    }
+   ],
+   "months": [
+    {
+     "gws": [
+      1,
+      2
+     ],
+     "name": "August"
+    },
+    {
+     "gws": [
+      3,
+      4,
+      5
+     ],
+     "name": "September"
+    },
+    {
+     "gws": [
+      6,
+      7,
+      8,
+      9
+     ],
+     "name": "October"
+    },
+    {
+     "gws": [
+      10,
+      11,
+      12
+     ],
+     "name": "November"
+    },
+    {
+     "gws": [
+      13,
+      14,
+      15,
+      16,
+      17,
+      18
+     ],
+     "name": "December"
+    },
+    {
+     "gws": [
+      19,
+      20,
+      21,
+      22,
+      23
+     ],
+     "name": "January"
+    },
+    {
+     "gws": [
+      24,
+      25,
+      26,
+      27
+     ],
+     "name": "February"
+    },
+    {
+     "gws": [
+      28,
+      29,
+      30
+     ],
+     "name": "March"
+    },
+    {
+     "gws": [
+      31,
+      32,
+      33
+     ],
+     "name": "April"
+    },
+    {
+     "gws": [
+      34,
+      35,
+      36,
+      37,
+      38
+     ],
+     "name": "May"
+    }
+   ],
+   "name": "Clash of Elite 2026-2027"
+  },
+  "390100": {
+   "managers": [
+    {
+     "avatar": "HO",
+     "id": 145847,
+     "name": "Hokheng Ker",
+     "teamName": "Undefeated"
+    },
+    {
+     "avatar": "SE",
+     "id": 2019453,
+     "name": "Seyha ly",
+     "teamName": "The Red Devil"
+    }
+   ],
+   "months": [
+    {
+     "gws": [
+      1,
+      2
+     ],
+     "name": "August"
+    },
+    {
+     "gws": [
+      3,
+      4,
+      5
+     ],
+     "name": "September"
+    },
+    {
+     "gws": [
+      6,
+      7,
+      8,
+      9
+     ],
+     "name": "October"
+    },
+    {
+     "gws": [
+      10,
+      11,
+      12
+     ],
+     "name": "November"
+    },
+    {
+     "gws": [
+      13,
+      14,
+      15,
+      16,
+      17,
+      18
+     ],
+     "name": "December"
+    },
+    {
+     "gws": [
+      19,
+      20,
+      21,
+      22,
+      23
+     ],
+     "name": "January"
+    },
+    {
+     "gws": [
+      24,
+      25,
+      26,
+      27
+     ],
+     "name": "February"
+    },
+    {
+     "gws": [
+      28,
+      29,
+      30
+     ],
+     "name": "March"
+    },
+    {
+     "gws": [
+      31,
+      32,
+      33
+     ],
+     "name": "April"
+    },
+    {
+     "gws": [
+      34,
+      35,
+      36,
+      37,
+      38
+     ],
+     "name": "May"
+    }
+   ],
+   "name": "Fantasy with Heng"
+  }
+ },
  "people": [
   {
    "aba": "085 897 968",

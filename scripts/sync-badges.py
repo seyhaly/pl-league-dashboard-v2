@@ -72,8 +72,14 @@ def main():
     except (FileNotFoundError, json.JSONDecodeError):
         index = {}
 
+    ids = manager_ids()
+    if not ids:
+        # No managers in this run's data (e.g. FPL didn't answer): keep the badges we have
+        print('⚠️ No managers found in live_data.json; badge index left unchanged.')
+        return 0
+
     new_index = {}
-    for entry_id in manager_ids():
+    for entry_id in ids:
         key = str(entry_id)
         file_name = f'{entry_id}.png'
         file_path = os.path.join(BADGE_DIR, file_name)

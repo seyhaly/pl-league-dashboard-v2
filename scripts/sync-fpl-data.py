@@ -285,14 +285,15 @@ def main():
     }
 
     # Load existing squad picks history if available
+    prev_data = {}
     if os.path.exists(live_data_path):
         try:
             with open(live_data_path, 'r', encoding='utf-8') as f:
-                prev_data = json.load(f)
+                prev_data = json.load(f) or {}
                 if prev_data and 'squadPicks' in prev_data:
                     output_data['squadPicks'] = prev_data['squadPicks']
         except Exception:
-            pass
+            prev_data = {}
 
     # 3. Process each league
     for league_id in LEAGUES:
@@ -440,6 +441,23 @@ def main():
         g: {el: rows for el, rows in by_el.items() if el in squad_elements}
         for g, by_el in player_gw_explain_all.items()
     }
+
+    # FPL sometimes refuses requests while it updates during matches. Never replace good
+    # data with an empty copy: keep last run's league/transfers for anything that failed,
+    # and if no league could be fetched at all, leave the saved files untouched.
+    prev_leagues = prev_data.get('leagues') or {}
+    kept = [lid for lid in LEAGUES if lid not in output_data['leagues'] and lid in prev_leagues]
+    for lid in kept:
+        output_data['leagues'][lid] = prev_leagues[lid]
+    prev_transfers = prev_data.get('transfersHistory') or {}
+    for entry_id, items in prev_transfers.items():
+        if entry_id not in output_data['transfersHistory']:
+            output_data['transfersHistory'][entry_id] = items
+    if kept:
+        print(f"⚠️ Kept last saved data for league(s) {', '.join(kept)} (FPL didn't answer this time)")
+    if not output_data['leagues']:
+        print("⚠️ No league data at all this run; leaving live_data.json and squadData.js unchanged.")
+        return
 
     with open(live_data_path, 'w', encoding='utf-8') as f:
         json.dump(output_data, f, indent=2, ensure_ascii=False)
