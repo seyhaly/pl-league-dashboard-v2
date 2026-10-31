@@ -142,6 +142,12 @@
      "teamName": "NORA FC"
     },
     {
+     "avatar": "SE",
+     "id": 2019453,
+     "name": "Seyha ly",
+     "teamName": "The Red Devil"
+    },
+    {
      "avatar": "KU",
      "id": 2067578,
      "name": "Kun Phaktra",
@@ -154,22 +160,16 @@
      "teamName": "DESSTRo"
     },
     {
-     "avatar": "SE",
-     "id": 2019453,
-     "name": "Seyha ly",
-     "teamName": "The Red Devil"
+     "avatar": "VI",
+     "id": 2024611,
+     "name": "Vibol Dang",
+     "teamName": "The White Emperor"
     },
     {
      "avatar": "នរ",
      "id": 2023013,
      "name": "នរ សិង្ហ កន្សៃ",
      "teamName": "G.O.A.T"
-    },
-    {
-     "avatar": "VI",
-     "id": 2024611,
-     "name": "Vibol Dang",
-     "teamName": "The White Emperor"
     },
     {
      "avatar": "BO",
@@ -273,16 +273,16 @@
   "390100": {
    "managers": [
     {
-     "avatar": "HO",
-     "id": 145847,
-     "name": "Hokheng Ker",
-     "teamName": "Undefeated"
-    },
-    {
      "avatar": "SE",
      "id": 2019453,
      "name": "Seyha ly",
      "teamName": "The Red Devil"
+    },
+    {
+     "avatar": "HO",
+     "id": 145847,
+     "name": "Hokheng Ker",
+     "teamName": "Undefeated"
     }
    ],
    "months": [
