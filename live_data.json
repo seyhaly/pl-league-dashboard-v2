@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-11-01T20:43:02Z",
+  "lastUpdated": "2026-11-01T23:57:21Z",
   "currentGw": 9,
   "eventStatuses": {
     "1": {
@@ -99,7 +99,7 @@
       "is_next": false,
       "deadline_time": "2026-10-31T11:00:00Z",
       "bonus_added": false,
-      "leagues": "Updating",
+      "leagues": "",
       "points": "",
       "daily_status": [
         {
