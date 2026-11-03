@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-11-02T22:38:11Z",
+  "lastUpdated": "2026-11-03T03:42:44Z",
   "currentGw": 9,
   "eventStatuses": {
     "1": {
@@ -99,7 +99,7 @@
       "is_next": false,
       "deadline_time": "2026-10-31T11:00:00Z",
       "bonus_added": false,
-      "leagues": "Updating",
+      "leagues": "",
       "points": "p",
       "daily_status": [
         {
@@ -765,7 +765,7 @@
       "team_name": "Arsenal",
       "team_id": 1,
       "event_points": 0,
-      "now_cost": "5.2",
+      "now_cost": "5.1",
       "code": 500040,
       "opponent": "LIV",
       "opponent_short": "LIV",
@@ -4204,7 +4204,7 @@
       "team_name": "Chelsea",
       "team_id": 6,
       "event_points": 1,
-      "now_cost": "5.4",
+      "now_cost": "5.3",
       "code": 543158,
       "opponent": "MUN",
       "opponent_short": "MUN",
@@ -5723,7 +5723,7 @@
       "team": "EVE",
       "team_name": "Everton",
       "team_id": 9,
-      "event_points": 8,
+      "event_points": 7,
       "now_cost": "5.5",
       "code": 111234,
       "opponent": "NEW",
@@ -5799,7 +5799,7 @@
       "team": "EVE",
       "team_name": "Everton",
       "team_id": 9,
-      "event_points": 6,
+      "event_points": 9,
       "now_cost": "5.5",
       "code": 480455,
       "opponent": "NEW",
@@ -5856,7 +5856,7 @@
       "team": "EVE",
       "team_name": "Everton",
       "team_id": 9,
-      "event_points": 8,
+      "event_points": 6,
       "now_cost": "4.6",
       "code": 224967,
       "opponent": "NEW",
@@ -5913,7 +5913,7 @@
       "team": "EVE",
       "team_name": "Everton",
       "team_id": 9,
-      "event_points": 3,
+      "event_points": 4,
       "now_cost": "6.6",
       "code": 215413,
       "opponent": "NEW",
@@ -5951,7 +5951,7 @@
       "team": "EVE",
       "team_name": "Everton",
       "team_id": 9,
-      "event_points": 5,
+      "event_points": 3,
       "now_cost": "6.0",
       "code": 232928,
       "opponent": "NEW",
@@ -6541,7 +6541,7 @@
       "team_name": "Fulham",
       "team_id": 10,
       "event_points": 2,
-      "now_cost": "6.0",
+      "now_cost": "5.9",
       "code": 551466,
       "opponent": "AVL",
       "opponent_short": "AVL",
@@ -18759,20 +18759,20 @@
       "223": -2,
       "224": 1,
       "225": 0,
-      "226": 8,
+      "226": 7,
       "227": 0,
       "228": 0,
       "229": 6,
-      "230": 6,
+      "230": 9,
       "231": 1,
       "232": 6,
-      "233": 8,
+      "233": 6,
       "234": 0,
       "235": 0,
-      "236": 3,
+      "236": 4,
       "237": 2,
       "238": 0,
-      "239": 5,
+      "239": 3,
       "240": 8,
       "241": 2,
       "242": 5,
@@ -22606,15 +22606,19 @@
           "a": [
             {
               "value": 3,
+              "element": 230
+            },
+            {
+              "value": 3,
               "element": 249
             },
             {
-              "value": 2,
+              "value": 1,
               "element": 226
             },
             {
-              "value": 2,
-              "element": 233
+              "value": 1,
+              "element": 236
             }
           ],
           "h": []
@@ -22623,7 +22627,11 @@
           "identifier": "bps",
           "a": [
             {
-              "value": 34,
+              "value": 31,
+              "element": 230
+            },
+            {
+              "value": 31,
               "element": 249
             },
             {
@@ -22632,22 +22640,18 @@
             },
             {
               "value": 29,
-              "element": 233
-            },
-            {
-              "value": 28,
-              "element": 230
-            },
-            {
-              "value": 27,
               "element": 236
             },
             {
-              "value": 24,
+              "value": 27,
+              "element": 233
+            },
+            {
+              "value": 26,
               "element": 229
             },
             {
-              "value": 22,
+              "value": 20,
               "element": 232
             },
             {
@@ -22746,7 +22750,7 @@
           "identifier": "defensive_contribution",
           "a": [
             {
-              "value": 12,
+              "value": 11,
               "element": 239
             },
             {
@@ -22754,23 +22758,23 @@
               "element": 229
             },
             {
-              "value": 8,
+              "value": 7,
+              "element": 230
+            },
+            {
+              "value": 7,
               "element": 233
+            },
+            {
+              "value": 7,
+              "element": 236
             },
             {
               "value": 7,
               "element": 242
             },
             {
-              "value": 6,
-              "element": 230
-            },
-            {
-              "value": 6,
-              "element": 236
-            },
-            {
-              "value": 6,
+              "value": 7,
               "element": 246
             },
             {
@@ -24215,18 +24219,18 @@
         "active_chip": null,
         "entry_history": {
           "event": 9,
-          "points": 33,
-          "total_points": 497,
-          "rank": 8285624,
-          "rank_sort": 8289817,
-          "overall_rank": 5104916,
-          "percentile_rank": 75,
+          "points": 35,
+          "total_points": 499,
+          "rank": 8400168,
+          "rank_sort": 8403629,
+          "overall_rank": 5111456,
+          "percentile_rank": 80,
           "overall_rank_percentage": "46",
           "bank": 15,
           "value": 1011,
           "event_transfers": 2,
           "event_transfers_cost": 4,
-          "points_on_bench": 6
+          "points_on_bench": 9
         },
         "automatic_subs": []
       }
@@ -25540,13 +25544,13 @@
         "active_chip": null,
         "entry_history": {
           "event": 9,
-          "points": 43,
-          "total_points": 533,
-          "rank": 5214769,
-          "rank_sort": 5226108,
-          "overall_rank": 3077867,
-          "percentile_rank": 50,
-          "overall_rank_percentage": "28",
+          "points": 49,
+          "total_points": 539,
+          "rank": 4093874,
+          "rank_sort": 4107823,
+          "overall_rank": 2854986,
+          "percentile_rank": 40,
+          "overall_rank_percentage": "26",
           "bank": 5,
           "value": 1024,
           "event_transfers": 2,
@@ -26834,16 +26838,16 @@
           "event": 9,
           "points": 61,
           "total_points": 547,
-          "rank": 1089506,
-          "rank_sort": 1100060,
-          "overall_rank": 2359401,
-          "percentile_rank": 10,
-          "overall_rank_percentage": "21",
+          "rank": 1341424,
+          "rank_sort": 1353899,
+          "overall_rank": 2448112,
+          "percentile_rank": 15,
+          "overall_rank_percentage": "22",
           "bank": 10,
           "value": 1018,
           "event_transfers": 2,
           "event_transfers_cost": 4,
-          "points_on_bench": 16
+          "points_on_bench": 14
         },
         "automatic_subs": []
       }
@@ -28138,18 +28142,18 @@
         "active_chip": null,
         "entry_history": {
           "event": 9,
-          "points": 49,
-          "total_points": 516,
-          "rank": 3471434,
-          "rank_sort": 3484856,
-          "overall_rank": 4033620,
-          "percentile_rank": 35,
-          "overall_rank_percentage": "36",
+          "points": 55,
+          "total_points": 522,
+          "rank": 2499774,
+          "rank_sort": 2514782,
+          "overall_rank": 3803274,
+          "percentile_rank": 25,
+          "overall_rank_percentage": "34",
           "bank": 36,
           "value": 1006,
           "event_transfers": 2,
           "event_transfers_cost": 4,
-          "points_on_bench": 4
+          "points_on_bench": 5
         },
         "automatic_subs": []
       }
@@ -29477,11 +29481,11 @@
           "event": 9,
           "points": 47,
           "total_points": 500,
-          "rank": 4016688,
-          "rank_sort": 4030037,
-          "overall_rank": 4924913,
-          "percentile_rank": 40,
-          "overall_rank_percentage": "44",
+          "rank": 4698218,
+          "rank_sort": 4711029,
+          "overall_rank": 5045942,
+          "percentile_rank": 45,
+          "overall_rank_percentage": "45",
           "bank": 51,
           "value": 1023,
           "event_transfers": 2,
@@ -30774,18 +30778,18 @@
         "active_chip": null,
         "entry_history": {
           "event": 9,
-          "points": 54,
-          "total_points": 531,
-          "rank": 2315663,
-          "rank_sort": 2320836,
-          "overall_rank": 3186868,
+          "points": 56,
+          "total_points": 533,
+          "rank": 2325762,
+          "rank_sort": 2331182,
+          "overall_rank": 3179236,
           "percentile_rank": 25,
-          "overall_rank_percentage": "29",
+          "overall_rank_percentage": "28",
           "bank": 38,
           "value": 1006,
           "event_transfers": 3,
           "event_transfers_cost": 0,
-          "points_on_bench": 16
+          "points_on_bench": 14
         },
         "automatic_subs": []
       }
@@ -32059,12 +32063,12 @@
         "active_chip": null,
         "entry_history": {
           "event": 9,
-          "points": 40,
-          "total_points": 275,
-          "rank": 6222268,
-          "rank_sort": 6222288,
-          "overall_rank": 10551193,
-          "percentile_rank": 60,
+          "points": 44,
+          "total_points": 279,
+          "rank": 5717441,
+          "rank_sort": 5717464,
+          "overall_rank": 10542919,
+          "percentile_rank": 55,
           "overall_rank_percentage": "94",
           "bank": 57,
           "value": 1026,
@@ -33360,16 +33364,16 @@
           "event": 9,
           "points": 43,
           "total_points": 525,
-          "rank": 5152862,
-          "rank_sort": 5154044,
-          "overall_rank": 3498180,
-          "percentile_rank": 50,
-          "overall_rank_percentage": "31",
+          "rank": 5901888,
+          "rank_sort": 5902828,
+          "overall_rank": 3606258,
+          "percentile_rank": 55,
+          "overall_rank_percentage": "32",
           "bank": 31,
           "value": 1017,
           "event_transfers": 1,
           "event_transfers_cost": 0,
-          "points_on_bench": 10
+          "points_on_bench": 8
         },
         "automatic_subs": []
       }
@@ -35974,12 +35978,12 @@
           "gw": 9,
           "scores": {
             "2023789": 61,
-            "2067578": 43,
-            "2019453": 54,
-            "2026160": 49,
+            "2067578": 49,
+            "2019453": 56,
+            "2026160": 55,
             "2024611": 47,
-            "2023013": 33,
-            "2026484": 40
+            "2023013": 35,
+            "2026484": 44
           },
           "hits": {
             "2023789": 4,
@@ -36000,12 +36004,12 @@
             "2026484": 11
           },
           "benchPoints": {
-            "2023789": 16,
+            "2023789": 14,
             "2067578": 18,
-            "2019453": 16,
-            "2026160": 4,
+            "2019453": 14,
+            "2026160": 5,
             "2024611": 11,
-            "2023013": 6,
+            "2023013": 9,
             "2026484": 20
           },
           "captainPoints": {
@@ -36020,12 +36024,12 @@
           "chipsUsed": {},
           "seasonTotals": {
             "2023789": 547,
-            "2067578": 533,
-            "2019453": 531,
-            "2026160": 516,
+            "2067578": 539,
+            "2019453": 533,
+            "2026160": 522,
             "2024611": 500,
-            "2023013": 497,
-            "2026484": 275
+            "2023013": 499,
+            "2026484": 279
           }
         },
         {
@@ -36657,7 +36661,7 @@
         {
           "gw": 9,
           "scores": {
-            "2019453": 54,
+            "2019453": 56,
             "145847": 43
           },
           "hits": {
@@ -36669,8 +36673,8 @@
             "145847": 1
           },
           "benchPoints": {
-            "2019453": 16,
-            "145847": 10
+            "2019453": 14,
+            "145847": 8
           },
           "captainPoints": {
             "2019453": 4,
@@ -36678,7 +36682,7 @@
           },
           "chipsUsed": {},
           "seasonTotals": {
-            "2019453": 531,
+            "2019453": 533,
             "145847": 525
           }
         },
@@ -47880,8 +47884,8 @@
         ],
         [
           "bonus",
-          2,
-          2
+          1,
+          1
         ]
       ],
       "229": [
@@ -47913,11 +47917,6 @@
           "clean_sheets",
           1,
           4
-        ],
-        [
-          "bonus",
-          2,
-          2
         ]
       ],
       "237": [
