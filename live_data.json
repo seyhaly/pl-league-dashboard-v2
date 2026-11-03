@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-11-03T11:24:51Z",
+  "lastUpdated": "2026-11-03T18:36:34Z",
   "currentGw": 9,
   "eventStatuses": {
     "1": {
@@ -92,14 +92,14 @@
     },
     "9": {
       "gw": 9,
-      "finished": false,
-      "data_checked": false,
+      "finished": true,
+      "data_checked": true,
       "is_current": true,
       "is_previous": false,
       "is_next": false,
       "deadline_time": "2026-10-31T11:00:00Z",
       "bonus_added": true,
-      "leagues": "Updating",
+      "leagues": "Updated",
       "points": "r",
       "daily_status": [
         {
@@ -3619,7 +3619,7 @@
       "code": 98980,
       "opponent": "MUN",
       "opponent_short": "MUN",
-      "difficulty": 4,
+      "difficulty": 3,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -3638,7 +3638,7 @@
       "code": 244850,
       "opponent": "MUN",
       "opponent_short": "MUN",
-      "difficulty": 4,
+      "difficulty": 3,
       "minutes": 90,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -3657,7 +3657,7 @@
       "code": 56979,
       "opponent": "MUN",
       "opponent_short": "MUN",
-      "difficulty": 4,
+      "difficulty": 3,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -3676,7 +3676,7 @@
       "code": 50175,
       "opponent": "MUN",
       "opponent_short": "MUN",
-      "difficulty": 4,
+      "difficulty": 3,
       "minutes": 3,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -3695,7 +3695,7 @@
       "code": 215059,
       "opponent": "MUN",
       "opponent_short": "MUN",
-      "difficulty": 4,
+      "difficulty": 3,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -3714,7 +3714,7 @@
       "code": 508479,
       "opponent": "MUN",
       "opponent_short": "MUN",
-      "difficulty": 4,
+      "difficulty": 3,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -3733,7 +3733,7 @@
       "code": 225796,
       "opponent": "MUN",
       "opponent_short": "MUN",
-      "difficulty": 4,
+      "difficulty": 3,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -3752,7 +3752,7 @@
       "code": 180736,
       "opponent": "MUN",
       "opponent_short": "MUN",
-      "difficulty": 4,
+      "difficulty": 3,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -3771,7 +3771,7 @@
       "code": 482609,
       "opponent": "MUN",
       "opponent_short": "MUN",
-      "difficulty": 4,
+      "difficulty": 3,
       "minutes": 3,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -3790,7 +3790,7 @@
       "code": 444463,
       "opponent": "MUN",
       "opponent_short": "MUN",
-      "difficulty": 4,
+      "difficulty": 3,
       "minutes": 90,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -3809,7 +3809,7 @@
       "code": 242880,
       "opponent": "MUN",
       "opponent_short": "MUN",
-      "difficulty": 4,
+      "difficulty": 3,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -3828,7 +3828,7 @@
       "code": 551210,
       "opponent": "MUN",
       "opponent_short": "MUN",
-      "difficulty": 4,
+      "difficulty": 3,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -3847,7 +3847,7 @@
       "code": 460028,
       "opponent": "MUN",
       "opponent_short": "MUN",
-      "difficulty": 4,
+      "difficulty": 3,
       "minutes": 90,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -3866,7 +3866,7 @@
       "code": 574458,
       "opponent": "MUN",
       "opponent_short": "MUN",
-      "difficulty": 4,
+      "difficulty": 3,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -3885,7 +3885,7 @@
       "code": 577016,
       "opponent": "MUN",
       "opponent_short": "MUN",
-      "difficulty": 4,
+      "difficulty": 3,
       "minutes": 90,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -3904,7 +3904,7 @@
       "code": 620109,
       "opponent": "MUN",
       "opponent_short": "MUN",
-      "difficulty": 4,
+      "difficulty": 3,
       "minutes": 73,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -3923,7 +3923,7 @@
       "code": 244851,
       "opponent": "MUN",
       "opponent_short": "MUN",
-      "difficulty": 4,
+      "difficulty": 3,
       "minutes": 90,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -3942,7 +3942,7 @@
       "code": 247632,
       "opponent": "MUN",
       "opponent_short": "MUN",
-      "difficulty": 4,
+      "difficulty": 3,
       "minutes": 86,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -3961,7 +3961,7 @@
       "code": 624773,
       "opponent": "MUN",
       "opponent_short": "MUN",
-      "difficulty": 4,
+      "difficulty": 3,
       "minutes": 86,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -3980,7 +3980,7 @@
       "code": 463936,
       "opponent": "MUN",
       "opponent_short": "MUN",
-      "difficulty": 4,
+      "difficulty": 3,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -3999,7 +3999,7 @@
       "code": 486672,
       "opponent": "MUN",
       "opponent_short": "MUN",
-      "difficulty": 4,
+      "difficulty": 3,
       "minutes": 86,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -4018,7 +4018,7 @@
       "code": 514356,
       "opponent": "MUN",
       "opponent_short": "MUN",
-      "difficulty": 4,
+      "difficulty": 3,
       "minutes": 90,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -4037,7 +4037,7 @@
       "code": 491007,
       "opponent": "MUN",
       "opponent_short": "MUN",
-      "difficulty": 4,
+      "difficulty": 3,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -4056,7 +4056,7 @@
       "code": 593117,
       "opponent": "MUN",
       "opponent_short": "MUN",
-      "difficulty": 4,
+      "difficulty": 3,
       "minutes": 1,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -4075,7 +4075,7 @@
       "code": 475168,
       "opponent": "MUN",
       "opponent_short": "MUN",
-      "difficulty": 4,
+      "difficulty": 3,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -4094,7 +4094,7 @@
       "code": 499309,
       "opponent": "MUN",
       "opponent_short": "MUN",
-      "difficulty": 4,
+      "difficulty": 3,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -4113,7 +4113,7 @@
       "code": 567119,
       "opponent": "MUN",
       "opponent_short": "MUN",
-      "difficulty": 4,
+      "difficulty": 3,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -4132,7 +4132,7 @@
       "code": 503037,
       "opponent": "MUN",
       "opponent_short": "MUN",
-      "difficulty": 4,
+      "difficulty": 3,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -4151,7 +4151,7 @@
       "code": 437499,
       "opponent": "MUN",
       "opponent_short": "MUN",
-      "difficulty": 4,
+      "difficulty": 3,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -4170,7 +4170,7 @@
       "code": 549939,
       "opponent": "MUN",
       "opponent_short": "MUN",
-      "difficulty": 4,
+      "difficulty": 3,
       "minutes": 90,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -4189,7 +4189,7 @@
       "code": 622758,
       "opponent": "MUN",
       "opponent_short": "MUN",
-      "difficulty": 4,
+      "difficulty": 3,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -4208,7 +4208,7 @@
       "code": 543158,
       "opponent": "MUN",
       "opponent_short": "MUN",
-      "difficulty": 4,
+      "difficulty": 3,
       "minutes": 3,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -4227,7 +4227,7 @@
       "code": 498444,
       "opponent": "MUN",
       "opponent_short": "MUN",
-      "difficulty": 4,
+      "difficulty": 3,
       "minutes": 16,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -4246,7 +4246,7 @@
       "code": 636846,
       "opponent": "MUN",
       "opponent_short": "MUN",
-      "difficulty": 4,
+      "difficulty": 3,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -4265,7 +4265,7 @@
       "code": 499857,
       "opponent": "MUN",
       "opponent_short": "MUN",
-      "difficulty": 4,
+      "difficulty": 3,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -4284,7 +4284,7 @@
       "code": 616109,
       "opponent": "MUN",
       "opponent_short": "MUN",
-      "difficulty": 4,
+      "difficulty": 3,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -4303,7 +4303,7 @@
       "code": 231065,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 90,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -4322,7 +4322,7 @@
       "code": 428580,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -4341,7 +4341,7 @@
       "code": 472739,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 90,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -4360,7 +4360,7 @@
       "code": 484389,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -4379,7 +4379,7 @@
       "code": 110690,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -4398,7 +4398,7 @@
       "code": 461102,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -4417,7 +4417,7 @@
       "code": 436761,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -4436,7 +4436,7 @@
       "code": 451284,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 90,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -4455,7 +4455,7 @@
       "code": 173878,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 90,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -4474,7 +4474,7 @@
       "code": 465390,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -4493,7 +4493,7 @@
       "code": 80178,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -4512,7 +4512,7 @@
       "code": 204813,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -4531,7 +4531,7 @@
       "code": 220583,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -4550,7 +4550,7 @@
       "code": 577411,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -4569,7 +4569,7 @@
       "code": 539142,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -4588,7 +4588,7 @@
       "code": 480457,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 90,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -4607,7 +4607,7 @@
       "code": 168144,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 7,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -4626,7 +4626,7 @@
       "code": 501459,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 90,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -4645,7 +4645,7 @@
       "code": 241293,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -4664,7 +4664,7 @@
       "code": 439668,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -4683,7 +4683,7 @@
       "code": 226965,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 82,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -4702,7 +4702,7 @@
       "code": 684268,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -4721,7 +4721,7 @@
       "code": 469272,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -4740,7 +4740,7 @@
       "code": 492498,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -4759,7 +4759,7 @@
       "code": 629397,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -4778,7 +4778,7 @@
       "code": 176412,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -4797,7 +4797,7 @@
       "code": 230730,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 18,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -4816,7 +4816,7 @@
       "code": 218997,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -4835,7 +4835,7 @@
       "code": 551262,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -4854,7 +4854,7 @@
       "code": 549653,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -4873,7 +4873,7 @@
       "code": 210156,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 71,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -4892,7 +4892,7 @@
       "code": 661888,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 90,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -4911,7 +4911,7 @@
       "code": 196100,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -4930,7 +4930,7 @@
       "code": 627221,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 18,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -4949,7 +4949,7 @@
       "code": 79602,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -4968,7 +4968,7 @@
       "code": 242893,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 71,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -4987,7 +4987,7 @@
       "code": 566213,
       "opponent": "SUN",
       "opponent_short": "SUN",
-      "difficulty": 3,
+      "difficulty": 2,
       "minutes": 90,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -8198,7 +8198,7 @@
       "code": 153682,
       "opponent": "BOU",
       "opponent_short": "BOU",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 83,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -8217,7 +8217,7 @@
       "code": 201595,
       "opponent": "BOU",
       "opponent_short": "BOU",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -8236,7 +8236,7 @@
       "code": 434752,
       "opponent": "BOU",
       "opponent_short": "BOU",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -8255,7 +8255,7 @@
       "code": 214225,
       "opponent": "BOU",
       "opponent_short": "BOU",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -8274,7 +8274,7 @@
       "code": 226182,
       "opponent": "BOU",
       "opponent_short": "BOU",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 90,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -8293,7 +8293,7 @@
       "code": 243526,
       "opponent": "BOU",
       "opponent_short": "BOU",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 64,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -8312,7 +8312,7 @@
       "code": 220627,
       "opponent": "BOU",
       "opponent_short": "BOU",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 83,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -8331,7 +8331,7 @@
       "code": 437738,
       "opponent": "BOU",
       "opponent_short": "BOU",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -8350,7 +8350,7 @@
       "code": 522047,
       "opponent": "BOU",
       "opponent_short": "BOU",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 90,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -8369,7 +8369,7 @@
       "code": 466525,
       "opponent": "BOU",
       "opponent_short": "BOU",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 25,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -8388,7 +8388,7 @@
       "code": 435997,
       "opponent": "BOU",
       "opponent_short": "BOU",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -8407,7 +8407,7 @@
       "code": 427637,
       "opponent": "BOU",
       "opponent_short": "BOU",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 6,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -8426,7 +8426,7 @@
       "code": 199598,
       "opponent": "BOU",
       "opponent_short": "BOU",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 90,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -8445,7 +8445,7 @@
       "code": 180135,
       "opponent": "BOU",
       "opponent_short": "BOU",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 25,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -8464,7 +8464,7 @@
       "code": 492859,
       "opponent": "BOU",
       "opponent_short": "BOU",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -8483,7 +8483,7 @@
       "code": 221399,
       "opponent": "BOU",
       "opponent_short": "BOU",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -8502,7 +8502,7 @@
       "code": 200617,
       "opponent": "BOU",
       "opponent_short": "BOU",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 64,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -8521,7 +8521,7 @@
       "code": 486520,
       "opponent": "BOU",
       "opponent_short": "BOU",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -8540,7 +8540,7 @@
       "code": 248056,
       "opponent": "BOU",
       "opponent_short": "BOU",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 64,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -8559,7 +8559,7 @@
       "code": 177815,
       "opponent": "BOU",
       "opponent_short": "BOU",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 90,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -8578,7 +8578,7 @@
       "code": 174594,
       "opponent": "BOU",
       "opponent_short": "BOU",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 25,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -8597,7 +8597,7 @@
       "code": 235826,
       "opponent": "BOU",
       "opponent_short": "BOU",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -8616,7 +8616,7 @@
       "code": 565297,
       "opponent": "BOU",
       "opponent_short": "BOU",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -8635,7 +8635,7 @@
       "code": 432720,
       "opponent": "BOU",
       "opponent_short": "BOU",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 90,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -8654,7 +8654,7 @@
       "code": 173774,
       "opponent": "BOU",
       "opponent_short": "BOU",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 90,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -8673,7 +8673,7 @@
       "code": 643970,
       "opponent": "BOU",
       "opponent_short": "BOU",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -8692,7 +8692,7 @@
       "code": 592740,
       "opponent": "BOU",
       "opponent_short": "BOU",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -8711,7 +8711,7 @@
       "code": 97846,
       "opponent": "BOU",
       "opponent_short": "BOU",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -8730,7 +8730,7 @@
       "code": 155465,
       "opponent": "BOU",
       "opponent_short": "BOU",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -8749,7 +8749,7 @@
       "code": 437497,
       "opponent": "BOU",
       "opponent_short": "BOU",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -8768,7 +8768,7 @@
       "code": 587982,
       "opponent": "BOU",
       "opponent_short": "BOU",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 6,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -9471,7 +9471,7 @@
       "code": 448047,
       "opponent": "BHA",
       "opponent_short": "BHA",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 63,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -9490,7 +9490,7 @@
       "code": 440993,
       "opponent": "BHA",
       "opponent_short": "BHA",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 78,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -9509,7 +9509,7 @@
       "code": 204936,
       "opponent": "BHA",
       "opponent_short": "BHA",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 90,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -9528,7 +9528,7 @@
       "code": 122074,
       "opponent": "BHA",
       "opponent_short": "BHA",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -9547,7 +9547,7 @@
       "code": 472769,
       "opponent": "BHA",
       "opponent_short": "BHA",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 26,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -9566,7 +9566,7 @@
       "code": 209036,
       "opponent": "BHA",
       "opponent_short": "BHA",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -9585,7 +9585,7 @@
       "code": 465351,
       "opponent": "BHA",
       "opponent_short": "BHA",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 90,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -9604,7 +9604,7 @@
       "code": 171314,
       "opponent": "BHA",
       "opponent_short": "BHA",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 90,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -9623,7 +9623,7 @@
       "code": 477424,
       "opponent": "BHA",
       "opponent_short": "BHA",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 78,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -9642,7 +9642,7 @@
       "code": 448514,
       "opponent": "BHA",
       "opponent_short": "BHA",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -9661,7 +9661,7 @@
       "code": 578153,
       "opponent": "BHA",
       "opponent_short": "BHA",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 90,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -9680,7 +9680,7 @@
       "code": 494307,
       "opponent": "BHA",
       "opponent_short": "BHA",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -9699,7 +9699,7 @@
       "code": 477064,
       "opponent": "BHA",
       "opponent_short": "BHA",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -9718,7 +9718,7 @@
       "code": 616222,
       "opponent": "BHA",
       "opponent_short": "BHA",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -9737,7 +9737,7 @@
       "code": 437730,
       "opponent": "BHA",
       "opponent_short": "BHA",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -9756,7 +9756,7 @@
       "code": 209244,
       "opponent": "BHA",
       "opponent_short": "BHA",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 11,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -9775,7 +9775,7 @@
       "code": 466052,
       "opponent": "BHA",
       "opponent_short": "BHA",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 35,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -9794,7 +9794,7 @@
       "code": 248875,
       "opponent": "BHA",
       "opponent_short": "BHA",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 90,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -9813,7 +9813,7 @@
       "code": 220566,
       "opponent": "BHA",
       "opponent_short": "BHA",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -9832,7 +9832,7 @@
       "code": 433036,
       "opponent": "BHA",
       "opponent_short": "BHA",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -9851,7 +9851,7 @@
       "code": 91651,
       "opponent": "BHA",
       "opponent_short": "BHA",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -9870,7 +9870,7 @@
       "code": 575204,
       "opponent": "BHA",
       "opponent_short": "BHA",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -9889,7 +9889,7 @@
       "code": 155405,
       "opponent": "BHA",
       "opponent_short": "BHA",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -9908,7 +9908,7 @@
       "code": 590039,
       "opponent": "BHA",
       "opponent_short": "BHA",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -9927,7 +9927,7 @@
       "code": 649208,
       "opponent": "BHA",
       "opponent_short": "BHA",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -9946,7 +9946,7 @@
       "code": 223094,
       "opponent": "BHA",
       "opponent_short": "BHA",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 90,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -9965,7 +9965,7 @@
       "code": 215379,
       "opponent": "BHA",
       "opponent_short": "BHA",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 90,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -9984,7 +9984,7 @@
       "code": 106921,
       "opponent": "BHA",
       "opponent_short": "BHA",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -10003,7 +10003,7 @@
       "code": 637238,
       "opponent": "BHA",
       "opponent_short": "BHA",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 54,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -10022,7 +10022,7 @@
       "code": 616288,
       "opponent": "BHA",
       "opponent_short": "BHA",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -10041,7 +10041,7 @@
       "code": 554054,
       "opponent": "BHA",
       "opponent_short": "BHA",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -10060,7 +10060,7 @@
       "code": 624777,
       "opponent": "BHA",
       "opponent_short": "BHA",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 11,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -10079,7 +10079,7 @@
       "code": 595480,
       "opponent": "BHA",
       "opponent_short": "BHA",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -11390,7 +11390,7 @@
       "code": 463034,
       "opponent": "BRE",
       "opponent_short": "BRE",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 64,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -11409,7 +11409,7 @@
       "code": 247348,
       "opponent": "BRE",
       "opponent_short": "BRE",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 45,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -11428,7 +11428,7 @@
       "code": 85633,
       "opponent": "BRE",
       "opponent_short": "BRE",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 90,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -11447,7 +11447,7 @@
       "code": 221389,
       "opponent": "BRE",
       "opponent_short": "BRE",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -11466,7 +11466,7 @@
       "code": 215136,
       "opponent": "BRE",
       "opponent_short": "BRE",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 90,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -11485,7 +11485,7 @@
       "code": 485047,
       "opponent": "BRE",
       "opponent_short": "BRE",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -11504,7 +11504,7 @@
       "code": 227444,
       "opponent": "BRE",
       "opponent_short": "BRE",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 90,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -11523,7 +11523,7 @@
       "code": 575476,
       "opponent": "BRE",
       "opponent_short": "BRE",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 90,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -11542,7 +11542,7 @@
       "code": 159506,
       "opponent": "BRE",
       "opponent_short": "BRE",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 45,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -11561,7 +11561,7 @@
       "code": 575458,
       "opponent": "BRE",
       "opponent_short": "BRE",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 90,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -11580,7 +11580,7 @@
       "code": 500151,
       "opponent": "BRE",
       "opponent_short": "BRE",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -11599,7 +11599,7 @@
       "code": 204822,
       "opponent": "BRE",
       "opponent_short": "BRE",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -11618,7 +11618,7 @@
       "code": 549067,
       "opponent": "BRE",
       "opponent_short": "BRE",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -11637,7 +11637,7 @@
       "code": 470315,
       "opponent": "BRE",
       "opponent_short": "BRE",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -11656,7 +11656,7 @@
       "code": 538638,
       "opponent": "BRE",
       "opponent_short": "BRE",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -11675,7 +11675,7 @@
       "code": 222531,
       "opponent": "BRE",
       "opponent_short": "BRE",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 90,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -11694,7 +11694,7 @@
       "code": 209046,
       "opponent": "BRE",
       "opponent_short": "BRE",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -11713,7 +11713,7 @@
       "code": 456512,
       "opponent": "BRE",
       "opponent_short": "BRE",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 64,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -11732,7 +11732,7 @@
       "code": 503301,
       "opponent": "BRE",
       "opponent_short": "BRE",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -11751,7 +11751,7 @@
       "code": 476887,
       "opponent": "BRE",
       "opponent_short": "BRE",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -11770,7 +11770,7 @@
       "code": 432714,
       "opponent": "BRE",
       "opponent_short": "BRE",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 90,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -11789,7 +11789,7 @@
       "code": 250199,
       "opponent": "BRE",
       "opponent_short": "BRE",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -11808,7 +11808,7 @@
       "code": 210462,
       "opponent": "BRE",
       "opponent_short": "BRE",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -11827,7 +11827,7 @@
       "code": 204968,
       "opponent": "BRE",
       "opponent_short": "BRE",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 45,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -11846,7 +11846,7 @@
       "code": 60689,
       "opponent": "BRE",
       "opponent_short": "BRE",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 25,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -11865,7 +11865,7 @@
       "code": 482973,
       "opponent": "BRE",
       "opponent_short": "BRE",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -11884,7 +11884,7 @@
       "code": 465680,
       "opponent": "BRE",
       "opponent_short": "BRE",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 25,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -11903,7 +11903,7 @@
       "code": 204561,
       "opponent": "BRE",
       "opponent_short": "BRE",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 45,
       "match_status": "played",
       "status_label": "✓ Played"
@@ -11922,7 +11922,7 @@
       "code": 568420,
       "opponent": "BRE",
       "opponent_short": "BRE",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -11941,7 +11941,7 @@
       "code": 428971,
       "opponent": "BRE",
       "opponent_short": "BRE",
-      "difficulty": 3,
+      "difficulty": 4,
       "minutes": 0,
       "match_status": "dnp",
       "status_label": "✕ DNP (0m)"
@@ -19566,7 +19566,7 @@
           ]
         }
       ],
-      "team_h_difficulty": 4,
+      "team_h_difficulty": 3,
       "team_a_difficulty": 4,
       "pulse_id": 0
     },
@@ -19937,7 +19937,7 @@
         }
       ],
       "team_h_difficulty": 3,
-      "team_a_difficulty": 3,
+      "team_a_difficulty": 4,
       "pulse_id": 0
     },
     {
@@ -20283,7 +20283,7 @@
         }
       ],
       "team_h_difficulty": 3,
-      "team_a_difficulty": 3,
+      "team_a_difficulty": 4,
       "pulse_id": 0
     },
     {
@@ -20631,7 +20631,7 @@
           ]
         }
       ],
-      "team_h_difficulty": 3,
+      "team_h_difficulty": 2,
       "team_a_difficulty": 2,
       "pulse_id": 0
     },
@@ -21385,7 +21385,7 @@
           ]
         }
       ],
-      "team_h_difficulty": 3,
+      "team_h_difficulty": 4,
       "team_a_difficulty": 5,
       "pulse_id": 0
     },
