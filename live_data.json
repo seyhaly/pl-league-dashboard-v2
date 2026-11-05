@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-11-04T23:57:53Z",
+  "lastUpdated": "2026-11-05T06:27:46Z",
   "currentGw": 9,
   "eventStatuses": {
     "1": {
@@ -8251,7 +8251,7 @@
       "team_name": "Leeds",
       "team_id": 13,
       "event_points": 0,
-      "now_cost": "4.3",
+      "now_cost": "4.2",
       "code": 214225,
       "opponent": "BOU",
       "opponent_short": "BOU",
@@ -10284,7 +10284,7 @@
       "team_name": "Man Utd",
       "team_id": 16,
       "event_points": 0,
-      "now_cost": "4.7",
+      "now_cost": "4.6",
       "code": 95658,
       "opponent": "CHE",
       "opponent_short": "CHE",
@@ -11671,7 +11671,7 @@
       "team_name": "Nott'm Forest",
       "team_id": 18,
       "event_points": 2,
-      "now_cost": "7.9",
+      "now_cost": "7.8",
       "code": 222531,
       "opponent": "BRE",
       "opponent_short": "BRE",
@@ -13286,7 +13286,7 @@
       "team_name": "Sunderland",
       "team_id": 20,
       "event_points": 0,
-      "now_cost": "5.0",
+      "now_cost": "4.9",
       "code": 604211,
       "opponent": "COV",
       "opponent_short": "COV",
