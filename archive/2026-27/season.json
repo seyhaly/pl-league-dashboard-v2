@@ -137,16 +137,16 @@
   "389585": {
    "managers": [
     {
-     "avatar": "KU",
-     "id": 2067578,
-     "name": "Kun Phaktra",
-     "teamName": "The Blue Warriors"
-    },
-    {
      "avatar": "MO",
      "id": 2023789,
      "name": "Monor Noem",
      "teamName": "NORA FC"
+    },
+    {
+     "avatar": "KU",
+     "id": 2067578,
+     "name": "Kun Phaktra",
+     "teamName": "The Blue Warriors"
     },
     {
      "avatar": "SE",
