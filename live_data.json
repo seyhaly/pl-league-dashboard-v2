@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-11-07T22:32:29Z",
+  "lastUpdated": "2026-11-08T01:48:52Z",
   "currentGw": 10,
   "eventStatuses": {
     "1": {
@@ -110,7 +110,7 @@
       "is_next": false,
       "deadline_time": "2026-11-06T18:30:00Z",
       "bonus_added": false,
-      "leagues": "Updating",
+      "leagues": "",
       "points": "",
       "daily_status": [
         {
@@ -784,7 +784,7 @@
       "team_name": "Arsenal",
       "team_id": 1,
       "event_points": 0,
-      "now_cost": "9.5",
+      "now_cost": "9.4",
       "code": 223340,
       "opponent": "HUL",
       "opponent_short": "HUL",
@@ -1601,7 +1601,7 @@
       "team_name": "Aston Villa",
       "team_id": 2,
       "event_points": 0,
-      "now_cost": "7.0",
+      "now_cost": "7.1",
       "code": 517052,
       "opponent": "MUN",
       "opponent_short": "MUN",
@@ -2019,7 +2019,7 @@
       "team_name": "Bournemouth",
       "team_id": 3,
       "event_points": 0,
-      "now_cost": "6.6",
+      "now_cost": "6.7",
       "code": 201658,
       "opponent": "IPS",
       "opponent_short": "IPS",
@@ -4147,7 +4147,7 @@
       "team_name": "Chelsea",
       "team_id": 6,
       "event_points": 0,
-      "now_cost": "5.9",
+      "now_cost": "5.8",
       "code": 437499,
       "opponent": "SUN",
       "opponent_short": "SUN",
@@ -7339,7 +7339,7 @@
       "team_name": "Hull City",
       "team_id": 11,
       "event_points": 1,
-      "now_cost": "4.0",
+      "now_cost": "3.9",
       "code": 597462,
       "opponent": "ARS",
       "opponent_short": "ARS",
@@ -8612,7 +8612,7 @@
       "team_name": "Leeds",
       "team_id": 13,
       "event_points": 0,
-      "now_cost": "4.5",
+      "now_cost": "4.4",
       "code": 565297,
       "opponent": "TOT",
       "opponent_short": "TOT",
@@ -10265,7 +10265,7 @@
       "team_name": "Man Utd",
       "team_id": 16,
       "event_points": 0,
-      "now_cost": "4.8",
+      "now_cost": "4.7",
       "code": 216051,
       "opponent": "AVL",
       "opponent_short": "AVL",
@@ -10436,7 +10436,7 @@
       "team_name": "Man Utd",
       "team_id": 16,
       "event_points": 0,
-      "now_cost": "11.7",
+      "now_cost": "11.6",
       "code": 141746,
       "opponent": "AVL",
       "opponent_short": "AVL",
@@ -10759,7 +10759,7 @@
       "team_name": "Newcastle",
       "team_id": 17,
       "event_points": 0,
-      "now_cost": "4.9",
+      "now_cost": "4.8",
       "code": 98747,
       "opponent": "FUL",
       "opponent_short": "FUL",
@@ -11272,7 +11272,7 @@
       "team_name": "Newcastle",
       "team_id": 17,
       "event_points": 1,
-      "now_cost": "5.9",
+      "now_cost": "5.8",
       "code": 613221,
       "opponent": "FUL",
       "opponent_short": "FUL",
@@ -11405,7 +11405,7 @@
       "team_name": "Nott'm Forest",
       "team_id": 18,
       "event_points": 2,
-      "now_cost": "5.3",
+      "now_cost": "5.2",
       "code": 247348,
       "opponent": "MCI",
       "opponent_short": "MCI",
@@ -20751,7 +20751,7 @@
           "identifier": "bps",
           "a": [
             {
-              "value": 32,
+              "value": 33,
               "element": 572
             },
             {
@@ -20817,11 +20817,11 @@
           ],
           "h": [
             {
-              "value": 41,
+              "value": 44,
               "element": 15
             },
             {
-              "value": 35,
+              "value": 36,
               "element": 16
             },
             {
@@ -20841,11 +20841,11 @@
               "element": 31
             },
             {
-              "value": 28,
+              "value": 26,
               "element": 8
             },
             {
-              "value": 17,
+              "value": 19,
               "element": 452
             },
             {
@@ -20857,7 +20857,7 @@
               "element": 13
             },
             {
-              "value": 12,
+              "value": 9,
               "element": 17
             },
             {
@@ -20890,7 +20890,7 @@
               "element": 586
             },
             {
-              "value": 10,
+              "value": 11,
               "element": 589
             },
             {
@@ -20944,7 +20944,7 @@
           ],
           "h": [
             {
-              "value": 12,
+              "value": 11,
               "element": 31
             },
             {
@@ -20988,7 +20988,7 @@
               "element": 14
             },
             {
-              "value": 1,
+              "value": 2,
               "element": 15
             },
             {
@@ -49583,7 +49583,7 @@
         ],
         [
           "defensive_contribution",
-          12,
+          11,
           2
         ]
       ],
