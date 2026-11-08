@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-11-08T19:41:35Z",
+  "lastUpdated": "2026-11-08T23:12:24Z",
   "currentGw": 10,
   "eventStatuses": {
     "1": {
@@ -7661,7 +7661,7 @@
       "team": "IPS",
       "team_name": "Ipswich Town",
       "team_id": 12,
-      "event_points": 1,
+      "event_points": -1,
       "now_cost": "4.0",
       "code": 455084,
       "opponent": "BOU",
@@ -7819,7 +7819,7 @@
       "opponent": "BOU",
       "opponent_short": "BOU",
       "difficulty": 3,
-      "minutes": 36,
+      "minutes": 37,
       "match_status": "played",
       "status_label": "✓ Played"
     },
@@ -10245,7 +10245,7 @@
       "team": "MUN",
       "team_name": "Man Utd",
       "team_id": 16,
-      "event_points": 10,
+      "event_points": 11,
       "now_cost": "5.7",
       "code": 596777,
       "opponent": "AVL",
@@ -19548,7 +19548,7 @@
       "302": 0,
       "303": 0,
       "304": 1,
-      "305": 1,
+      "305": -1,
       "306": 0,
       "307": 0,
       "308": 0,
@@ -19658,7 +19658,7 @@
       "412": 1,
       "413": 0,
       "414": 0,
-      "415": 10,
+      "415": 11,
       "416": 0,
       "417": 0,
       "418": 0,
@@ -21876,6 +21876,10 @@
             },
             {
               "value": 6,
+              "element": 95
+            },
+            {
+              "value": 6,
               "element": 108
             },
             {
@@ -21885,10 +21889,6 @@
             {
               "value": 5,
               "element": 84
-            },
-            {
-              "value": 5,
-              "element": 95
             },
             {
               "value": 4,
@@ -21937,7 +21937,7 @@
               "element": 124
             },
             {
-              "value": 33,
+              "value": 32,
               "element": 127
             },
             {
@@ -22006,7 +22006,7 @@
               "element": 85
             },
             {
-              "value": 8,
+              "value": 7,
               "element": 86
             },
             {
@@ -22061,11 +22061,11 @@
             },
             {
               "value": 6,
-              "element": 127
+              "element": 504
             },
             {
-              "value": 6,
-              "element": 504
+              "value": 5,
+              "element": 127
             },
             {
               "value": 5,
@@ -22657,12 +22657,12 @@
               "element": 68
             },
             {
-              "value": 11,
-              "element": 77
+              "value": 8,
+              "element": 566
             },
             {
-              "value": 10,
-              "element": 566
+              "value": 7,
+              "element": 77
             },
             {
               "value": 6,
@@ -22711,11 +22711,7 @@
               "element": 619
             },
             {
-              "value": 12,
-              "element": 318
-            },
-            {
-              "value": 12,
+              "value": 14,
               "element": 562
             },
             {
@@ -22727,8 +22723,12 @@
               "element": 592
             },
             {
+              "value": 10,
+              "element": 318
+            },
+            {
               "value": 9,
-              "element": 305
+              "element": 300
             },
             {
               "value": 9,
@@ -22739,16 +22739,16 @@
               "element": 591
             },
             {
-              "value": 8,
-              "element": 300
-            },
-            {
               "value": 7,
               "element": 259
             },
             {
-              "value": 4,
+              "value": 6,
               "element": 304
+            },
+            {
+              "value": 5,
+              "element": 305
             },
             {
               "value": 3,
@@ -22768,12 +22768,12 @@
           "identifier": "defensive_contribution",
           "a": [
             {
-              "value": 14,
-              "element": 60
+              "value": 15,
+              "element": 73
             },
             {
               "value": 14,
-              "element": 73
+              "element": 60
             },
             {
               "value": 13,
@@ -22792,11 +22792,11 @@
               "element": 67
             },
             {
-              "value": 5,
+              "value": 6,
               "element": 61
             },
             {
-              "value": 4,
+              "value": 6,
               "element": 75
             },
             {
@@ -22826,28 +22826,36 @@
           ],
           "h": [
             {
-              "value": 15,
+              "value": 14,
               "element": 619
-            },
-            {
-              "value": 10,
-              "element": 305
             },
             {
               "value": 10,
               "element": 571
             },
             {
-              "value": 8,
+              "value": 9,
               "element": 304
+            },
+            {
+              "value": 9,
+              "element": 305
             },
             {
               "value": 7,
               "element": 259
             },
             {
-              "value": 4,
+              "value": 5,
               "element": 591
+            },
+            {
+              "value": 4,
+              "element": 318
+            },
+            {
+              "value": 4,
+              "element": 562
             },
             {
               "value": 3,
@@ -22858,15 +22866,7 @@
               "element": 315
             },
             {
-              "value": 3,
-              "element": 318
-            },
-            {
-              "value": 3,
-              "element": 562
-            },
-            {
-              "value": 3,
+              "value": 2,
               "element": 640
             },
             {
@@ -23035,16 +23035,16 @@
               "element": 40
             },
             {
+              "value": 13,
+              "element": 583
+            },
+            {
               "value": 12,
               "element": 101
             },
             {
               "value": 12,
               "element": 560
-            },
-            {
-              "value": 12,
-              "element": 583
             },
             {
               "value": 11,
@@ -23055,7 +23055,7 @@
               "element": 152
             },
             {
-              "value": 11,
+              "value": 8,
               "element": 157
             },
             {
@@ -23067,16 +23067,12 @@
               "element": 156
             },
             {
-              "value": 4,
+              "value": 5,
               "element": 170
             },
             {
               "value": 3,
               "element": 164
-            },
-            {
-              "value": -3,
-              "element": 136
             }
           ],
           "h": [
@@ -23093,7 +23089,7 @@
               "element": 533
             },
             {
-              "value": 24,
+              "value": 22,
               "element": 534
             },
             {
@@ -23105,12 +23101,12 @@
               "element": 541
             },
             {
-              "value": 15,
-              "element": 539
+              "value": 18,
+              "element": 613
             },
             {
-              "value": 15,
-              "element": 613
+              "value": 16,
+              "element": 539
             },
             {
               "value": 14,
@@ -23121,7 +23117,7 @@
               "element": 549
             },
             {
-              "value": 4,
+              "value": 5,
               "element": 552
             },
             {
@@ -23154,15 +23150,15 @@
               "element": 161
             },
             {
-              "value": 9,
-              "element": 145
-            },
-            {
               "value": 8,
               "element": 40
             },
             {
-              "value": 6,
+              "value": 8,
+              "element": 145
+            },
+            {
+              "value": 7,
               "element": 583
             },
             {
@@ -23170,24 +23166,24 @@
               "element": 152
             },
             {
-              "value": 3,
-              "element": 144
+              "value": 4,
+              "element": 157
             },
             {
               "value": 3,
-              "element": 149
+              "element": 144
             },
             {
               "value": 3,
               "element": 154
             },
             {
-              "value": 3,
-              "element": 157
+              "value": 2,
+              "element": 101
             },
             {
               "value": 2,
-              "element": 101
+              "element": 149
             },
             {
               "value": 2,
@@ -23196,12 +23192,12 @@
           ],
           "h": [
             {
-              "value": 12,
-              "element": 545
+              "value": 14,
+              "element": 613
             },
             {
               "value": 12,
-              "element": 613
+              "element": 545
             },
             {
               "value": 10,
@@ -23225,7 +23221,7 @@
             },
             {
               "value": 5,
-              "element": 549
+              "element": 552
             },
             {
               "value": 4,
@@ -23233,7 +23229,7 @@
             },
             {
               "value": 4,
-              "element": 552
+              "element": 549
             },
             {
               "value": 3,
@@ -23403,7 +23399,7 @@
           ],
           "h": [
             {
-              "value": 1,
+              "value": 2,
               "element": 415
             }
           ]
@@ -23412,7 +23408,7 @@
           "identifier": "bps",
           "a": [
             {
-              "value": 46,
+              "value": 48,
               "element": 52
             },
             {
@@ -23428,11 +23424,11 @@
               "element": 618
             },
             {
-              "value": 17,
+              "value": 19,
               "element": 53
             },
             {
-              "value": 8,
+              "value": 9,
               "element": 47
             },
             {
@@ -23460,6 +23456,10 @@
               "element": 582
             },
             {
+              "value": 2,
+              "element": 630
+            },
+            {
               "value": -1,
               "element": 34
             },
@@ -23474,27 +23474,27 @@
           ],
           "h": [
             {
-              "value": 42,
+              "value": 44,
               "element": 415
             },
             {
-              "value": 41,
+              "value": 39,
               "element": 43
+            },
+            {
+              "value": 39,
+              "element": 428
             },
             {
               "value": 38,
               "element": 426
             },
             {
-              "value": 37,
-              "element": 428
-            },
-            {
               "value": 28,
               "element": 440
             },
             {
-              "value": 24,
+              "value": 22,
               "element": 432
             },
             {
@@ -23522,15 +23522,15 @@
               "element": 420
             },
             {
+              "value": -3,
+              "element": 421
+            },
+            {
               "value": -4,
               "element": 418
             },
             {
-              "value": -4,
-              "element": 421
-            },
-            {
-              "value": -11,
+              "value": -7,
               "element": 417
             }
           ]
@@ -23543,15 +23543,15 @@
               "element": 37
             },
             {
+              "value": 14,
+              "element": 47
+            },
+            {
               "value": 12,
               "element": 34
             },
             {
-              "value": 12,
-              "element": 47
-            },
-            {
-              "value": 8,
+              "value": 9,
               "element": 53
             },
             {
@@ -23559,12 +23559,12 @@
               "element": 630
             },
             {
-              "value": 6,
-              "element": 36
+              "value": 7,
+              "element": 52
             },
             {
               "value": 6,
-              "element": 52
+              "element": 36
             },
             {
               "value": 5,
@@ -23613,19 +23613,19 @@
               "element": 43
             },
             {
-              "value": 6,
-              "element": 417
+              "value": 7,
+              "element": 428
             },
             {
               "value": 6,
-              "element": 428
+              "element": 417
             },
             {
               "value": 5,
               "element": 415
             },
             {
-              "value": 4,
+              "value": 5,
               "element": 421
             },
             {
@@ -51945,11 +51945,6 @@
           "own_goals",
           1,
           -2
-        ],
-        [
-          "defensive_contribution",
-          10,
-          2
         ]
       ],
       "316": [
