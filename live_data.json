@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-11-11T18:50:19Z",
+  "lastUpdated": "2026-11-12T01:23:20Z",
   "currentGw": 10,
   "eventStatuses": {
     "1": {
@@ -11120,7 +11120,7 @@
       "team_name": "Newcastle",
       "team_id": 17,
       "event_points": 3,
-      "now_cost": "4.8",
+      "now_cost": "4.7",
       "code": 636852,
       "opponent": "FUL",
       "opponent_short": "FUL",
