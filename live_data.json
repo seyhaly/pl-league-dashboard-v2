@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-11-14T21:18:32Z",
+  "lastUpdated": "2026-11-15T01:07:59Z",
   "currentGw": 10,
   "eventStatuses": {
     "1": {
@@ -1069,7 +1069,7 @@
       "team_name": "Arsenal",
       "team_id": 1,
       "event_points": 8,
-      "now_cost": "4.8",
+      "now_cost": "4.9",
       "code": 199798,
       "opponent": "HUL",
       "opponent_short": "HUL",
@@ -2950,7 +2950,7 @@
       "team_name": "Brighton",
       "team_id": 5,
       "event_points": 0,
-      "now_cost": "4.0",
+      "now_cost": "3.9",
       "code": 49262,
       "opponent": "BRE",
       "opponent_short": "BRE",
@@ -8935,7 +8935,7 @@
       "team_name": "Liverpool",
       "team_id": 14,
       "event_points": 0,
-      "now_cost": "5.2",
+      "now_cost": "5.1",
       "code": 216094,
       "opponent": "CRY",
       "opponent_short": "CRY",
