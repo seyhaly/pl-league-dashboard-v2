@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-11-16T16:59:18Z",
+  "lastUpdated": "2026-11-17T00:44:48Z",
   "currentGw": 10,
   "eventStatuses": {
     "1": {
@@ -2095,7 +2095,7 @@
       "team_name": "Bournemouth",
       "team_id": 3,
       "event_points": 1,
-      "now_cost": "5.0",
+      "now_cost": "4.9",
       "code": 155408,
       "opponent": "IPS",
       "opponent_short": "IPS",
@@ -5192,7 +5192,7 @@
       "team_name": "Crystal Palace",
       "team_id": 8,
       "event_points": 1,
-      "now_cost": "4.3",
+      "now_cost": "4.2",
       "code": 242313,
       "opponent": "LIV",
       "opponent_short": "LIV",
@@ -10607,7 +10607,7 @@
       "team_name": "Man Utd",
       "team_id": 16,
       "event_points": 0,
-      "now_cost": "4.9",
+      "now_cost": "4.8",
       "code": 547037,
       "opponent": "AVL",
       "opponent_short": "AVL",
