@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-11-19T21:52:12Z",
+  "lastUpdated": "2026-11-20T02:53:02Z",
   "currentGw": 10,
   "eventStatuses": {
     "1": {
@@ -1601,7 +1601,7 @@
       "team_name": "Aston Villa",
       "team_id": 2,
       "event_points": 11,
-      "now_cost": "7.1",
+      "now_cost": "7.2",
       "code": 517052,
       "opponent": "MUN",
       "opponent_short": "MUN",
@@ -5135,7 +5135,7 @@
       "team_name": "Crystal Palace",
       "team_id": 8,
       "event_points": 1,
-      "now_cost": "4.5",
+      "now_cost": "4.4",
       "code": 244723,
       "opponent": "LIV",
       "opponent_short": "LIV",
@@ -6579,7 +6579,7 @@
       "team_name": "Fulham",
       "team_id": 10,
       "event_points": 4,
-      "now_cost": "5.3",
+      "now_cost": "5.2",
       "code": 571779,
       "opponent": "NEW",
       "opponent_short": "NEW",
@@ -7966,7 +7966,7 @@
       "team_name": "Ipswich Town",
       "team_id": 12,
       "event_points": 0,
-      "now_cost": "4.5",
+      "now_cost": "4.4",
       "code": 557012,
       "opponent": "BOU",
       "opponent_short": "BOU",
