@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-11-21T21:14:06Z",
+  "lastUpdated": "2026-11-22T01:25:49Z",
   "currentGw": 11,
   "eventStatuses": {
     "1": {
@@ -121,7 +121,7 @@
       "is_next": false,
       "deadline_time": "2026-11-21T11:00:00Z",
       "bonus_added": false,
-      "leagues": "Updating",
+      "leagues": "",
       "points": "",
       "daily_status": [
         {
@@ -2247,7 +2247,7 @@
       "team_name": "Bournemouth",
       "team_id": 3,
       "event_points": 6,
-      "now_cost": "6.5",
+      "now_cost": "6.6",
       "code": 444102,
       "opponent": "NFO",
       "opponent_short": "NFO",
@@ -2570,7 +2570,7 @@
       "team_name": "Brentford",
       "team_id": 4,
       "event_points": 0,
-      "now_cost": "4.5",
+      "now_cost": "4.4",
       "code": 513086,
       "opponent": "EVE",
       "opponent_short": "EVE",
@@ -2836,7 +2836,7 @@
       "team_name": "Brentford",
       "team_id": 4,
       "event_points": 0,
-      "now_cost": "5.4",
+      "now_cost": "5.3",
       "code": 513545,
       "opponent": "EVE",
       "opponent_short": "EVE",
@@ -3349,7 +3349,7 @@
       "team_name": "Brighton",
       "team_id": 5,
       "event_points": 0,
-      "now_cost": "4.4",
+      "now_cost": "4.3",
       "code": 556637,
       "opponent": "HUL",
       "opponent_short": "HUL",
@@ -3368,7 +3368,7 @@
       "team_name": "Brighton",
       "team_id": 5,
       "event_points": 0,
-      "now_cost": "4.8",
+      "now_cost": "4.7",
       "code": 700308,
       "opponent": "HUL",
       "opponent_short": "HUL",
@@ -3653,7 +3653,7 @@
       "team_name": "Chelsea",
       "team_id": 6,
       "event_points": 5,
-      "now_cost": "8.2",
+      "now_cost": "8.3",
       "code": 244850,
       "opponent": "LEE",
       "opponent_short": "LEE",
@@ -4717,7 +4717,7 @@
       "team_name": "Coventry City",
       "team_id": 7,
       "event_points": 0,
-      "now_cost": "4.4",
+      "now_cost": "4.3",
       "code": 684268,
       "opponent": "CRY",
       "opponent_short": "CRY",
@@ -4736,7 +4736,7 @@
       "team_name": "Coventry City",
       "team_id": 7,
       "event_points": 0,
-      "now_cost": "5.3",
+      "now_cost": "5.2",
       "code": 469272,
       "opponent": "CRY",
       "opponent_short": "CRY",
@@ -5439,7 +5439,7 @@
       "team_name": "Crystal Palace",
       "team_id": 8,
       "event_points": 0,
-      "now_cost": "4.4",
+      "now_cost": "4.3",
       "code": 672492,
       "opponent": "COV",
       "opponent_short": "COV",
@@ -5534,7 +5534,7 @@
       "team_name": "Crystal Palace",
       "team_id": 8,
       "event_points": 0,
-      "now_cost": "5.3",
+      "now_cost": "5.2",
       "code": 433154,
       "opponent": "COV",
       "opponent_short": "COV",
@@ -6997,7 +6997,7 @@
       "team_name": "Hull City",
       "team_id": 11,
       "event_points": 0,
-      "now_cost": "5.3",
+      "now_cost": "5.2",
       "code": 540324,
       "opponent": "BHA",
       "opponent_short": "BHA",
@@ -7700,7 +7700,7 @@
       "team_name": "Ipswich Town",
       "team_id": 12,
       "event_points": 1,
-      "now_cost": "3.9",
+      "now_cost": "3.8",
       "code": 449429,
       "opponent": "TOT",
       "opponent_short": "TOT",
@@ -7757,7 +7757,7 @@
       "team_name": "Ipswich Town",
       "team_id": 12,
       "event_points": 0,
-      "now_cost": "4.8",
+      "now_cost": "4.7",
       "code": 501390,
       "opponent": "TOT",
       "opponent_short": "TOT",
@@ -8612,7 +8612,7 @@
       "team_name": "Leeds",
       "team_id": 13,
       "event_points": 0,
-      "now_cost": "5.3",
+      "now_cost": "5.2",
       "code": 174594,
       "opponent": "CHE",
       "opponent_short": "CHE",
@@ -8669,7 +8669,7 @@
       "team_name": "Leeds",
       "team_id": 13,
       "event_points": 2,
-      "now_cost": "5.0",
+      "now_cost": "5.1",
       "code": 432720,
       "opponent": "CHE",
       "opponent_short": "CHE",
@@ -8973,7 +8973,7 @@
       "team_name": "Liverpool",
       "team_id": 14,
       "event_points": 0,
-      "now_cost": "5.3",
+      "now_cost": "5.2",
       "code": 544877,
       "opponent": "MUN",
       "opponent_short": "MUN",
@@ -9524,7 +9524,7 @@
       "team_name": "Man City",
       "team_id": 15,
       "event_points": 2,
-      "now_cost": "5.8",
+      "now_cost": "5.7",
       "code": 440993,
       "opponent": "FUL",
       "opponent_short": "FUL",
@@ -9771,7 +9771,7 @@
       "team_name": "Man City",
       "team_id": 15,
       "event_points": 0,
-      "now_cost": "8.2",
+      "now_cost": "8.1",
       "code": 437730,
       "opponent": "FUL",
       "opponent_short": "FUL",
@@ -11994,7 +11994,7 @@
       "team_name": "Spurs",
       "team_id": 19,
       "event_points": 6,
-      "now_cost": "5.1",
+      "now_cost": "5.2",
       "code": 469142,
       "opponent": "IPS",
       "opponent_short": "IPS",
@@ -21119,7 +21119,7 @@
               "element": 533
             },
             {
-              "value": 23,
+              "value": 22,
               "element": 539
             },
             {
@@ -21128,11 +21128,11 @@
             },
             {
               "value": 21,
-              "element": 542
+              "element": 541
             },
             {
-              "value": 20,
-              "element": 541
+              "value": 21,
+              "element": 542
             },
             {
               "value": 17,
@@ -21143,15 +21143,15 @@
               "element": 613
             },
             {
-              "value": 10,
+              "value": 9,
               "element": 545
             },
             {
-              "value": 8,
+              "value": 9,
               "element": 549
             },
             {
-              "value": 1,
+              "value": 4,
               "element": 553
             },
             {
@@ -21161,7 +21161,7 @@
           ],
           "h": [
             {
-              "value": 36,
+              "value": 37,
               "element": 611
             },
             {
@@ -21173,7 +21173,7 @@
               "element": 630
             },
             {
-              "value": 26,
+              "value": 27,
               "element": 36
             },
             {
@@ -21181,7 +21181,7 @@
               "element": 597
             },
             {
-              "value": 14,
+              "value": 15,
               "element": 52
             },
             {
@@ -21202,15 +21202,15 @@
             },
             {
               "value": 8,
+              "element": 166
+            },
+            {
+              "value": 8,
               "element": 631
             },
             {
               "value": 7,
               "element": 45
-            },
-            {
-              "value": 7,
-              "element": 166
             },
             {
               "value": 3,
@@ -21238,10 +21238,6 @@
               "element": 542
             },
             {
-              "value": 9,
-              "element": 545
-            },
-            {
               "value": 8,
               "element": 534
             },
@@ -21250,34 +21246,42 @@
               "element": 549
             },
             {
-              "value": 6,
+              "value": 7,
               "element": 536
             },
             {
-              "value": 5,
+              "value": 7,
+              "element": 545
+            },
+            {
+              "value": 6,
               "element": 553
+            },
+            {
+              "value": 4,
+              "element": 541
             },
             {
               "value": 3,
               "element": 539
-            },
-            {
-              "value": 3,
-              "element": 541
             }
           ],
           "h": [
+            {
+              "value": 9,
+              "element": 611
+            },
             {
               "value": 8,
               "element": 47
             },
             {
               "value": 8,
-              "element": 611
+              "element": 618
             },
             {
-              "value": 8,
-              "element": 618
+              "value": 6,
+              "element": 34
             },
             {
               "value": 6,
@@ -21292,16 +21296,12 @@
               "element": 53
             },
             {
-              "value": 4,
-              "element": 34
+              "value": 5,
+              "element": 630
             },
             {
               "value": 4,
               "element": 52
-            },
-            {
-              "value": 4,
-              "element": 630
             },
             {
               "value": 1,
@@ -21445,20 +21445,16 @@
               "element": 467
             },
             {
-              "value": 15,
+              "value": 16,
               "element": 480
             },
             {
-              "value": 15,
+              "value": 14,
               "element": 486
             },
             {
               "value": 13,
               "element": 474
-            },
-            {
-              "value": 8,
-              "element": 471
             },
             {
               "value": 8,
@@ -21469,16 +21465,12 @@
               "element": 558
             },
             {
-              "value": 4,
-              "element": 469
+              "value": 6,
+              "element": 471
             },
             {
               "value": 4,
               "element": 478
-            },
-            {
-              "value": 4,
-              "element": 491
             },
             {
               "value": 3,
@@ -21491,6 +21483,14 @@
             {
               "value": 2,
               "element": 167
+            },
+            {
+              "value": 2,
+              "element": 469
+            },
+            {
+              "value": 2,
+              "element": 491
             },
             {
               "value": 1,
@@ -21523,20 +21523,20 @@
               "element": 64
             },
             {
-              "value": 28,
+              "value": 26,
               "element": 61
             },
             {
-              "value": 24,
+              "value": 25,
               "element": 57
             },
             {
               "value": 13,
-              "element": 75
+              "element": 73
             },
             {
-              "value": 12,
-              "element": 73
+              "value": 13,
+              "element": 75
             },
             {
               "value": 7,
@@ -21568,7 +21568,7 @@
           "identifier": "defensive_contribution",
           "a": [
             {
-              "value": 14,
+              "value": 13,
               "element": 486
             },
             {
@@ -21589,15 +21589,15 @@
             },
             {
               "value": 6,
+              "element": 489
+            },
+            {
+              "value": 6,
               "element": 558
             },
             {
               "value": 5,
               "element": 480
-            },
-            {
-              "value": 5,
-              "element": 489
             },
             {
               "value": 3,
@@ -21613,12 +21613,16 @@
             },
             {
               "value": 1,
+              "element": 167
+            },
+            {
+              "value": 1,
               "element": 473
             }
           ],
           "h": [
             {
-              "value": 17,
+              "value": 16,
               "element": 566
             },
             {
@@ -21626,7 +21630,7 @@
               "element": 60
             },
             {
-              "value": 9,
+              "value": 11,
               "element": 73
             },
             {
@@ -24925,7 +24929,7 @@
           "total_points": 581,
           "rank": 4528328,
           "rank_sort": 4557831,
-          "overall_rank": 5000810,
+          "overall_rank": 5000818,
           "percentile_rank": 45,
           "overall_rank_percentage": "44",
           "bank": 13,
@@ -26539,7 +26543,7 @@
           "total_points": 634,
           "rank": 1795572,
           "rank_sort": 1819041,
-          "overall_rank": 2416064,
+          "overall_rank": 2416070,
           "percentile_rank": 20,
           "overall_rank_percentage": "22",
           "bank": 10,
@@ -28113,7 +28117,7 @@
           "total_points": 609,
           "rank": 5691412,
           "rank_sort": 5735846,
-          "overall_rank": 3596571,
+          "overall_rank": 3596580,
           "percentile_rank": 55,
           "overall_rank_percentage": "32",
           "bank": 3,
@@ -29708,7 +29712,7 @@
           "total_points": 612,
           "rank": 2435213,
           "rank_sort": 2469992,
-          "overall_rank": 3450612,
+          "overall_rank": 3450621,
           "percentile_rank": 25,
           "overall_rank_percentage": "31",
           "bank": 23,
@@ -31327,7 +31331,7 @@
           "total_points": 581,
           "rank": 3854806,
           "rank_sort": 3894780,
-          "overall_rank": 4988581,
+          "overall_rank": 4988589,
           "percentile_rank": 35,
           "overall_rank_percentage": "44",
           "bank": 11,
@@ -32908,7 +32912,7 @@
           "total_points": 641,
           "rank": 18031,
           "rank_sort": 18511,
-          "overall_rank": 2102883,
+          "overall_rank": 2102889,
           "percentile_rank": 1,
           "overall_rank_percentage": "19",
           "bank": 1,
@@ -34475,7 +34479,7 @@
           "total_points": 311,
           "rank": 1795572,
           "rank_sort": 1818638,
-          "overall_rank": 10708448,
+          "overall_rank": 10708450,
           "percentile_rank": 20,
           "overall_rank_percentage": "95",
           "bank": 102,
@@ -36056,7 +36060,7 @@
           "total_points": 592,
           "rank": 2947144,
           "rank_sort": 2948407,
-          "overall_rank": 4436382,
+          "overall_rank": 4436389,
           "percentile_rank": 30,
           "overall_rank_percentage": "39",
           "bank": 13,
@@ -54272,7 +54276,7 @@
         ],
         [
           "defensive_contribution",
-          17,
+          16,
           2
         ]
       ],
