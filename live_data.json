@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-11-22T16:39:21Z",
+  "lastUpdated": "2026-11-22T22:06:08Z",
   "currentGw": 11,
   "eventStatuses": {
     "1": {
@@ -121,7 +121,7 @@
       "is_next": false,
       "deadline_time": "2026-11-21T11:00:00Z",
       "bonus_added": false,
-      "leagues": "",
+      "leagues": "Updating",
       "points": "",
       "daily_status": [
         {
@@ -134,7 +134,7 @@
           "bonus_added": false,
           "date": "2026-11-22",
           "event": 11,
-          "points": "l"
+          "points": "p"
         },
         {
           "bonus_added": false,
@@ -8820,15 +8820,15 @@
       "team": "LIV",
       "team_name": "Liverpool",
       "team_id": 14,
-      "event_points": 1,
+      "event_points": 7,
       "now_cost": "5.5",
       "code": 116535,
       "opponent": "MUN",
       "opponent_short": "MUN",
       "difficulty": 3,
-      "minutes": 7,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "minutes": 90,
+      "match_status": "played",
+      "status_label": "✓ Played"
     },
     "351": {
       "id": 351,
@@ -8846,8 +8846,8 @@
       "opponent_short": "MUN",
       "difficulty": 3,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "352": {
       "id": 352,
@@ -8865,8 +8865,8 @@
       "opponent_short": "MUN",
       "difficulty": 3,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "353": {
       "id": 353,
@@ -8884,8 +8884,8 @@
       "opponent_short": "MUN",
       "difficulty": 3,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "354": {
       "id": 354,
@@ -8903,8 +8903,8 @@
       "opponent_short": "MUN",
       "difficulty": 3,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "355": {
       "id": 355,
@@ -8922,8 +8922,8 @@
       "opponent_short": "MUN",
       "difficulty": 3,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "356": {
       "id": 356,
@@ -8934,15 +8934,15 @@
       "team": "LIV",
       "team_name": "Liverpool",
       "team_id": 14,
-      "event_points": 1,
+      "event_points": 6,
       "now_cost": "6.4",
       "code": 97032,
       "opponent": "MUN",
       "opponent_short": "MUN",
       "difficulty": 3,
-      "minutes": 7,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "minutes": 90,
+      "match_status": "played",
+      "status_label": "✓ Played"
     },
     "357": {
       "id": 357,
@@ -8953,15 +8953,15 @@
       "team": "LIV",
       "team_name": "Liverpool",
       "team_id": 14,
-      "event_points": 0,
+      "event_points": 1,
       "now_cost": "5.1",
       "code": 216094,
       "opponent": "MUN",
       "opponent_short": "MUN",
       "difficulty": 3,
-      "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "minutes": 12,
+      "match_status": "played",
+      "status_label": "✓ Played"
     },
     "358": {
       "id": 358,
@@ -8972,15 +8972,15 @@
       "team": "LIV",
       "team_name": "Liverpool",
       "team_id": 14,
-      "event_points": 1,
+      "event_points": 6,
       "now_cost": "5.2",
       "code": 544877,
       "opponent": "MUN",
       "opponent_short": "MUN",
       "difficulty": 3,
-      "minutes": 7,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "minutes": 90,
+      "match_status": "played",
+      "status_label": "✓ Played"
     },
     "359": {
       "id": 359,
@@ -8991,15 +8991,15 @@
       "team": "LIV",
       "team_name": "Liverpool",
       "team_id": 14,
-      "event_points": 0,
+      "event_points": 1,
       "now_cost": "4.9",
       "code": 171287,
       "opponent": "MUN",
       "opponent_short": "MUN",
       "difficulty": 3,
-      "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "minutes": 5,
+      "match_status": "played",
+      "status_label": "✓ Played"
     },
     "360": {
       "id": 360,
@@ -9017,8 +9017,8 @@
       "opponent_short": "MUN",
       "difficulty": 3,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "361": {
       "id": 361,
@@ -9036,8 +9036,8 @@
       "opponent_short": "MUN",
       "difficulty": 3,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "362": {
       "id": 362,
@@ -9048,15 +9048,15 @@
       "team": "LIV",
       "team_name": "Liverpool",
       "team_id": 14,
-      "event_points": 1,
+      "event_points": 6,
       "now_cost": "5.1",
       "code": 606702,
       "opponent": "MUN",
       "opponent_short": "MUN",
       "difficulty": 3,
-      "minutes": 7,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "minutes": 90,
+      "match_status": "played",
+      "status_label": "✓ Played"
     },
     "363": {
       "id": 363,
@@ -9074,8 +9074,8 @@
       "opponent_short": "MUN",
       "difficulty": 3,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "364": {
       "id": 364,
@@ -9093,8 +9093,8 @@
       "opponent_short": "MUN",
       "difficulty": 3,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "365": {
       "id": 365,
@@ -9112,8 +9112,8 @@
       "opponent_short": "MUN",
       "difficulty": 3,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "366": {
       "id": 366,
@@ -9124,15 +9124,15 @@
       "team": "LIV",
       "team_name": "Liverpool",
       "team_id": 14,
-      "event_points": 1,
+      "event_points": 14,
       "now_cost": "7.3",
       "code": 494595,
       "opponent": "MUN",
       "opponent_short": "MUN",
       "difficulty": 3,
-      "minutes": 7,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "minutes": 90,
+      "match_status": "played",
+      "status_label": "✓ Played"
     },
     "367": {
       "id": 367,
@@ -9150,8 +9150,8 @@
       "opponent_short": "MUN",
       "difficulty": 3,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "368": {
       "id": 368,
@@ -9162,15 +9162,15 @@
       "team": "LIV",
       "team_name": "Liverpool",
       "team_id": 14,
-      "event_points": 1,
+      "event_points": 9,
       "now_cost": "6.7",
       "code": 424876,
       "opponent": "MUN",
       "opponent_short": "MUN",
       "difficulty": 3,
-      "minutes": 7,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "minutes": 90,
+      "match_status": "played",
+      "status_label": "✓ Played"
     },
     "369": {
       "id": 369,
@@ -9181,15 +9181,15 @@
       "team": "LIV",
       "team_name": "Liverpool",
       "team_id": 14,
-      "event_points": 1,
+      "event_points": 13,
       "now_cost": "5.7",
       "code": 611922,
       "opponent": "MUN",
       "opponent_short": "MUN",
       "difficulty": 3,
-      "minutes": 7,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "minutes": 77,
+      "match_status": "played",
+      "status_label": "✓ Played"
     },
     "370": {
       "id": 370,
@@ -9207,8 +9207,8 @@
       "opponent_short": "MUN",
       "difficulty": 3,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "371": {
       "id": 371,
@@ -9226,8 +9226,8 @@
       "opponent_short": "MUN",
       "difficulty": 3,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "372": {
       "id": 372,
@@ -9238,15 +9238,15 @@
       "team": "LIV",
       "team_name": "Liverpool",
       "team_id": 14,
-      "event_points": 1,
+      "event_points": 3,
       "now_cost": "5.4",
       "code": 243016,
       "opponent": "MUN",
       "opponent_short": "MUN",
       "difficulty": 3,
-      "minutes": 7,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "minutes": 71,
+      "match_status": "played",
+      "status_label": "✓ Played"
     },
     "373": {
       "id": 373,
@@ -9264,8 +9264,8 @@
       "opponent_short": "MUN",
       "difficulty": 3,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "374": {
       "id": 374,
@@ -9283,8 +9283,8 @@
       "opponent_short": "MUN",
       "difficulty": 3,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "375": {
       "id": 375,
@@ -9295,15 +9295,15 @@
       "team": "LIV",
       "team_name": "Liverpool",
       "team_id": 14,
-      "event_points": 0,
+      "event_points": 1,
       "now_cost": "4.8",
       "code": 591386,
       "opponent": "MUN",
       "opponent_short": "MUN",
       "difficulty": 3,
-      "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "minutes": 18,
+      "match_status": "played",
+      "status_label": "✓ Played"
     },
     "376": {
       "id": 376,
@@ -9321,8 +9321,8 @@
       "opponent_short": "MUN",
       "difficulty": 3,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "377": {
       "id": 377,
@@ -9333,15 +9333,15 @@
       "team": "LIV",
       "team_name": "Liverpool",
       "team_id": 14,
-      "event_points": 0,
+      "event_points": 6,
       "now_cost": "6.5",
       "code": 551499,
       "opponent": "MUN",
       "opponent_short": "MUN",
       "difficulty": 3,
-      "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "minutes": 18,
+      "match_status": "played",
+      "status_label": "✓ Played"
     },
     "378": {
       "id": 378,
@@ -9359,8 +9359,8 @@
       "opponent_short": "MUN",
       "difficulty": 3,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "379": {
       "id": 379,
@@ -9371,15 +9371,15 @@
       "team": "LIV",
       "team_name": "Liverpool",
       "team_id": 14,
-      "event_points": 1,
+      "event_points": 5,
       "now_cost": "9.3",
       "code": 219168,
       "opponent": "MUN",
       "opponent_short": "MUN",
       "difficulty": 3,
-      "minutes": 7,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "minutes": 84,
+      "match_status": "played",
+      "status_label": "✓ Played"
     },
     "380": {
       "id": 380,
@@ -9397,8 +9397,8 @@
       "opponent_short": "MUN",
       "difficulty": 3,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "381": {
       "id": 381,
@@ -9409,15 +9409,15 @@
       "team": "LIV",
       "team_name": "Liverpool",
       "team_id": 14,
-      "event_points": 0,
+      "event_points": 1,
       "now_cost": "5.0",
       "code": 514514,
       "opponent": "MUN",
       "opponent_short": "MUN",
       "difficulty": 3,
-      "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "minutes": 5,
+      "match_status": "played",
+      "status_label": "✓ Played"
     },
     "382": {
       "id": 382,
@@ -9435,8 +9435,8 @@
       "opponent_short": "MUN",
       "difficulty": 3,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "383": {
       "id": 383,
@@ -9454,8 +9454,8 @@
       "opponent_short": "MUN",
       "difficulty": 3,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "579": {
       "id": 579,
@@ -9466,15 +9466,15 @@
       "team": "LIV",
       "team_name": "Liverpool",
       "team_id": 14,
-      "event_points": 1,
+      "event_points": 6,
       "now_cost": "5.5",
       "code": 445087,
       "opponent": "MUN",
       "opponent_short": "MUN",
       "difficulty": 3,
-      "minutes": 7,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "minutes": 84,
+      "match_status": "played",
+      "status_label": "✓ Played"
     },
     "627": {
       "id": 627,
@@ -9485,15 +9485,15 @@
       "team": "LIV",
       "team_name": "Liverpool",
       "team_id": 14,
-      "event_points": 1,
+      "event_points": 5,
       "now_cost": "8.1",
       "code": 482616,
       "opponent": "MUN",
       "opponent_short": "MUN",
       "difficulty": 3,
-      "minutes": 7,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "minutes": 71,
+      "match_status": "played",
+      "status_label": "✓ Played"
     },
     "155": {
       "id": 155,
@@ -10131,15 +10131,15 @@
       "team": "MUN",
       "team_name": "Man Utd",
       "team_id": 16,
-      "event_points": 1,
+      "event_points": 4,
       "now_cost": "5.6",
       "code": 166989,
       "opponent": "LIV",
       "opponent_short": "LIV",
       "difficulty": 4,
-      "minutes": 7,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "minutes": 64,
+      "match_status": "played",
+      "status_label": "✓ Played"
     },
     "131": {
       "id": 131,
@@ -10157,8 +10157,8 @@
       "opponent_short": "LIV",
       "difficulty": 4,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "162": {
       "id": 162,
@@ -10169,15 +10169,15 @@
       "team": "MUN",
       "team_name": "Man Utd",
       "team_id": 16,
-      "event_points": 0,
+      "event_points": 1,
       "now_cost": "4.7",
       "code": 532605,
       "opponent": "LIV",
       "opponent_short": "LIV",
       "difficulty": 4,
-      "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "minutes": 3,
+      "match_status": "played",
+      "status_label": "✓ Played"
     },
     "325": {
       "id": 325,
@@ -10195,8 +10195,8 @@
       "opponent_short": "LIV",
       "difficulty": 4,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "412": {
       "id": 412,
@@ -10207,15 +10207,15 @@
       "team": "MUN",
       "team_name": "Man Utd",
       "team_id": 16,
-      "event_points": 1,
+      "event_points": 2,
       "now_cost": "4.8",
       "code": 465247,
       "opponent": "LIV",
       "opponent_short": "LIV",
       "difficulty": 4,
-      "minutes": 7,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "minutes": 90,
+      "match_status": "played",
+      "status_label": "✓ Played"
     },
     "413": {
       "id": 413,
@@ -10233,8 +10233,8 @@
       "opponent_short": "LIV",
       "difficulty": 4,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "414": {
       "id": 414,
@@ -10252,8 +10252,8 @@
       "opponent_short": "LIV",
       "difficulty": 4,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "415": {
       "id": 415,
@@ -10264,15 +10264,15 @@
       "team": "MUN",
       "team_name": "Man Utd",
       "team_id": 16,
-      "event_points": 1,
+      "event_points": 2,
       "now_cost": "5.7",
       "code": 596777,
       "opponent": "LIV",
       "opponent_short": "LIV",
       "difficulty": 4,
-      "minutes": 7,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "minutes": 64,
+      "match_status": "played",
+      "status_label": "✓ Played"
     },
     "416": {
       "id": 416,
@@ -10283,15 +10283,15 @@
       "team": "MUN",
       "team_name": "Man Utd",
       "team_id": 16,
-      "event_points": 1,
+      "event_points": 2,
       "now_cost": "4.9",
       "code": 209365,
       "opponent": "LIV",
       "opponent_short": "LIV",
       "difficulty": 4,
-      "minutes": 7,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "minutes": 90,
+      "match_status": "played",
+      "status_label": "✓ Played"
     },
     "417": {
       "id": 417,
@@ -10302,15 +10302,15 @@
       "team": "MUN",
       "team_name": "Man Utd",
       "team_id": 16,
-      "event_points": 1,
+      "event_points": 0,
       "now_cost": "4.7",
       "code": 216051,
       "opponent": "LIV",
       "opponent_short": "LIV",
       "difficulty": 4,
-      "minutes": 7,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "minutes": 90,
+      "match_status": "played",
+      "status_label": "✓ Played"
     },
     "418": {
       "id": 418,
@@ -10321,15 +10321,15 @@
       "team": "MUN",
       "team_name": "Man Utd",
       "team_id": 16,
-      "event_points": 0,
+      "event_points": 3,
       "now_cost": "4.6",
       "code": 95658,
       "opponent": "LIV",
       "opponent_short": "LIV",
       "difficulty": 4,
-      "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "minutes": 68,
+      "match_status": "played",
+      "status_label": "✓ Played"
     },
     "419": {
       "id": 419,
@@ -10340,15 +10340,15 @@
       "team": "MUN",
       "team_name": "Man Utd",
       "team_id": 16,
-      "event_points": 1,
+      "event_points": 0,
       "now_cost": "4.8",
       "code": 221820,
       "opponent": "LIV",
       "opponent_short": "LIV",
       "difficulty": 4,
-      "minutes": 7,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "minutes": 90,
+      "match_status": "played",
+      "status_label": "✓ Played"
     },
     "420": {
       "id": 420,
@@ -10359,15 +10359,15 @@
       "team": "MUN",
       "team_name": "Man Utd",
       "team_id": 16,
-      "event_points": 1,
+      "event_points": -4,
       "now_cost": "4.8",
       "code": 550864,
       "opponent": "LIV",
       "opponent_short": "LIV",
       "difficulty": 4,
       "minutes": 7,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "played",
+      "status_label": "✓ Played"
     },
     "421": {
       "id": 421,
@@ -10385,8 +10385,8 @@
       "opponent_short": "LIV",
       "difficulty": 4,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "422": {
       "id": 422,
@@ -10403,9 +10403,9 @@
       "opponent": "LIV",
       "opponent_short": "LIV",
       "difficulty": 4,
-      "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "minutes": 25,
+      "match_status": "played",
+      "status_label": "✓ Played"
     },
     "423": {
       "id": 423,
@@ -10423,8 +10423,8 @@
       "opponent_short": "LIV",
       "difficulty": 4,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "424": {
       "id": 424,
@@ -10442,8 +10442,8 @@
       "opponent_short": "LIV",
       "difficulty": 4,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "425": {
       "id": 425,
@@ -10461,8 +10461,8 @@
       "opponent_short": "LIV",
       "difficulty": 4,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "426": {
       "id": 426,
@@ -10473,15 +10473,15 @@
       "team": "MUN",
       "team_name": "Man Utd",
       "team_id": 16,
-      "event_points": 1,
+      "event_points": 2,
       "now_cost": "11.6",
       "code": 141746,
       "opponent": "LIV",
       "opponent_short": "LIV",
       "difficulty": 4,
-      "minutes": 7,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "minutes": 90,
+      "match_status": "played",
+      "status_label": "✓ Played"
     },
     "427": {
       "id": 427,
@@ -10498,9 +10498,9 @@
       "opponent": "LIV",
       "opponent_short": "LIV",
       "difficulty": 4,
-      "minutes": 7,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "minutes": 21,
+      "match_status": "played",
+      "status_label": "✓ Played"
     },
     "428": {
       "id": 428,
@@ -10517,9 +10517,9 @@
       "opponent": "LIV",
       "opponent_short": "LIV",
       "difficulty": 4,
-      "minutes": 7,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "minutes": 45,
+      "match_status": "played",
+      "status_label": "✓ Played"
     },
     "429": {
       "id": 429,
@@ -10537,8 +10537,8 @@
       "opponent_short": "LIV",
       "difficulty": 4,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "430": {
       "id": 430,
@@ -10549,15 +10549,15 @@
       "team": "MUN",
       "team_name": "Man Utd",
       "team_id": 16,
-      "event_points": 0,
+      "event_points": 1,
       "now_cost": "5.4",
       "code": 184341,
       "opponent": "LIV",
       "opponent_short": "LIV",
       "difficulty": 4,
-      "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "minutes": 25,
+      "match_status": "played",
+      "status_label": "✓ Played"
     },
     "431": {
       "id": 431,
@@ -10575,8 +10575,8 @@
       "opponent_short": "LIV",
       "difficulty": 4,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "432": {
       "id": 432,
@@ -10587,15 +10587,15 @@
       "team": "MUN",
       "team_name": "Man Utd",
       "team_id": 16,
-      "event_points": 1,
+      "event_points": 4,
       "now_cost": "5.5",
       "code": 516895,
       "opponent": "LIV",
       "opponent_short": "LIV",
       "difficulty": 4,
-      "minutes": 7,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "minutes": 86,
+      "match_status": "played",
+      "status_label": "✓ Played"
     },
     "433": {
       "id": 433,
@@ -10613,8 +10613,8 @@
       "opponent_short": "LIV",
       "difficulty": 4,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "434": {
       "id": 434,
@@ -10632,8 +10632,8 @@
       "opponent_short": "LIV",
       "difficulty": 4,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "435": {
       "id": 435,
@@ -10651,8 +10651,8 @@
       "opponent_short": "LIV",
       "difficulty": 4,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "436": {
       "id": 436,
@@ -10670,8 +10670,8 @@
       "opponent_short": "LIV",
       "difficulty": 4,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "437": {
       "id": 437,
@@ -10689,8 +10689,8 @@
       "opponent_short": "LIV",
       "difficulty": 4,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "438": {
       "id": 438,
@@ -10708,8 +10708,8 @@
       "opponent_short": "LIV",
       "difficulty": 4,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "439": {
       "id": 439,
@@ -10727,8 +10727,8 @@
       "opponent_short": "LIV",
       "difficulty": 4,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "440": {
       "id": 440,
@@ -10739,15 +10739,15 @@
       "team": "MUN",
       "team_name": "Man Utd",
       "team_id": 16,
-      "event_points": 0,
+      "event_points": 1,
       "now_cost": "5.3",
       "code": 458249,
       "opponent": "LIV",
       "opponent_short": "LIV",
       "difficulty": 4,
-      "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "minutes": 45,
+      "match_status": "played",
+      "status_label": "✓ Played"
     },
     "441": {
       "id": 441,
@@ -10765,8 +10765,8 @@
       "opponent_short": "LIV",
       "difficulty": 4,
       "minutes": 0,
-      "match_status": "live",
-      "status_label": "🟢 Live (7')"
+      "match_status": "dnp",
+      "status_label": "✕ DNP (0m)"
     },
     "405": {
       "id": 405,
@@ -19998,7 +19998,7 @@
       "40": 5,
       "41": 1,
       "42": 1,
-      "43": 1,
+      "43": 4,
       "44": 0,
       "45": 1,
       "46": 1,
@@ -20117,7 +20117,7 @@
       "159": 1,
       "160": 0,
       "161": 1,
-      "162": 0,
+      "162": 1,
       "163": 0,
       "164": 1,
       "165": 0,
@@ -20305,38 +20305,38 @@
       "347": 0,
       "348": 0,
       "349": 0,
-      "350": 1,
+      "350": 7,
       "351": 0,
       "352": 0,
       "353": 0,
       "354": 0,
       "355": 0,
-      "356": 1,
-      "357": 0,
-      "358": 1,
-      "359": 0,
+      "356": 6,
+      "357": 1,
+      "358": 6,
+      "359": 1,
       "360": 0,
       "361": 0,
-      "362": 1,
+      "362": 6,
       "363": 0,
       "364": 0,
       "365": 0,
-      "366": 1,
+      "366": 14,
       "367": 0,
-      "368": 1,
-      "369": 1,
+      "368": 9,
+      "369": 13,
       "370": 0,
       "371": 0,
-      "372": 1,
+      "372": 3,
       "373": 0,
       "374": 0,
-      "375": 0,
+      "375": 1,
       "376": 0,
-      "377": 0,
+      "377": 6,
       "378": 0,
-      "379": 1,
+      "379": 5,
       "380": 0,
-      "381": 0,
+      "381": 1,
       "382": 0,
       "383": 0,
       "384": 2,
@@ -20367,27 +20367,27 @@
       "409": 0,
       "410": 0,
       "411": 2,
-      "412": 1,
+      "412": 2,
       "413": 0,
       "414": 0,
-      "415": 1,
-      "416": 1,
-      "417": 1,
-      "418": 0,
-      "419": 1,
-      "420": 1,
+      "415": 2,
+      "416": 2,
+      "417": 0,
+      "418": 3,
+      "419": 0,
+      "420": -4,
       "421": 0,
       "422": 0,
       "423": 0,
       "424": 0,
       "425": 0,
-      "426": 1,
+      "426": 2,
       "427": 1,
       "428": 1,
       "429": 0,
-      "430": 0,
+      "430": 1,
       "431": 0,
-      "432": 1,
+      "432": 4,
       "433": 0,
       "434": 0,
       "435": 0,
@@ -20395,7 +20395,7 @@
       "437": 0,
       "438": 0,
       "439": 0,
-      "440": 0,
+      "440": 1,
       "441": 0,
       "442": 0,
       "443": 0,
@@ -20534,7 +20534,7 @@
       "576": 5,
       "577": 0,
       "578": 0,
-      "579": 1,
+      "579": 6,
       "580": 3,
       "581": 0,
       "582": 1,
@@ -20582,7 +20582,7 @@
       "624": 0,
       "625": 0,
       "626": 0,
-      "627": 1,
+      "627": 5,
       "628": 1,
       "629": 0,
       "630": 7,
@@ -23417,7 +23417,7 @@
           ],
           "h": [
             {
-              "value": 65,
+              "value": 67,
               "element": 295
             },
             {
@@ -23429,12 +23429,12 @@
               "element": 286
             },
             {
-              "value": 24,
-              "element": 290
+              "value": 23,
+              "element": 280
             },
             {
               "value": 23,
-              "element": 280
+              "element": 290
             },
             {
               "value": 22,
@@ -23606,26 +23606,60 @@
       "code": 2645301,
       "event": 11,
       "finished": false,
-      "finished_provisional": false,
+      "finished_provisional": true,
       "id": 107,
       "kickoff_time": "2026-11-22T16:30:00Z",
-      "minutes": 7,
+      "minutes": 90,
       "provisional_start_time": false,
       "started": true,
       "team_a": 16,
       "team_a_score": 0,
       "team_h": 14,
-      "team_h_score": 0,
+      "team_h_score": 4,
       "stats": [
         {
           "identifier": "goals_scored",
           "a": [],
-          "h": []
+          "h": [
+            {
+              "value": 1,
+              "element": 366
+            },
+            {
+              "value": 1,
+              "element": 368
+            },
+            {
+              "value": 1,
+              "element": 369
+            },
+            {
+              "value": 1,
+              "element": 377
+            }
+          ]
         },
         {
           "identifier": "assists",
           "a": [],
-          "h": []
+          "h": [
+            {
+              "value": 1,
+              "element": 366
+            },
+            {
+              "value": 1,
+              "element": 369
+            },
+            {
+              "value": 1,
+              "element": 379
+            },
+            {
+              "value": 1,
+              "element": 627
+            }
+          ]
         },
         {
           "identifier": "own_goals",
@@ -23645,120 +23679,188 @@
         {
           "identifier": "yellow_cards",
           "a": [],
-          "h": []
+          "h": [
+            {
+              "value": 1,
+              "element": 627
+            }
+          ]
         },
         {
           "identifier": "red_cards",
-          "a": [],
+          "a": [
+            {
+              "value": 1,
+              "element": 420
+            }
+          ],
           "h": []
         },
         {
           "identifier": "saves",
           "a": [
             {
-              "value": 2,
+              "value": 7,
               "element": 412
             }
           ],
-          "h": []
+          "h": [
+            {
+              "value": 4,
+              "element": 350
+            }
+          ]
         },
         {
           "identifier": "bonus",
           "a": [],
-          "h": []
+          "h": [
+            {
+              "value": 3,
+              "element": 366
+            },
+            {
+              "value": 2,
+              "element": 369
+            },
+            {
+              "value": 1,
+              "element": 368
+            }
+          ]
         },
         {
           "identifier": "bps",
           "a": [
             {
-              "value": 10,
-              "element": 412
+              "value": 26,
+              "element": 426
             },
             {
-              "value": 7,
+              "value": 18,
               "element": 43
             },
             {
-              "value": 4,
-              "element": 427
-            },
-            {
-              "value": 4,
+              "value": 15,
               "element": 432
             },
             {
-              "value": 3,
+              "value": 12,
+              "element": 412
+            },
+            {
+              "value": 10,
               "element": 415
             },
             {
-              "value": 3,
-              "element": 416
+              "value": 7,
+              "element": 427
             },
             {
-              "value": 3,
-              "element": 419
-            },
-            {
-              "value": 3,
-              "element": 420
-            },
-            {
-              "value": 3,
+              "value": 7,
               "element": 428
+            },
+            {
+              "value": 6,
+              "element": 430
+            },
+            {
+              "value": 6,
+              "element": 440
+            },
+            {
+              "value": 3,
+              "element": 162
+            },
+            {
+              "value": 3,
+              "element": 418
             },
             {
               "value": 2,
               "element": 417
             },
             {
-              "value": 2,
-              "element": 426
+              "value": -3,
+              "element": 419
+            },
+            {
+              "value": -4,
+              "element": 422
+            },
+            {
+              "value": -6,
+              "element": 416
+            },
+            {
+              "value": -23,
+              "element": 420
             }
           ],
           "h": [
             {
-              "value": 5,
-              "element": 356
-            },
-            {
-              "value": 4,
-              "element": 368
-            },
-            {
-              "value": 4,
-              "element": 369
-            },
-            {
-              "value": 3,
-              "element": 350
-            },
-            {
-              "value": 3,
-              "element": 362
-            },
-            {
-              "value": 3,
+              "value": 69,
               "element": 366
             },
             {
-              "value": 3,
-              "element": 372
+              "value": 52,
+              "element": 369
             },
             {
-              "value": 3,
-              "element": 579
+              "value": 43,
+              "element": 368
             },
             {
-              "value": 3,
-              "element": 627
-            },
-            {
-              "value": 2,
+              "value": 31,
               "element": 358
             },
             {
-              "value": 2,
+              "value": 29,
+              "element": 350
+            },
+            {
+              "value": 25,
+              "element": 579
+            },
+            {
+              "value": 24,
+              "element": 356
+            },
+            {
+              "value": 24,
+              "element": 362
+            },
+            {
+              "value": 24,
+              "element": 377
+            },
+            {
+              "value": 18,
               "element": 379
+            },
+            {
+              "value": 17,
+              "element": 372
+            },
+            {
+              "value": 9,
+              "element": 627
+            },
+            {
+              "value": 4,
+              "element": 375
+            },
+            {
+              "value": 3,
+              "element": 357
+            },
+            {
+              "value": 3,
+              "element": 359
+            },
+            {
+              "value": 3,
+              "element": 381
             }
           ]
         },
@@ -23766,16 +23868,52 @@
           "identifier": "defensive_contribution",
           "a": [
             {
-              "value": 3,
+              "value": 15,
               "element": 432
             },
             {
-              "value": 2,
+              "value": 14,
+              "element": 418
+            },
+            {
+              "value": 12,
               "element": 43
             },
             {
-              "value": 2,
+              "value": 11,
               "element": 416
+            },
+            {
+              "value": 9,
+              "element": 426
+            },
+            {
+              "value": 6,
+              "element": 415
+            },
+            {
+              "value": 6,
+              "element": 417
+            },
+            {
+              "value": 5,
+              "element": 440
+            },
+            {
+              "value": 3,
+              "element": 419
+            },
+            {
+              "value": 3,
+              "element": 427
+            },
+            {
+              "value": 3,
+              "element": 428
+            },
+            {
+              "value": 2,
+              "element": 162
             },
             {
               "value": 2,
@@ -23783,29 +23921,53 @@
             },
             {
               "value": 2,
-              "element": 427
-            },
-            {
-              "value": 1,
-              "element": 415
+              "element": 430
             }
           ],
           "h": [
             {
-              "value": 2,
-              "element": 369
-            },
-            {
-              "value": 2,
-              "element": 627
-            },
-            {
-              "value": 1,
+              "value": 10,
               "element": 368
             },
             {
-              "value": 1,
+              "value": 9,
+              "element": 369
+            },
+            {
+              "value": 9,
+              "element": 372
+            },
+            {
+              "value": 8,
+              "element": 366
+            },
+            {
+              "value": 7,
+              "element": 356
+            },
+            {
+              "value": 7,
               "element": 379
+            },
+            {
+              "value": 7,
+              "element": 627
+            },
+            {
+              "value": 6,
+              "element": 579
+            },
+            {
+              "value": 5,
+              "element": 362
+            },
+            {
+              "value": 4,
+              "element": 358
+            },
+            {
+              "value": 1,
+              "element": 377
             }
           ]
         }
@@ -40439,7 +40601,7 @@
           },
           "captainPoints": {
             "2019453": 4,
-            "145847": 3
+            "145847": 42
           },
           "chipsUsed": {
             "2019453": "bboost",
@@ -54600,38 +54762,94 @@
       "356": [
         [
           "minutes",
-          7,
+          90,
+          2
+        ],
+        [
+          "clean_sheets",
+          1,
+          4
+        ]
+      ],
+      "357": [
+        [
+          "minutes",
+          12,
           1
         ]
       ],
-      "357": [],
       "362": [
         [
           "minutes",
-          7,
-          1
+          90,
+          2
+        ],
+        [
+          "clean_sheets",
+          1,
+          4
         ]
       ],
       "366": [
         [
           "minutes",
-          7,
+          90,
+          2
+        ],
+        [
+          "goals_scored",
+          1,
+          5
+        ],
+        [
+          "assists",
+          1,
+          3
+        ],
+        [
+          "clean_sheets",
+          1,
           1
+        ],
+        [
+          "bonus",
+          3,
+          3
         ]
       ],
       "367": [],
       "368": [
         [
           "minutes",
-          7,
+          90,
+          2
+        ],
+        [
+          "goals_scored",
+          1,
+          5
+        ],
+        [
+          "clean_sheets",
+          1,
+          1
+        ],
+        [
+          "bonus",
+          1,
           1
         ]
       ],
       "379": [
         [
           "minutes",
-          7,
-          1
+          84,
+          2
+        ],
+        [
+          "assists",
+          1,
+          3
         ]
       ],
       "384": [
@@ -54704,30 +54922,56 @@
       "412": [
         [
           "minutes",
+          90,
+          2
+        ],
+        [
+          "goals_conceded",
+          4,
+          -2
+        ],
+        [
+          "saves",
           7,
-          1
+          2
         ]
       ],
-      "418": [],
+      "418": [
+        [
+          "minutes",
+          68,
+          2
+        ],
+        [
+          "goals_conceded",
+          2,
+          -1
+        ],
+        [
+          "defensive_contribution",
+          14,
+          2
+        ]
+      ],
       "423": [],
       "426": [
         [
           "minutes",
-          7,
-          1
+          90,
+          2
         ]
       ],
       "427": [
         [
           "minutes",
-          7,
+          21,
           1
         ]
       ],
       "428": [
         [
           "minutes",
-          7,
+          45,
           1
         ]
       ],
