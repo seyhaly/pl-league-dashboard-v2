@@ -3848,9 +3848,9 @@
   const POSITION_GROUPS = { 1: 'Goalkeeper', 2: 'Defenders', 3: 'Midfielders', 4: 'Forwards' };
 
   function squadListRowHtml(c) {
-    // Triple Captain (multiplier 3) gets a gold "TC" badge instead of the usual "C"
+    // Triple Captain (multiplier 3): the "C" badge turns gold
     const role = c.isCaptain
-      ? (c.multiplier >= 3 ? '<span class="pc-role-inline pc-c pc-tc" title="Triple Captain ×3">TC</span>' : '<span class="pc-role-inline pc-c">C</span>')
+      ? (c.multiplier >= 3 ? '<span class="pc-role-inline pc-c pc-tc" title="Triple Captain ×3">C</span>' : '<span class="pc-role-inline pc-c">C</span>')
       : (c.isVice ? '<span class="pc-role-inline pc-v">V</span>' : '');
     const sub = c.subbedIn ? '<span class="sl-tag in">Auto-sub in</span>' : (c.subbedOut ? '<span class="sl-tag out">Auto-sub out</span>' : '');
     const opp = c.opp ? `<span class="opp-pill fdr-${c.difficulty}">${c.opp}</span>` : '<span class="cell-empty">–</span>';
@@ -3914,7 +3914,7 @@
     const statusCls = c.status === 'yet_to_play' ? 'is-pending' : (c.status === 'live' ? 'is-live' : (c.status === 'dnp' ? 'is-dnp' : 'is-played'));
     const role = c.isCaptain
       ? (c.multiplier >= 3
-        ? '<span class="pc-role pc-c pc-tc" title="Triple Captain ×3">TC</span>'
+        ? '<span class="pc-role pc-c pc-tc" title="Triple Captain ×3">C</span>'
         : `<span class="pc-role pc-c" title="Captain ×${c.multiplier}">C</span>`)
       : (c.isVice ? '<span class="pc-role pc-v" title="Vice-captain">V</span>' : '');
     const subTag = c.subbedIn
