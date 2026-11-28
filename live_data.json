@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-11-27T22:46:08Z",
+  "lastUpdated": "2026-11-28T04:19:35Z",
   "currentGw": 12,
   "eventStatuses": {
     "1": {
@@ -132,7 +132,7 @@
       "is_next": false,
       "deadline_time": "2026-11-27T18:30:00Z",
       "bonus_added": false,
-      "leagues": "Updating",
+      "leagues": "",
       "points": "",
       "daily_status": [
         {
@@ -1221,7 +1221,7 @@
       "team_name": "Aston Villa",
       "team_id": 2,
       "event_points": 0,
-      "now_cost": "4.9",
+      "now_cost": "4.8",
       "code": 515597,
       "opponent": "IPS",
       "opponent_short": "IPS",
@@ -1449,7 +1449,7 @@
       "team_name": "Aston Villa",
       "team_id": 2,
       "event_points": 0,
-      "now_cost": "4.4",
+      "now_cost": "4.3",
       "code": 645618,
       "opponent": "IPS",
       "opponent_short": "IPS",
@@ -1582,7 +1582,7 @@
       "team_name": "Aston Villa",
       "team_id": 2,
       "event_points": 0,
-      "now_cost": "5.7",
+      "now_cost": "5.6",
       "code": 493105,
       "opponent": "IPS",
       "opponent_short": "IPS",
@@ -2589,7 +2589,7 @@
       "team_name": "Brentford",
       "team_id": 4,
       "event_points": 0,
-      "now_cost": "6.1",
+      "now_cost": "6.0",
       "code": 513418,
       "opponent": "MUN",
       "opponent_short": "MUN",
@@ -2931,7 +2931,7 @@
       "team_name": "Brighton",
       "team_id": 5,
       "event_points": 0,
-      "now_cost": "4.7",
+      "now_cost": "4.8",
       "code": 489639,
       "opponent": "NEW",
       "opponent_short": "NEW",
@@ -3178,7 +3178,7 @@
       "team_name": "Brighton",
       "team_id": 5,
       "event_points": 0,
-      "now_cost": "6.3",
+      "now_cost": "6.4",
       "code": 60307,
       "opponent": "NEW",
       "opponent_short": "NEW",
@@ -3463,7 +3463,7 @@
       "team_name": "Brighton",
       "team_id": 5,
       "event_points": 0,
-      "now_cost": "5.3",
+      "now_cost": "5.4",
       "code": 610799,
       "opponent": "NEW",
       "opponent_short": "NEW",
@@ -3938,7 +3938,7 @@
       "team_name": "Chelsea",
       "team_id": 6,
       "event_points": 2,
-      "now_cost": "9.8",
+      "now_cost": "9.7",
       "code": 244851,
       "opponent": "NFO",
       "opponent_short": "NFO",
@@ -4090,7 +4090,7 @@
       "team_name": "Chelsea",
       "team_id": 6,
       "event_points": 0,
-      "now_cost": "7.6",
+      "now_cost": "7.5",
       "code": 475168,
       "opponent": "NFO",
       "opponent_short": "NFO",
@@ -4907,7 +4907,7 @@
       "team_name": "Coventry City",
       "team_id": 7,
       "event_points": 0,
-      "now_cost": "4.8",
+      "now_cost": "4.7",
       "code": 661888,
       "opponent": "LEE",
       "opponent_short": "LEE",
@@ -4964,7 +4964,7 @@
       "team_name": "Coventry City",
       "team_id": 7,
       "event_points": 0,
-      "now_cost": "4.0",
+      "now_cost": "3.9",
       "code": 79602,
       "opponent": "LEE",
       "opponent_short": "LEE",
@@ -5496,7 +5496,7 @@
       "team_name": "Crystal Palace",
       "team_id": 8,
       "event_points": 0,
-      "now_cost": "5.4",
+      "now_cost": "5.3",
       "code": 205533,
       "opponent": "HUL",
       "opponent_short": "HUL",
@@ -6465,7 +6465,7 @@
       "team_name": "Fulham",
       "team_id": 10,
       "event_points": 0,
-      "now_cost": "5.4",
+      "now_cost": "5.3",
       "code": 577725,
       "opponent": "BOU",
       "opponent_short": "BOU",
@@ -6560,7 +6560,7 @@
       "team_name": "Fulham",
       "team_id": 10,
       "event_points": 0,
-      "now_cost": "5.8",
+      "now_cost": "5.7",
       "code": 551466,
       "opponent": "BOU",
       "opponent_short": "BOU",
@@ -8308,7 +8308,7 @@
       "team_name": "Leeds",
       "team_id": 13,
       "event_points": 0,
-      "now_cost": "4.8",
+      "now_cost": "4.9",
       "code": 226182,
       "opponent": "COV",
       "opponent_short": "COV",
@@ -8346,7 +8346,7 @@
       "team_name": "Leeds",
       "team_id": 13,
       "event_points": 0,
-      "now_cost": "4.5",
+      "now_cost": "4.6",
       "code": 220627,
       "opponent": "COV",
       "opponent_short": "COV",
@@ -8593,7 +8593,7 @@
       "team_name": "Leeds",
       "team_id": 13,
       "event_points": 0,
-      "now_cost": "6.0",
+      "now_cost": "6.1",
       "code": 177815,
       "opponent": "COV",
       "opponent_short": "COV",
@@ -9125,7 +9125,7 @@
       "team_name": "Liverpool",
       "team_id": 14,
       "event_points": 0,
-      "now_cost": "7.5",
+      "now_cost": "7.6",
       "code": 494595,
       "opponent": "EVE",
       "opponent_short": "EVE",
@@ -10816,7 +10816,7 @@
       "team_name": "Newcastle",
       "team_id": 17,
       "event_points": 0,
-      "now_cost": "4.5",
+      "now_cost": "4.4",
       "code": 81441,
       "opponent": "BHA",
       "opponent_short": "BHA",
@@ -10930,7 +10930,7 @@
       "team_name": "Newcastle",
       "team_id": 17,
       "event_points": 0,
-      "now_cost": "5.2",
+      "now_cost": "5.1",
       "code": 487838,
       "opponent": "BHA",
       "opponent_short": "BHA",
@@ -11177,7 +11177,7 @@
       "team_name": "Newcastle",
       "team_id": 17,
       "event_points": 0,
-      "now_cost": "5.9",
+      "now_cost": "5.8",
       "code": 216646,
       "opponent": "BHA",
       "opponent_short": "BHA",
@@ -11234,7 +11234,7 @@
       "team_name": "Newcastle",
       "team_id": 17,
       "event_points": 0,
-      "now_cost": "4.8",
+      "now_cost": "4.7",
       "code": 632794,
       "opponent": "BHA",
       "opponent_short": "BHA",
@@ -11842,7 +11842,7 @@
       "team_name": "Nott'm Forest",
       "team_id": 18,
       "event_points": 0,
-      "now_cost": "4.7",
+      "now_cost": "4.6",
       "code": 210462,
       "opponent": "CHE",
       "opponent_short": "CHE",
@@ -11861,7 +11861,7 @@
       "team_name": "Nott'm Forest",
       "team_id": 18,
       "event_points": 1,
-      "now_cost": "4.4",
+      "now_cost": "4.3",
       "code": 204968,
       "opponent": "CHE",
       "opponent_short": "CHE",
@@ -13248,7 +13248,7 @@
       "team_name": "Sunderland",
       "team_id": 20,
       "event_points": 0,
-      "now_cost": "5.4",
+      "now_cost": "5.3",
       "code": 437505,
       "opponent": "TOT",
       "opponent_short": "TOT",
@@ -13305,7 +13305,7 @@
       "team_name": "Sunderland",
       "team_id": 20,
       "event_points": 0,
-      "now_cost": "5.4",
+      "now_cost": "5.3",
       "code": 549940,
       "opponent": "TOT",
       "opponent_short": "TOT",
@@ -13324,7 +13324,7 @@
       "team_name": "Sunderland",
       "team_id": 20,
       "event_points": 0,
-      "now_cost": "4.5",
+      "now_cost": "4.4",
       "code": 661313,
       "opponent": "TOT",
       "opponent_short": "TOT",
@@ -13343,7 +13343,7 @@
       "team_name": "Sunderland",
       "team_id": 20,
       "event_points": 0,
-      "now_cost": "4.8",
+      "now_cost": "4.7",
       "code": 604211,
       "opponent": "TOT",
       "opponent_short": "TOT",
@@ -21487,12 +21487,12 @@
               "element": 151
             },
             {
-              "value": 5,
-              "element": 164
+              "value": 6,
+              "element": 149
             },
             {
-              "value": 4,
-              "element": 149
+              "value": 5,
+              "element": 164
             },
             {
               "value": 3,
@@ -21521,16 +21521,16 @@
               "element": 491
             },
             {
-              "value": 27,
+              "value": 25,
               "element": 486
             },
             {
               "value": 20,
-              "element": 558
+              "element": 167
             },
             {
-              "value": 19,
-              "element": 167
+              "value": 20,
+              "element": 558
             },
             {
               "value": 14,
@@ -21578,7 +21578,7 @@
           "identifier": "defensive_contribution",
           "a": [
             {
-              "value": 18,
+              "value": 17,
               "element": 159
             },
             {
@@ -21603,15 +21603,15 @@
             },
             {
               "value": 4,
-              "element": 40
-            },
-            {
-              "value": 4,
               "element": 145
             },
             {
               "value": 4,
               "element": 156
+            },
+            {
+              "value": 3,
+              "element": 40
             },
             {
               "value": 2,
@@ -21624,7 +21624,7 @@
           ],
           "h": [
             {
-              "value": 13,
+              "value": 14,
               "element": 486
             },
             {
@@ -21644,16 +21644,16 @@
               "element": 491
             },
             {
-              "value": 7,
-              "element": 558
-            },
-            {
               "value": 6,
               "element": 167
             },
             {
               "value": 6,
               "element": 469
+            },
+            {
+              "value": 6,
+              "element": 558
             },
             {
               "value": 5,
@@ -23644,13 +23644,13 @@
         "active_chip": null,
         "entry_history": {
           "event": 12,
-          "points": 0,
-          "total_points": 592,
-          "rank": null,
-          "rank_sort": null,
-          "overall_rank": 5122381,
-          "percentile_rank": null,
-          "overall_rank_percentage": null,
+          "points": 2,
+          "total_points": 594,
+          "rank": 3497822,
+          "rank_sort": 3894667,
+          "overall_rank": 5160969,
+          "percentile_rank": 35,
+          "overall_rank_percentage": "46",
           "bank": 13,
           "value": 1022,
           "event_transfers": 0,
@@ -25399,13 +25399,13 @@
         "active_chip": null,
         "entry_history": {
           "event": 12,
-          "points": 0,
-          "total_points": 645,
-          "rank": null,
-          "rank_sort": null,
-          "overall_rank": 2415531,
-          "percentile_rank": null,
-          "overall_rank_percentage": null,
+          "points": 2,
+          "total_points": 647,
+          "rank": 6261309,
+          "rank_sort": 6548550,
+          "overall_rank": 2448043,
+          "percentile_rank": 60,
+          "overall_rank_percentage": "22",
           "bank": 3,
           "value": 1036,
           "event_transfers": 1,
@@ -27114,13 +27114,13 @@
         "active_chip": null,
         "entry_history": {
           "event": 12,
-          "points": 0,
-          "total_points": 630,
-          "rank": null,
-          "rank_sort": null,
-          "overall_rank": 3140895,
-          "percentile_rank": null,
-          "overall_rank_percentage": null,
+          "points": 4,
+          "total_points": 634,
+          "rank": 2974533,
+          "rank_sort": 3034755,
+          "overall_rank": 3079066,
+          "percentile_rank": 30,
+          "overall_rank_percentage": "27",
           "bank": 4,
           "value": 1022,
           "event_transfers": 2,
@@ -28851,12 +28851,12 @@
         "entry_history": {
           "event": 12,
           "points": 0,
-          "total_points": 616,
-          "rank": null,
-          "rank_sort": null,
-          "overall_rank": 3863674,
-          "percentile_rank": null,
-          "overall_rank_percentage": null,
+          "total_points": 612,
+          "rank": 10925093,
+          "rank_sort": 10968660,
+          "overall_rank": 4223052,
+          "percentile_rank": 100,
+          "overall_rank_percentage": "37",
           "bank": 10,
           "value": 1015,
           "event_transfers": 2,
@@ -30610,13 +30610,13 @@
         "active_chip": null,
         "entry_history": {
           "event": 12,
-          "points": 0,
-          "total_points": 586,
-          "rank": null,
-          "rank_sort": null,
-          "overall_rank": 5423023,
-          "percentile_rank": null,
-          "overall_rank_percentage": null,
+          "points": 4,
+          "total_points": 590,
+          "rank": 2974533,
+          "rank_sort": 3034777,
+          "overall_rank": 5370458,
+          "percentile_rank": 30,
+          "overall_rank_percentage": "48",
           "bank": 5,
           "value": 1029,
           "event_transfers": 2,
@@ -32332,13 +32332,13 @@
         "active_chip": "3xc",
         "entry_history": {
           "event": 12,
-          "points": 0,
-          "total_points": 652,
-          "rank": null,
-          "rank_sort": null,
-          "overall_rank": 2089354,
-          "percentile_rank": null,
-          "overall_rank_percentage": null,
+          "points": 2,
+          "total_points": 654,
+          "rank": 3497822,
+          "rank_sort": 3893877,
+          "overall_rank": 2115340,
+          "percentile_rank": 35,
+          "overall_rank_percentage": "19",
           "bank": 1,
           "value": 1021,
           "event_transfers": 0,
@@ -34040,13 +34040,13 @@
         "active_chip": null,
         "entry_history": {
           "event": 12,
-          "points": 0,
-          "total_points": 323,
-          "rank": null,
-          "rank_sort": null,
-          "overall_rank": 10719398,
-          "percentile_rank": null,
-          "overall_rank_percentage": null,
+          "points": 2,
+          "total_points": 325,
+          "rank": 6261309,
+          "rank_sort": 6543523,
+          "overall_rank": 10717483,
+          "percentile_rank": 60,
+          "overall_rank_percentage": "95",
           "bank": 113,
           "value": 1041,
           "event_transfers": 1,
@@ -35762,13 +35762,13 @@
         "active_chip": null,
         "entry_history": {
           "event": 12,
-          "points": 0,
-          "total_points": 644,
-          "rank": null,
-          "rank_sort": null,
-          "overall_rank": 2445444,
-          "percentile_rank": null,
-          "overall_rank_percentage": null,
+          "points": 2,
+          "total_points": 646,
+          "rank": 6261309,
+          "rank_sort": 6284108,
+          "overall_rank": 2479358,
+          "percentile_rank": 60,
+          "overall_rank_percentage": "22",
           "bank": 1,
           "value": 1022,
           "event_transfers": 1,
@@ -38987,13 +38987,13 @@
         {
           "gw": 12,
           "scores": {
-            "2019453": 0,
-            "2067578": 0,
-            "2023789": 0,
+            "2019453": 2,
+            "2067578": 2,
+            "2023789": 4,
             "2026160": 0,
-            "2023013": 0,
-            "2024611": 0,
-            "2026484": 0
+            "2023013": 2,
+            "2024611": 4,
+            "2026484": 2
           },
           "hits": {
             "2019453": 0,
@@ -39035,13 +39035,13 @@
             "2019453": "3xc"
           },
           "seasonTotals": {
-            "2019453": 652,
-            "2067578": 645,
-            "2023789": 630,
-            "2026160": 616,
-            "2023013": 592,
-            "2024611": 586,
-            "2026484": 323
+            "2019453": 654,
+            "2067578": 647,
+            "2023789": 634,
+            "2026160": 612,
+            "2023013": 594,
+            "2024611": 590,
+            "2026484": 325
           }
         },
         {
@@ -39732,8 +39732,8 @@
         {
           "gw": 12,
           "scores": {
-            "2019453": 0,
-            "145847": 0
+            "2019453": 2,
+            "145847": 2
           },
           "hits": {
             "2019453": 0,
@@ -39755,8 +39755,8 @@
             "2019453": "3xc"
           },
           "seasonTotals": {
-            "2019453": 652,
-            "145847": 644
+            "2019453": 654,
+            "145847": 646
           }
         },
         {
