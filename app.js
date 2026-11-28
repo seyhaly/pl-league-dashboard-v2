@@ -1144,6 +1144,18 @@
             }
 
             if (picksData) {
+              // Keep the squad so the squad view works right after the deadline,
+              // without waiting for the next GitHub sync
+              if (Array.isArray(picksData.picks) && picksData.picks.length) {
+                if (!state.dataset.squadPicks) state.dataset.squadPicks = {};
+                const mine = state.dataset.squadPicks[String(id)] || (state.dataset.squadPicks[String(id)] = {});
+                mine[String(detectedGw)] = {
+                  picks: picksData.picks,
+                  active_chip: picksData.active_chip || null,
+                  entry_history: picksData.entry_history || {},
+                  automatic_subs: picksData.automatic_subs || []
+                };
+              }
               const currGwObj = state.dataset.gameweeks[detectedGw - 1];
               if (currGwObj) {
                 if (picksData.active_chip) {
